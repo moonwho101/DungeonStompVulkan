@@ -114,18 +114,11 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 
 	XMVECTOR pos, target;
 
-	XMFLOAT3 newspot;
-	XMFLOAT3 newspot2;
+	// Build the view matrix.
+	pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);
+	target = XMVectorSet(m_vLookatPt.x, m_vLookatPt.y + adjust, m_vLookatPt.z, 1.0f);
 
-
-		// Build the view matrix.
-		pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);
-		target = XMVectorSet(m_vLookatPt.x, m_vLookatPt.y + adjust, m_vLookatPt.z, 1.0f);
-
-		GunTruesave = mEyePos;
-	
-
-
+	GunTruesave = mEyePos;
 
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 

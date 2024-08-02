@@ -431,7 +431,7 @@ void InitDS()
 }
 
 
-int cutoff = 0.0f;
+int cutoff = 0;
 
 void UpdateWorld(float fElapsedTime) {
 

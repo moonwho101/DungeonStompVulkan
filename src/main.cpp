@@ -64,7 +64,7 @@ enum class ProgState : int {
 	Exit
 };
 
-class ShadowMapApp : public VulkApp
+class DungeonStompApp : public VulkApp
 {
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
@@ -169,7 +169,7 @@ class ShadowMapApp : public VulkApp
 	void UpdateWaves(const GameTimer& gt);
 	
 
-	static void asyncInitStatic(ShadowMapApp* pThis);
+	static void asyncInitStatic(DungeonStompApp* pThis);
 	void asyncInit();
 
 	void UpdateDungeon();
@@ -195,16 +195,16 @@ class ShadowMapApp : public VulkApp
 public:
 
 	
-	ShadowMapApp(HINSTANCE hInstance);
-	ShadowMapApp(const ShadowMapApp& rhs) = delete;
-	ShadowMapApp& operator=(const ShadowMapApp& rhs) = delete;
-	~ShadowMapApp();
+	DungeonStompApp(HINSTANCE hInstance);
+	DungeonStompApp(const DungeonStompApp& rhs) = delete;
+	DungeonStompApp& operator=(const DungeonStompApp& rhs) = delete;
+	~DungeonStompApp();
 
 	virtual bool Initialize()override;
 };
 
 
-ShadowMapApp::ShadowMapApp(HINSTANCE hInstance) :VulkApp(hInstance) {
+DungeonStompApp::DungeonStompApp(HINSTANCE hInstance) :VulkApp(hInstance) {
 	mAllowWireframe = true;
 	mClearValues[0].color = Colors::LightSteelBlue;
 	mMSAA = false;
@@ -223,7 +223,7 @@ ShadowMapApp::ShadowMapApp(HINSTANCE hInstance) :VulkApp(hInstance) {
 
 	
 }
-ShadowMapApp::~ShadowMapApp() {
+DungeonStompApp::~DungeonStompApp() {
 	vkDeviceWaitIdle(mDevice);
 
 	for (auto& buffer : WaveVertexBuffers) {
@@ -250,7 +250,7 @@ HRESULT CreateDInput(HWND hWnd);
 extern void InitDS();
 BOOL LoadRRTextures11(const char* filename);
 
-bool ShadowMapApp::Initialize() {
+bool DungeonStompApp::Initialize() {
 	if (!VulkApp::Initialize())
 		return false;
 
@@ -266,18 +266,18 @@ bool ShadowMapApp::Initialize() {
 	mCamera.SetPosition(0.0f, 2.0f, -15.0f);
 #define __USE__THREAD__
 #ifdef __USE__THREAD__
-	futureRet = std::make_unique<std::future<void>>(std::async(std::launch::async, &ShadowMapApp::asyncInit, this));
+	futureRet = std::make_unique<std::future<void>>(std::async(std::launch::async, &DungeonStompApp::asyncInit, this));
 #else
 	asyncInit();
 #endif
 	return true;
 }
 
-void ShadowMapApp::asyncInitStatic(ShadowMapApp* pThis) {
+void DungeonStompApp::asyncInitStatic(DungeonStompApp* pThis) {
 	pThis->asyncInit();
 }
 
-void ShadowMapApp::asyncInit(){
+void DungeonStompApp::asyncInit(){
 
 	mShadowMap = std::make_unique<ShadowMap>(mDevice, mMemoryProperties, mBackQueue, mCommandBuffer, 2048, 2048);
 
@@ -303,7 +303,7 @@ void ShadowMapApp::asyncInit(){
 
 extern int number_of_tex_aliases;
 
-void ShadowMapApp::LoadTextures() {
+void DungeonStompApp::LoadTextures() {
 
 	auto grassTex = std::make_unique<Texture>();
 
@@ -349,7 +349,7 @@ void ShadowMapApp::LoadTextures() {
 	sampler = std::make_unique<VulkanSampler>(mDevice, Vulkan::initSampler(mDevice, sampProps));
 }
 
-void ShadowMapApp::BuildBuffers() {
+void DungeonStompApp::BuildBuffers() {
 	Vulkan::Buffer dynamicBuffer;
 	//pass and object constants are dynamic uniform buffers
 	std::vector<UniformBufferInfo> bufferInfo;
@@ -365,7 +365,7 @@ void ShadowMapApp::BuildBuffers() {
 	storageBuffer = std::make_unique<VulkanUniformBuffer>(mDevice, dynamicBuffer, bufferInfo);
 }
 
-void ShadowMapApp::BuildShapeGeometry()
+void DungeonStompApp::BuildShapeGeometry()
 {
 	GeometryGenerator geoGen;
 	GeometryGenerator::MeshData box = geoGen.CreateBox(1.0f, 1.0f, 1.0f, 3);
@@ -517,7 +517,7 @@ void ShadowMapApp::BuildShapeGeometry()
 	mGeometries[geo->Name] = std::move(geo);
 }
 
-void ShadowMapApp::BuildSkullGeometry() {
+void DungeonStompApp::BuildSkullGeometry() {
 	std::ifstream fin("../Models/skull.txt");
 
 	if (!fin)
@@ -640,7 +640,7 @@ void ShadowMapApp::BuildSkullGeometry() {
 
 }
 
-void ShadowMapApp::BuildMaterials()
+void DungeonStompApp::BuildMaterials()
 {
 	auto bricks0 = std::make_unique<Material>();
 	bricks0->Name = "bricks0";
@@ -997,7 +997,7 @@ void ShadowMapApp::BuildMaterials()
 	
 }
 
-void ShadowMapApp::BuildRenderItems()
+void DungeonStompApp::BuildRenderItems()
 {
 	auto skyRitem = std::make_unique<RenderItem>();
 	skyRitem->World = glm::scale(glm::mat4(1.0f), glm::vec3(20000.0f, 30000.0f, 20000.0f));
@@ -1174,7 +1174,7 @@ void ShadowMapApp::BuildRenderItems()
 
 
 
-void ShadowMapApp::BuildWavesGeometry() {
+void DungeonStompApp::BuildWavesGeometry() {
 	std::vector<uint32_t> indices(3 * mWaves->TriangleCount());//3 indices per face
 	assert(mWaves->VertexCount() < 0x0000FFFFF);
 
@@ -1286,7 +1286,7 @@ void ShadowMapApp::BuildWavesGeometry() {
 
 
 
-void ShadowMapApp::BuildDescriptors() {
+void DungeonStompApp::BuildDescriptors() {
 	descriptorSetPoolCache = std::make_unique<DescriptorSetPoolCache>(mDevice);
 	descriptorSetLayoutCache = std::make_unique<DescriptorSetLayoutCache>(mDevice);
 
@@ -1450,7 +1450,7 @@ void ShadowMapApp::BuildDescriptors() {
 	debugPipelineLayout = std::make_unique<VulkanPipelineLayout>(mDevice, layout);
 }
 
-void ShadowMapApp::BuildPSOs() {
+void DungeonStompApp::BuildPSOs() {
 	{
 		std::vector<Vulkan::ShaderModule> shaders;
 		VkVertexInputBindingDescription vertexInputDescription = {};
@@ -1566,7 +1566,7 @@ void ShadowMapApp::BuildPSOs() {
 	}
 }
 
-void ShadowMapApp::BuildFrameResources() {
+void DungeonStompApp::BuildFrameResources() {
 	for (int i = 0; i < gNumFrameResources; i++) {
 		auto& ub = *uniformBuffer;
 		auto& sb = *storageBuffer;
@@ -1578,14 +1578,14 @@ void ShadowMapApp::BuildFrameResources() {
 		mFrameResources.push_back(std::make_unique<FrameResource>(pc, oc, md, pWv));// , pWv));
 	}
 }
-void ShadowMapApp::OnResize()
+void DungeonStompApp::OnResize()
 {
 	VulkApp::OnResize();
 
 	mCamera.SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 }
 
-void ShadowMapApp::OnMouseMove(WPARAM btnState, int x, int y) {
+void DungeonStompApp::OnMouseMove(WPARAM btnState, int x, int y) {
 	if ((btnState & MK_LBUTTON) != 0) {
 		// Make each pixel correspond to a quarter of a degree.
 		float dx = glm::radians(0.25f * static_cast<float>(x - mLastMousePos.x));
@@ -1600,13 +1600,13 @@ void ShadowMapApp::OnMouseMove(WPARAM btnState, int x, int y) {
 	mLastMousePos.y = y;
 }
 
-void ShadowMapApp::OnMouseDown(WPARAM btnState, int x, int y) {
+void DungeonStompApp::OnMouseDown(WPARAM btnState, int x, int y) {
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 	SetCapture(mhMainWnd);
 }
 
-void ShadowMapApp::OnMouseUp(WPARAM btnState, int x, int y) {
+void DungeonStompApp::OnMouseUp(WPARAM btnState, int x, int y) {
 	ReleaseCapture();
 }
 
@@ -1615,7 +1615,7 @@ extern void UpdateWorld(float fElapsedTime);
 extern VOID UpdateControls();
 extern void UpdateCamera(const GameTimer& gt, Camera& mCamera);
 
-void ShadowMapApp::Update(const GameTimer& gt) {
+void DungeonStompApp::Update(const GameTimer& gt) {
 	VulkApp::Update(gt);
 
 	if (state == ProgState::Draw) {
@@ -1664,7 +1664,7 @@ void ShadowMapApp::Update(const GameTimer& gt) {
 
 extern int cutoff;
 
-void ShadowMapApp::UpdateWaves(const GameTimer& gt)
+void DungeonStompApp::UpdateWaves(const GameTimer& gt)
 {
 	// Every quarter second, generate a random wave.
 	static float t_base = 0.0f;
@@ -1723,7 +1723,7 @@ void ShadowMapApp::UpdateWaves(const GameTimer& gt)
 
 }
 
-void ShadowMapApp::OnKeyboardInput(const GameTimer& gt)
+void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 {
 
 	//rise from the dead
@@ -1763,7 +1763,7 @@ void ShadowMapApp::OnKeyboardInput(const GameTimer& gt)
 
 	//mCamera.UpdateViewMatrix();
 }
-void  ShadowMapApp::UpdateObjectCBs(const GameTimer& gt) {
+void  DungeonStompApp::UpdateObjectCBs(const GameTimer& gt) {
 
 	uint8_t* pObjConsts = (uint8_t*)mCurrFrameResource->pOCs;
 	auto& ub = *uniformBuffer;
@@ -1787,7 +1787,7 @@ void  ShadowMapApp::UpdateObjectCBs(const GameTimer& gt) {
 	}
 }
 
-void ShadowMapApp::UpdateMaterialsBuffer(const GameTimer& gt) {
+void DungeonStompApp::UpdateMaterialsBuffer(const GameTimer& gt) {
 	uint8_t* pMatConsts = (uint8_t*)mCurrFrameResource->pMats;
 	auto& sb = *storageBuffer;
 	VkDeviceSize objSize = sb[0].objectSize;
@@ -1809,12 +1809,12 @@ void ShadowMapApp::UpdateMaterialsBuffer(const GameTimer& gt) {
 	}
 }
 
-void ShadowMapApp::AnimateMaterials(const GameTimer& gt)
+void DungeonStompApp::AnimateMaterials(const GameTimer& gt)
 {
 
 }
 
-void ShadowMapApp::UpdateShadowTransform(const GameTimer& gt)
+void DungeonStompApp::UpdateShadowTransform(const GameTimer& gt)
 {
 	// Only the first "main" light casts a shadow.
 	glm::vec3 lightDir = mRotatedLightDirections[0];
@@ -1857,7 +1857,7 @@ void ShadowMapApp::UpdateShadowTransform(const GameTimer& gt)
 	//XMStoreFloat4x4(&mShadowTransform, S);
 	mShadowTransform = S;
 }
-void ShadowMapApp::UpdateMainPassCB(const GameTimer& gt) {
+void DungeonStompApp::UpdateMainPassCB(const GameTimer& gt) {
 	glm::mat4 view = mCamera.GetView();
 	glm::mat4 proj = mCamera.GetProj();
 	proj[1][1] *= -1;
@@ -1914,7 +1914,7 @@ void ShadowMapApp::UpdateMainPassCB(const GameTimer& gt) {
 	memcpy(pPassConstants, &mMainPassCB, sizeof(PassConstants));
 }
 
-void ShadowMapApp::UpdateShadowPassCB(const GameTimer& gt) {
+void DungeonStompApp::UpdateShadowPassCB(const GameTimer& gt) {
 	glm::mat4 view = mLightView;
 	glm::mat4 proj = mLightProj;
 	proj[1][1] *= -1;
@@ -1958,7 +1958,7 @@ void ShadowMapApp::UpdateShadowPassCB(const GameTimer& gt) {
 
 void ScanMod(float fElapsedTime);
 
-void ShadowMapApp::Draw(const GameTimer& gt) {
+void DungeonStompApp::Draw(const GameTimer& gt) {
 	uint32_t index = 0;
 	VkCommandBuffer cmd = VK_NULL_HANDLE;
 	if (ProgState::Init == state) {
@@ -2104,7 +2104,7 @@ extern int playerObjectEnd;
 bool ObjectHasShadow(int object_id);
 int lastTexture = -1;
 
-void ShadowMapApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, bool shadowMap, bool normalMap) {
+void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, bool shadowMap, bool normalMap) {
 	auto& ub = *uniformBuffer;
 	VkDeviceSize objectSize = ub[1].objectSize;
 	auto& ud = *uniformDescriptors;
@@ -2287,7 +2287,7 @@ int main() {
 
 	try
 	{
-		ShadowMapApp theApp(GetModuleHandle(NULL));
+		DungeonStompApp theApp(GetModuleHandle(NULL));
 		if (!theApp.Initialize())
 			return 0;
 
@@ -2305,7 +2305,7 @@ int main() {
 
 extern int number_of_tex_aliases;
 
-BOOL ShadowMapApp::LoadRRTextures11(const char* filename)
+BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
 {
 	FILE* fp;
 	char s[256];
@@ -2547,7 +2547,7 @@ BOOL ShadowMapApp::LoadRRTextures11(const char* filename)
 
 
 
-void ShadowMapApp::SetTextureNormalMap() {
+void DungeonStompApp::SetTextureNormalMap() {
 
 	char junk[255];
 
@@ -2568,7 +2568,7 @@ void ShadowMapApp::SetTextureNormalMap() {
 	}
 }
 
-void ShadowMapApp::SetTextureNormalMapEmpty() {
+void DungeonStompApp::SetTextureNormalMapEmpty() {
 
 	for (int i = 0; i < number_of_tex_aliases; i++) {
 		TexMap[i].normalmaptextureid = -1;
@@ -2577,7 +2577,7 @@ void ShadowMapApp::SetTextureNormalMapEmpty() {
 
 
 
-void ShadowMapApp::ProcessLights11()
+void DungeonStompApp::ProcessLights11()
 {
 	//P = pointlight, M = misslelight, C = sword light S = spotlight
 	//12345678901234567890 
