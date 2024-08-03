@@ -1,4 +1,3 @@
-
 #include "../Common/VulkApp.h"
 #include "../Common/VulkUtil.h"
 #include "../Common/VulkanEx.h"
@@ -254,9 +253,7 @@ bool DungeonStompApp::Initialize() {
 	if (!VulkApp::Initialize())
 		return false;
 
-
-
-	//srand((unsigned int)time(NULL));
+	srand((unsigned int)time(NULL));
 	SoundInit();
 	CreateDInput(mhMainWnd);
 	LoadRRTextures11("textures.dat");
@@ -2085,8 +2082,8 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
 
-			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["sky"]);
-			//DrawRenderItems(cmd, *cubeMapPipelineLayout, mRitemLayer[(int)RenderLayer::Sky]);
+			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["sky"]);
+			DrawRenderItems(cmd, *cubeMapPipelineLayout, mRitemLayer[(int)RenderLayer::Sky]);
 
 
 		}
@@ -2123,7 +2120,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 		if (i > 25)
 			return;
 
-		if (ri->ObjCBIndex < 25) {
+		if (ri->ObjCBIndex == 0) {
 
 			uint32_t indexOffset = ri->StartIndexLocation;
 
