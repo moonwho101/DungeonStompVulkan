@@ -2379,7 +2379,7 @@ BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
 				strcpy_s(t, f);
 			}
 			else {
-				strcpy_s(t, "../Textures/tile.png");
+				strcpy_s(t, "../Textures/bluetile1.png");
 			}
 
 
