@@ -57,6 +57,17 @@ enum class RenderLayer : int
 	Count
 };
 
+
+enum class RenderDungeon : int
+{
+	NormalMap = 0,
+	Flat,
+	Sky,
+	Shadow
+};
+
+
+
 enum class ProgState : int {
 	Init=0,
 	Draw,
@@ -183,7 +194,7 @@ class DungeonStompApp : public VulkApp
 	void BuildRenderItems();
 	void BuildShapeGeometry();
 	void BuildSkullGeometry();
-	void DrawRenderItems(VkCommandBuffer, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, bool shadowMap = false, bool normalMap = false);
+	void DrawRenderItems(VkCommandBuffer, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, RenderDungeon item = RenderDungeon::NormalMap);
 	void DrawSceneToShadowMap();
 
 	BOOL LoadRRTextures11(const char* filename);
@@ -2002,12 +2013,12 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			pvkCmdSetScissor(cmd, 0, 1, &scissor);
 			//vkCmdSetDepthBias(cmd, depthBiasConstant, 0.0f, depthBiasSlope);
 			pvkCmdBeginRenderPass(cmd, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["shadow_opaque"]);
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
-			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque],true);
+			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["shadow_opaque"]);
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
+			//DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque],true);
 			pvkCmdEndRenderPass(cmd);
 			//Vulkan::transitionImage(mDevice,mGraphicsQueue,cmd,mShadowMap->getRenderTargetView(),VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,VK_IMAGE_LAYOUT)
 		}
@@ -2042,15 +2053,15 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 		else {
 
 			//Draw flat shading
-			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaqueFlat"]);
+			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaqueFlat"]);
 
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);//bind PC data
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once		
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
-			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 5, 1, &descriptor5, 0, 0);//bind PC data once
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);//bind PC data
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once		
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
+			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 5, 1, &descriptor5, 0, 0);//bind PC data once
 
-			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque]);
+			//DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque]);
 			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["debug"]);
 			//DrawRenderItems(cmd, *debugPipelineLayout, mRitemLayer[(int)RenderLayer::Debug]);
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);//bind PC data
@@ -2073,21 +2084,26 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
 			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 5, 1, &descriptor5, 0, 0);//bind PC data once
 
-			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque],false,true);
+			
+
+			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::NormalMap);
 			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["debug"]);
 			//DrawRenderItems(cmd, *debugPipelineLayout, mRitemLayer[(int)RenderLayer::Debug]);
 			
+			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaqueFlat"]);
+			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::Flat);
+
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);//bind PC data
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
 
 			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["sky"]);
-			DrawRenderItems(cmd, *cubeMapPipelineLayout, mRitemLayer[(int)RenderLayer::Sky]);
+			DrawRenderItems(cmd, *cubeMapPipelineLayout, mRitemLayer[(int)RenderLayer::Sky], RenderDungeon::Sky);
 
 
 		}
-
+		
 
 		EndRender(cmd);
 	}
@@ -2101,7 +2117,7 @@ extern int playerObjectEnd;
 bool ObjectHasShadow(int object_id);
 int lastTexture = -1;
 
-void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, bool shadowMap, bool normalMap) {
+void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, RenderDungeon item) {
 	auto& ub = *uniformBuffer;
 	VkDeviceSize objectSize = ub[1].objectSize;
 	auto& ud = *uniformDescriptors;
@@ -2111,14 +2127,18 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 
 
 	//for (size_t i = 0; i < ritems.size(); i++) {
-	for (size_t i = 0; i < ritems.size(); i++) {
+	//for (size_t i = 0; i < ritems.size(); i++) {
+	{
+		int i = 23;
 
+		if (item == RenderDungeon::Sky)
+			i = 0;
 
 		auto ri = ritems[i];
 
 
-		if (i > 25)
-			return;
+		//if (i > 25)
+			//return;
 
 		if (ri->ObjCBIndex == 0) {
 
@@ -2187,18 +2207,20 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 				int normal_map_texture = TexMap[texture_alias_number].normalmaptextureid;
 
 
-				if (normalMap && normal_map_texture == -1) {
+				draw = false;
+				
+				if (item == RenderDungeon::NormalMap && normal_map_texture == -1) {
 					draw = false;
 				}
-				if (normalMap && normal_map_texture != -1 ) {
+				if (item == RenderDungeon::NormalMap && normal_map_texture != -1 ) {
 					draw = true;
 				}
 
 
-				if (!normalMap && normal_map_texture == -1) {
+				if (item == RenderDungeon::Flat && normal_map_texture == -1) {
 					draw = true;
 				}
-				if (!normalMap && normal_map_texture != -1) {
+				if (item == RenderDungeon::Flat && normal_map_texture != -1) {
 					draw = false;
 				}
 
@@ -2208,7 +2230,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 					draw = false;
 				}
 
-				if (shadowMap) {
+				if (item == RenderDungeon::Shadow) {
 					oid = ObjectsToDraw[currentObject].objectId;
 
 					//Don't draw player captions
@@ -2217,7 +2239,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 					}
 				}
 
-				if (shadowMap) {
+				if (item == RenderDungeon::Shadow) {
 
 					if (oid == -1) {
 						//Draw 3DS and MD2 Shadows
