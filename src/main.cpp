@@ -244,10 +244,10 @@ DungeonStompApp::~DungeonStompApp() {
 
 	for (auto& pair : mGeometries) {
 		free(pair.second->indexBufferCPU);
-		//if (pair.second->vertexBufferGPU.buffer != mWavesRitem->Geo->vertexBufferGPU.buffer) {
-		free(pair.second->vertexBufferCPU);
-		cleanupBuffer(mDevice, pair.second->vertexBufferGPU);
-		//}
+		if (pair.second->vertexBufferGPU.buffer != mWavesRitem->Geo->vertexBufferGPU.buffer) {
+			free(pair.second->vertexBufferCPU);
+			cleanupBuffer(mDevice, pair.second->vertexBufferGPU);
+		}
 		cleanupBuffer(mDevice, pair.second->indexBufferGPU);
 	}
 
