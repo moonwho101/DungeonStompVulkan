@@ -2662,8 +2662,8 @@ void DungeonStompApp::ProcessLights11()
 		int angle = (int)oblist[q].rot_angle;
 		int ob_type = oblist[q].type;
 		//LightContainer[i+1].Strength = { 1.5f, 1.5f, 1.5f };
-		LightContainer[i+3].Strength = { 1.0f, 1.0f, 1.0f };
-		LightContainer[i+3].Position = glm::vec3{ oblist[q].x,oblist[q].y + 50.0f, oblist[q].z };
+		LightContainer[i].Strength = { 1.0f, 1.0f, 1.0f };
+		LightContainer[i].Position = glm::vec3{ oblist[q].x,oblist[q].y + 50.0f, oblist[q].z };
 	}
 
 	int count = 0;
