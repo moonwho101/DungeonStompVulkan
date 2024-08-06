@@ -446,6 +446,9 @@ bool DescriptorSetBuilder::build(std::vector<VkDescriptorSet>& sets, uint32_t co
 
 void DescriptorSetUpdater::setBindings() {
 	assert(pLayout->getBindings(descriptorSetLayout, bindings));
+
+	pLayout->getBindings(descriptorSetLayout, bindings);
+
 	writes.resize(bindings.size(), { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET });
 	for (size_t i = 0; i < bindings.size(); ++i) {
 		writes[i].descriptorType = bindings[i].descriptorType;
