@@ -67,7 +67,7 @@ FLOAT LevelModTime = 0;
 FLOAT LevelModLastTime = 0;
 int countmodtime = 0;
 gametext dialogtext[200];
-float cullAngle;
+float cullAngle = 60.0f;
 
 extern int totalmod;
 extern LEVELMOD* levelmodify;
