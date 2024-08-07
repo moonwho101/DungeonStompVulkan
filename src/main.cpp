@@ -63,7 +63,8 @@ enum class RenderDungeon : int
 	NormalMap = 0,
 	Flat,
 	Sky,
-	Shadow
+	Shadow,
+	Quad
 };
 
 
@@ -520,7 +521,7 @@ void DungeonStompApp::BuildShapeGeometry()
 	geo->DrawArgs["grid"] = gridSubmesh;
 	geo->DrawArgs["sphere"] = sphereSubmesh;
 	geo->DrawArgs["cylinder"] = cylinderSubmesh;
-	//geo->DrawArgs["quad"] = quadSubmesh;
+	geo->DrawArgs["quad"] = quadSubmesh;
 
 	mGeometries[geo->Name] = std::move(geo);
 }
@@ -1652,7 +1653,7 @@ void DungeonStompApp::Update(const GameTimer& gt) {
 		// Animate the lights (and hence shadows).
 		//
 
-		mLightRotationAngle += 0.1f * gt.DeltaTime();
+		//mLightRotationAngle += 0.1f * gt.DeltaTime();
 		glm::mat4 R = glm::rotate(glm::mat4(1.0f), mLightRotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 		for (int i = 0; i < 3; ++i) {
 			glm::vec3 lightDir = R * glm::vec4(mBaseLightDirections[i], 0.0f);
@@ -2013,12 +2014,12 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			pvkCmdSetScissor(cmd, 0, 1, &scissor);
 			//vkCmdSetDepthBias(cmd, depthBiasConstant, 0.0f, depthBiasSlope);
 			pvkCmdBeginRenderPass(cmd, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
-			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["shadow_opaque"]);
-			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);
-			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
-			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once
-			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
-			//DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque],true);
+			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["shadow_opaque"]);
+			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);
+			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
+			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 3, 1, &descriptor3, 0, 0);//bind PC data once
+			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *shadowPipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
+			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::Shadow);
 			pvkCmdEndRenderPass(cmd);
 			//Vulkan::transitionImage(mDevice,mGraphicsQueue,cmd,mShadowMap->getRenderTargetView(),VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,VK_IMAGE_LAYOUT)
 		}
@@ -2087,11 +2088,12 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			
 
 			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::NormalMap);
-			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["debug"]);
-			//DrawRenderItems(cmd, *debugPipelineLayout, mRitemLayer[(int)RenderLayer::Debug]);
-			
+		
 			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaqueFlat"]);
 			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::Flat);
+
+			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["debug"]);
+			DrawRenderItems(cmd, *debugPipelineLayout, mRitemLayer[(int)RenderLayer::Debug], RenderDungeon::Quad);
 
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);//bind PC data
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
@@ -2134,13 +2136,17 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 		if (item == RenderDungeon::Sky)
 			i = 0;
 
+		if (item == RenderDungeon::Quad)
+			i = 0;
+
+
 		auto ri = ritems[i];
 
 
 		//if (i > 25)
 			//return;
 
-		if (ri->ObjCBIndex == 0) {
+		if (ri->ObjCBIndex == 0 || ri->ObjCBIndex == 1) {
 
 			uint32_t indexOffset = ri->StartIndexLocation;
 

@@ -231,20 +231,20 @@ vec4 ComputeLighting( Material mat,
     int i = 0;
 //#if (NUM_DIR_LIGHTS > 0)   
 	//for(int i=0;i<NUM_DIR_LIGHTS;++i){
-	//	result += shadowFactor[i] * ComputeDirectionalLight(gLights[i], mat, normal, toEye);
+	//	result += shadowFactor[0] * ComputeDirectionalLight(gLights[i], mat, normal, toEye);
 	//}
 //#endif	
 	
   //  for(i = 0; i < NUM_DIR_LIGHTS; ++i)
   //  {
-  //      result += shadowFactor[i] * ComputeDirectionalLight(gLights[i], mat, normal, toEye);
+  //      result += shadowFactor[0] * ComputeDirectionalLight(gLights[i], mat, normal, toEye);
   //  }
 
 
 //#if (NUM_POINT_LIGHTS > 0)
     for(i = 0; i < 16; ++i)
     {
-        result += ComputePointLight(gLights[i], mat, pos, normal, toEye);
+        result += shadowFactor[0] * ComputePointLight(gLights[i], mat, pos, normal, toEye);
     }
 //#endif
 
