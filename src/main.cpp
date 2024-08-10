@@ -1653,7 +1653,7 @@ void DungeonStompApp::Update(const GameTimer& gt) {
 		// Animate the lights (and hence shadows).
 		//
 
-		//mLightRotationAngle += 0.1f * gt.DeltaTime();
+		//mLightRotationAngle += 0.9f * gt.DeltaTime();
 		glm::mat4 R = glm::rotate(glm::mat4(1.0f), mLightRotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 		for (int i = 0; i < 3; ++i) {
 			glm::vec3 lightDir = R * glm::vec4(mBaseLightDirections[i], 0.0f);
@@ -2101,8 +2101,8 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaqueFlat"]);
 			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::Flat);
 
-			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["debug"]);
-			DrawRenderItems(cmd, *debugPipelineLayout, mRitemLayer[(int)RenderLayer::Debug], RenderDungeon::Quad);
+			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["debug"]);
+			//DrawRenderItems(cmd, *debugPipelineLayout, mRitemLayer[(int)RenderLayer::Debug], RenderDungeon::Quad);
 
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 0, 1, &descriptor0, 1, dynamicOffsets);//bind PC data
 			//pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 2, 1, &descriptor2, 0, 0);//bind PC data once
