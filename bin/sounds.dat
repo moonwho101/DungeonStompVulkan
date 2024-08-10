@@ -55,6 +55,7 @@ LOP	water		..\sounds\water.lop
 LOP	lava		..\sounds\lava.lop
 MID	ds1		    ..\midi\ds1.wav
 MID	ds2 		..\midi\ds2.wav
+MID	ds3 		..\midi\ds3.wav
 LOP	stone		..\sounds\stoneloop.lop
 WAV	teleport	..\sounds\teleport.wav
 WAV	thankyou	..\sounds\thankyou.wav

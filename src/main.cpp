@@ -797,7 +797,7 @@ void DungeonStompApp::BuildMaterials()
 	metal->DiffuseSrvHeapIndex = 0;
 	metal->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	metal->FresnelR0 = glm::vec3(0.12f, 0.12f, 0.12f);
-	metal->Roughness = 0.014f;
+	metal->Roughness = 0.514f;
 
 	auto glass = std::make_unique<Material>();
 	glass->Name = "glass";
@@ -874,7 +874,7 @@ void DungeonStompApp::BuildMaterials()
 	coin->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	//Gold(1.0f, 0.71f, 0.29f);
 	coin->FresnelR0 = glm::vec3(1.0f, 0.71f, 0.29f);
-	coin->Roughness = 0.014f;
+	coin->Roughness = 0.314f;
 
 	auto torchholder = std::make_unique<Material>();
 	torchholder->Name = "torchholder";
@@ -898,7 +898,7 @@ void DungeonStompApp::BuildMaterials()
 	chestmetal->MatCBIndex = 26;
 	chestmetal->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	chestmetal->FresnelR0 = glm::vec3(0.12f, 0.12f, 0.12f);
-	chestmetal->Roughness = 0.014f;
+	chestmetal->Roughness = 0.914f;
 
 	auto stonemain = std::make_unique<Material>();
 	stonemain->Name = "stonemain";
