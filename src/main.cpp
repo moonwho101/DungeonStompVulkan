@@ -202,6 +202,7 @@ class DungeonStompApp : public VulkApp
 	void SetTextureNormalMap();
 	void SetTextureNormalMapEmpty();
 	void ProcessLights11();
+	void  ToggleFullscreen(bool isFullscreen);
 
 public:
 
@@ -1731,6 +1732,10 @@ void DungeonStompApp::UpdateWaves(const GameTimer& gt)
 	mWavesRitem->Geo->vertexBufferGPU = WaveVertexBuffers[mCurrFrameResourceIndex];
 
 }
+bool isFullscreen = false;
+bool enableWindowKey = false;
+WINDOWPLACEMENT                          wpc{};                                           // window placement information
+
 
 void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 {
@@ -1751,12 +1756,33 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 		mIsWireframe = true;
 	else
 		mIsWireframe = false;
+	
 	if (GetAsyncKeyState('2') & 0x8000)
 		mIsFlatShader = false;
 	else
 		mIsFlatShader = true;
 
 	float speed = 100.0f;
+
+
+	if (GetAsyncKeyState(VK_F1) && !enableWindowKey) {
+
+		if (!isFullscreen) {
+			isFullscreen = true;
+			ToggleFullscreen(isFullscreen);
+		}
+		else {
+			isFullscreen = false;
+			ToggleFullscreen(isFullscreen);
+		}
+	}
+
+	if (GetAsyncKeyState(VK_F1)) {
+		enableWindowKey = 1;
+	}
+	else {
+		enableWindowKey = 0;
+	}
 
 	//if (GetAsyncKeyState('W') & 0x8000)
 	//	mCamera.Walk(speed * dt);
@@ -1772,6 +1798,41 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 
 	//mCamera.UpdateViewMatrix();
 }
+
+
+void  DungeonStompApp::ToggleFullscreen(bool isFullscreen) {
+
+	LONG HWND_style = 0;                         // current Hwnd style
+	LONG HWND_extended_style = 0;                         // previous Hwnd style
+
+	if (HWND_style == 0)
+		HWND_style = GetWindowLong(mhMainWnd, GWL_STYLE);
+	if (HWND_extended_style == 0)
+		HWND_extended_style = GetWindowLong(mhMainWnd, GWL_EXSTYLE);
+
+	if (isFullscreen) {
+		long HWND_newStyle = HWND_style & (~WS_BORDER) & (~WS_DLGFRAME) & (~WS_THICKFRAME);
+		long HWND_extended_newStyle = HWND_extended_style & (~WS_EX_WINDOWEDGE);
+
+		SetWindowLong(mhMainWnd, GWL_STYLE, HWND_newStyle | static_cast<long>(WS_POPUP));
+		SetWindowLong(mhMainWnd, GWL_EXSTYLE, HWND_extended_newStyle | WS_EX_TOPMOST);
+
+		ShowWindow(mhMainWnd, SW_SHOWMAXIMIZED);
+
+		ShowCursor(false);
+	}
+	else {
+
+		SetWindowLong(mhMainWnd, GWL_STYLE, HWND_style);
+		SetWindowLong(mhMainWnd, GWL_EXSTYLE, HWND_extended_style);
+		ShowWindow(mhMainWnd, SW_SHOWNORMAL);
+		SetWindowPlacement(mhMainWnd, &wpc);
+
+		ShowCursor(true);
+	}
+}
+
+
 void  DungeonStompApp::UpdateObjectCBs(const GameTimer& gt) {
 
 	uint8_t* pObjConsts = (uint8_t*)mCurrFrameResource->pOCs;
