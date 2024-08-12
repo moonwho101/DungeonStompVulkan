@@ -1762,10 +1762,7 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 	else
 		mIsFlatShader = true;
 
-	float speed = 100.0f;
-
-
-	if (GetAsyncKeyState(VK_F1) && !enableWindowKey) {
+	if (GetAsyncKeyState('F') && !enableWindowKey) {
 
 		if (!isFullscreen) {
 			isFullscreen = true;
@@ -1777,12 +1774,14 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 		}
 	}
 
-	if (GetAsyncKeyState(VK_F1)) {
+	if (GetAsyncKeyState('F')) {
 		enableWindowKey = 1;
 	}
 	else {
 		enableWindowKey = 0;
 	}
+
+	//float speed = 100.0f;
 
 	//if (GetAsyncKeyState('W') & 0x8000)
 	//	mCamera.Walk(speed * dt);
