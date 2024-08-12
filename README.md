@@ -2,7 +2,7 @@
 
 ![Dungeon Stomp Vulkan](../main/Textures/screenshot13.jpg)
 
-To build, you'll need Vulkan, glm, and stbi image lib.
+To build, you'll need Vulkan, glm, and stbi image lib.  Compile using Microsoft Visual Studio 2022. 
 
 ![Dungeon Stomp Vulkan](../main/Textures/screenshot12.jpg)
 
