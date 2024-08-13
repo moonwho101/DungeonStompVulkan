@@ -146,7 +146,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateSphere(float radius, uint32
 			v.TangentU.z = +radius * sinf(phi) * cosf(theta);
 
 			glm::vec3 T = v.TangentU;
-			v.TangentU =glm::normalize(T);
+			v.TangentU = glm::normalize(T);
 
 			glm::vec3 p = v.Position;
 			v.Normal = glm::normalize(p);
@@ -303,9 +303,9 @@ GeometryGenerator::Vertex GeometryGenerator::MidPoint(const Vertex& v0, const Ve
 	glm::vec2 tex = 0.5f * (tex0 + tex1);
 
 	Vertex v;
-	v.Position= pos;
-	v.Normal= normal;
-	v.TangentU =tangent;
+	v.Position = pos;
+	v.Normal = normal;
+	v.TangentU = tangent;
 	v.TexC = tex;
 
 	return v;
@@ -362,8 +362,8 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGeosphere(float radius, uin
 		// Project onto sphere.
 		glm::vec3 p = radius * n;
 
-		meshData.Vertices[i].Position= p;
-		meshData.Vertices[i].Normal= n;
+		meshData.Vertices[i].Position = p;
+		meshData.Vertices[i].Normal = n;
 
 		// Derive texture coordinates from spherical coordinates.
 		float theta = atan2f(meshData.Vertices[i].Position.z, meshData.Vertices[i].Position.x);
@@ -383,7 +383,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateGeosphere(float radius, uin
 		meshData.Vertices[i].TangentU.z = +radius * sinf(phi) * cosf(theta);
 
 		glm::vec3 T = (meshData.Vertices[i].TangentU);
-		meshData.Vertices[i].TangentU= glm::normalize(T);
+		meshData.Vertices[i].TangentU = glm::normalize(T);
 	}
 
 	return meshData;
@@ -452,7 +452,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 			glm::vec3 T = (vertex.TangentU);
 			glm::vec3 B = (bitangent);
 			glm::vec3 N = glm::normalize(glm::cross(T, B));
-			vertex.Normal= N;
+			vertex.Normal = N;
 
 			meshData.Vertices.push_back(vertex);
 		}

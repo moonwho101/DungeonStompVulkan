@@ -185,9 +185,6 @@ void ProcessNodeId(FILE* fp);
 
 void ProcessMasterScale(FILE* fp);
 void Process3DSVersion(FILE* fp);
-
-//void PrintLogFile(FILE* logfile, char* commmand);
-void Write_pmdata_debugfile(int pmodel_id);
 void ReleaseTempMemory();
 
 

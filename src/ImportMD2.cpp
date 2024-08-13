@@ -31,8 +31,6 @@ BOOL ImportMD2_GLCMD(char* filename, int texture_alias,int pmodel_id, float scal
 	int glv_cnt;
 	int glc_cnt;
 
-	//fp = fopen(filename,"rb");
-
 	if (fopen_s(&fp, filename, "rb") != 0)
 	{
 		//MessageBox(hwnd, "Can't open md2", NULL, MB_OK);
@@ -95,14 +93,9 @@ BOOL ImportMD2_GLCMD(char* filename, int texture_alias,int pmodel_id, float scal
 	_itoa_s(glv_cnt, buf, _countof(buf), 10);
 	strcat_s(buffer2, buf);
 
-	//PrintMessage(NULL, buffer, buffer2, LOGFILE_ONLY);
-
 	_itoa_s(header.num_verts, buffer, _countof(buffer), 10);
 
-	//PrintMessage(NULL, "verts = ", buffer, LOGFILE_ONLY);
-
 	// allocate memory dynamically
-
 	pmdata[pmodel_id].w = new VERT * [header.num_frames];
 
 	for (i = 0; i < header.num_frames; i++)
@@ -126,10 +119,8 @@ BOOL ImportMD2_GLCMD(char* filename, int texture_alias,int pmodel_id, float scal
 
 	_itoa_s(mem, buffer, _countof(buffer), 10);
 	strcat_s(buffer, " KB\n");
-	//PrintMessage(NULL, "Memory allocated = ", buffer, LOGFILE_ONLY);
 
 	// load GL Commands into pmdata structure
-
 	cnt = 0;
 
 	for (i = 0; i < glc_cnt; i++)
@@ -163,7 +154,6 @@ BOOL ImportMD2_GLCMD(char* filename, int texture_alias,int pmodel_id, float scal
 	}
 
 	// read vertices for all frames
-
 	fseek(fp, (UINT)header.offset_frames, SEEK_SET);
 
 	for (frame_num = 0; frame_num < header.num_frames; frame_num++)
@@ -171,8 +161,6 @@ BOOL ImportMD2_GLCMD(char* filename, int texture_alias,int pmodel_id, float scal
 		fread(bscale, sizeof(float), 3, fp);
 		fread(translate, sizeof(float), 3, fp);
 		fread(name, 1, 16, fp);
-
-		//strcpy_s(frame_list[frame_num].framename, name );
 
 		for (j = 0; j < header.num_verts; j++) // VERTS
 		{
