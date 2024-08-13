@@ -10,7 +10,6 @@
 #include "GameLogic.hpp"
 #include "Dice.hpp"
 
-
 //Only one input device should be true.  Set g_bUseJoystick=true for xbox controller.
 BOOL g_bUseMouse = true;
 BOOL g_bUseJoystick = false;
@@ -33,6 +32,7 @@ int previouslevel = 0;
 int currentlevel = 1;
 void StopMusic();
 void level();
+
 /////////////
 // LINKING //
 /////////////
@@ -42,10 +42,8 @@ void level();
 //////////////
 // INCLUDES //
 //////////////
-
 BYTE diks[256];
 #define GWL_HINSTANCE       (-6)
-
 IDirectInput8* g_pDI;
 IDirectInput8* g_Keyboard_pDI;
 IDirectInputDevice8* g_pdidDevice2;			 // The DIDevice2 interface
@@ -68,7 +66,6 @@ int runflag = 0;
 int nextsong = 0;
 int giveallweapons = 0;
 extern int pressopendoor;
-
 
 int jump = 0;
 float jumpcount = 0;
@@ -98,7 +95,6 @@ float lastjumptime = 0;
 int gravitybutton = 0;
 int gravityon = 1;
 bool loadprogress = 0;
-
 
 HWND hWndGlobal;
 
@@ -310,7 +306,6 @@ VOID UpdateControls()
 			Controls.spell = dims.rgbButtons[0] && 0x80;
 
 			Controls.missle = diks[DIK_E] && 0x80;
-
 		}
 
 		// Read joystick input
@@ -323,7 +318,6 @@ VOID UpdateControls()
 			}
 			else
 			{
-
 				if (dijs.rgdwPOV[0] >= 0 && dijs.rgdwPOV[0] <= 4500 ||
 					dijs.rgdwPOV[0] >= 31500)
 				{
@@ -367,7 +361,6 @@ VOID UpdateControls()
 			}
 
 			//Right controller - look around
-
 			if (dijs.lRx > 32767.0)
 			{
 				//right
@@ -444,7 +437,6 @@ VOID UpdateControls()
 
 VOID WalkMode(CONTROLS* Controls)
 {
-
 	if (player_list[trueplayernum].bIsPlayerAlive == FALSE)
 		return;
 
@@ -461,10 +453,6 @@ VOID WalkMode(CONTROLS* Controls)
 	playermove = 0;
 
 	FLOAT fTime = timeGetTime() * 0.001f; // Get current time in seconds
-
-	if (Controls->Escape) {
-		//DXUTShutdown();
-	}
 
 	if (Controls->spell && player_list[trueplayernum].firespeed == 0 && usespell == 1)
 	{
@@ -768,7 +756,6 @@ VOID WalkMode(CONTROLS* Controls)
 		if (mousefilter)
 		{
 			smooth_mouse(elapsegametimersave, filterx, filtery);
-			//MouseFilter(filterx, filtery);
 			angy += filterx;
 			look_up_ang += filtery;
 		}
@@ -777,11 +764,6 @@ VOID WalkMode(CONTROLS* Controls)
 			angy += filterx;
 			look_up_ang += filtery;
 		}
-	/*	if (look_up_ang < -90.0f)
-			look_up_ang = -89.9f;
-
-		if (look_up_ang > 90.0f)
-			look_up_ang = 89.9f;*/
 	}
 }
 
@@ -1017,7 +999,6 @@ void CycleNextWeapon()
 	}
 	else
 	{
-
 		usespell = 0;
 	}
 
@@ -1056,8 +1037,8 @@ void GiveWeapons()
 void smooth_mouse(float time_d, float realx, float realy) {
 	double d = 1 - exp(log(0.5) * springiness * time_d);
 
-	use_x += ((realx - use_x) * (float) d);
-	use_y += (realy - use_y) * (float) d;
+	use_x += ((realx - use_x) * (float)d);
+	use_y += (realy - use_y) * (float)d;
 
 	//sprintf(gActionMessage, "%9.6f %9.6f",use_x,use_y);
 	//UpdateScrollList(0, 255, 255);
@@ -1100,12 +1081,6 @@ void level() {
 
 	strcpy_s(level, levelname);
 	strcat_s(level, ".cmp");
-
-	//if (!pCWorld->InitPreCompiledWorldMap(m_hWnd, level))
-	//{
-	//    //PrintMessage(m_hWnd, "InitPreCompiledWorldMap failed", NULL, LOGFILE_ONLY);
-	//    //return FALSE;
-	//}
 
 	strcpy_s(level, levelname);
 	strcat_s(level, ".mod");

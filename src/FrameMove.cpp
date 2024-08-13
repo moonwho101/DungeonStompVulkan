@@ -58,7 +58,6 @@ HRESULT FrameMove(double fTime, FLOAT fTimeKey)
 	if (look_up_ang > 89.3f)
 		look_up_ang = 89.3f;
 
-
 	float newangle = 0;
 	newangle = fixangle(look_up_ang, 90);
 
@@ -71,7 +70,6 @@ HRESULT FrameMove(double fTime, FLOAT fTimeKey)
 	playermovestrife = 0;
 
 	EyeTrue = m_vEyePt;
-
 	EyeTrue.y = m_vEyePt.y + cameraheight;
 
 	LookTrue = m_vLookatPt;
@@ -81,15 +79,10 @@ HRESULT FrameMove(double fTime, FLOAT fTimeKey)
 	cameraf.y = LookTrue.y;
 	cameraf.z = LookTrue.z;
 
-	//GunTruesave = EyeTrue;
-
 	return S_OK;
 }
 
-
 XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
-
-
 
 void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 {
@@ -97,7 +90,7 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 	float bx = 0.0f;
 	float by = 0.0f;
 
-	
+
 
 	if (player_list[trueplayernum].bIsPlayerAlive == FALSE) {
 		//Dead on floor
@@ -129,7 +122,6 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 		return;
 	}
 
-	//XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 
 	auto posVulkan = glm::vec3(player_list[trueplayernum].x, player_list[trueplayernum].y, player_list[trueplayernum].z);
@@ -139,11 +131,6 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 	mCamera.SetPosition(posVulkan);
 	mCamera.LookAt(posVulkan, targetVulkan, worldUpVulkan);
 	mCamera.UpdateViewMatrix();
-
-	//XMStoreFloat4x4(&mView, view);
-
-	//mSceneBounds.Center = XMFLOAT3(mEyePos.x, mEyePos.y, mEyePos.z);
-
 }
 
 void CheckAngle()
@@ -238,7 +225,6 @@ void PlayerJump(const FLOAT& fTimeKey)
 		else
 		{
 			//something is under us
-
 			if (lastcollide == 1 && savevelocity.y <= 0)
 			{
 				if (gravitytime >= 0.4f)
@@ -424,8 +410,6 @@ bool MovePlayer(const FLOAT& fTimeKey)
 			}
 			r = -1 * movespeed;
 		}
-		//r = playerspeed * fTimeKey;
-
 		savevelocity.x = directionlast * r * sinf(angy * k);
 		savevelocity.y = 0.0f;
 		savevelocity.z = directionlast * r * cosf(angy * k);
@@ -460,12 +444,9 @@ void FindDoors(const FLOAT& fTimeKey)
 
 void GameTimers(const FLOAT& fTimeKey)
 {
-
 	static float elapsedTime = 0.0f;
 	static float lastTime = 0.0f;
 	float kAnimationSpeed = 7.0f;
-
-
 
 	// Get the current time in milliseconds
 	float time = (float)GetTickCount64();
@@ -479,6 +460,10 @@ void GameTimers(const FLOAT& fTimeKey)
 	float t = elapsedTime / (1000.0f / kAnimationSpeed);
 	gametimerAnimation = t;
 	// If our elapsed time goes over a 5th of a second, we start over and go to the next key frame
+	// To find the current t we divide the elapsed time by the ratio of 1 second / our anim speed.
+	// Since we aren't using 1 second as our t = 1, we need to divide the speed by 1000
+	// milliseconds to get our new ratio, which is a 5th of a second.
+
 	if (elapsedTime >= (1000.0f / kAnimationSpeed))
 	{
 		//Animation Cycle
@@ -490,23 +475,9 @@ void GameTimers(const FLOAT& fTimeKey)
 		maingameloop3 = 0;
 	}
 
-
 	if (maingameloop3) {
 		AnimateCharacters();
 	}
-
-
-	//gametimerAnimation
-
-		// To find the current t we divide the elapsed time by the ratio of 1 second / our anim speed.
-	// Since we aren't using 1 second as our t = 1, we need to divide the speed by 1000
-	// milliseconds to get our new ratio, which is a 5th of a second.
-	
-
-
-	//if ((gametimer3 - gametimerlast3) * time_factor >= 110.0f / 1000.0f)
-
-
 
 	gametimer2 = DSTimer();
 
