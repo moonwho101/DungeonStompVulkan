@@ -61,8 +61,8 @@ void Camera::Walk(float d) {
 void Camera::Pitch(float angle) {
 	//Rotate up and look vector about the right vector
 	glm::mat4 R = glm::rotate(glm::mat4(1.0f), angle, mRight);
-	mUp = R * glm::vec4(mUp,0.0f);//not points, vectors, so 4th element is 0.0f
-	mLook = R * glm::vec4(mLook,0.0f);
+	mUp = R * glm::vec4(mUp, 0.0f);//not points, vectors, so 4th element is 0.0f
+	mLook = R * glm::vec4(mLook, 0.0f);
 	mViewDirty = true;
 }
 
@@ -81,7 +81,7 @@ void Camera::UpdateViewMatrix() {
 	if (mViewDirty) {
 		//keep camera's axes orthogonal to each other and of unit length
 		glm::vec3 L = glm::normalize(mLook);
-		glm::vec3 U = glm::normalize(glm::cross(L,mRight));
+		glm::vec3 U = glm::normalize(glm::cross(L, mRight));
 
 		//U, L alrady ortho-normal, so no need to normalize cross product
 		glm::vec3 R = glm::cross(U, L);
@@ -94,7 +94,7 @@ void Camera::UpdateViewMatrix() {
 		mRight = R;
 		mUp = U;
 		mLook = L;
-//#define __TEST__
+		//#define __TEST__
 #ifdef __TEST__
 		glm::mat4 view = glm::lookAtLH(mPosition, mLook, mUp);
 		mView = view;
@@ -119,7 +119,7 @@ void Camera::UpdateViewMatrix() {
 		mView[2][3] = 0.0f;
 		mView[3][3] = 1.0f;
 
-		
+
 #endif
 		mViewDirty = false;
 

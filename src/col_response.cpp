@@ -3,8 +3,6 @@
 #include "GlobalSettings.hpp"
 #include <DirectXMath.h>
 
-using namespace DirectX;
-
 //Collision
 extern CollisionPacket colPack2;
 CollisionPacket collisionPackage;
@@ -16,7 +14,6 @@ int foundcollisiontrue = 0;
 int currentmonstercollisionid = -1;
 extern float collisiondist;
 extern BOOL foundcollision;
-
 
 extern CollisionPacket collisionPackage; //Stores all the parameters and returnvalues
 extern int collisionRecursionDepth;		 //Internal variable tracking the recursion depth
@@ -147,19 +144,6 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 		return final;
 	}
 
-	/*
-	if (collisionPackage.nearestDistance == 0.0f)
-	{
-		//quick fix for an embedded object - this needs a lot of work this area here we should un embed ourselves simply by looping through objects and push out if we are embedded, i will fix this one day mark my words , i will fix it and i will be quite pleased about that such thing
-
-		final.x = pos.x;
-		final.y = pos.y;
-		final.z = pos.z;
-		collisionRecursionDepth = 0;
-		return final;
-	}
-	*/
-
 	// *** Collision occured ***
 	// The original destination point
 	VECTOR destinationPoint = pos + vel;
@@ -212,7 +196,6 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 	PLANE slidingPlane(slidePlaneOrigin, slidePlaneNormal);
 
 	// Again, sorry about formatting.. but look carefully ;)
-
 	VECTOR newDestinationPoint = destinationPoint - slidePlaneNormal * slidingPlane.signedDistanceTo(destinationPoint);
 
 	// Generate the slide vector, which will become our new
@@ -249,7 +232,6 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 
 void ObjectCollision()
 {
-
 	float centroidx;
 	float centroidy;
 	float centroidz;
@@ -278,7 +260,6 @@ void ObjectCollision()
 	{
 		if (count == 0 && src_collide[i] == 1)
 		{
-
 			mxc[0] = src_v[i].x;
 			myc[0] = src_v[i].y;
 			mzc[0] = src_v[i].z;
@@ -291,9 +272,6 @@ void ObjectCollision()
 			myc[2] = src_v[i + 2].y;
 			mzc[2] = src_v[i + 2].z;
 
-			//  3 2
-			//  1 0
-
 			centroidx = (mxc[0] + mxc[1] + mxc[2]) * QVALUE;
 			centroidy = (myc[0] + myc[1] + myc[2]) * QVALUE;
 			centroidz = (mzc[0] + mzc[1] + mzc[2]) * QVALUE;
@@ -305,39 +283,11 @@ void ObjectCollision()
 			{
 				calculate_block_location();
 			}
-			/*if (vertnum == 4)
-			{
-				mxc[0] = src_v[i + 1].x;
-				myc[0] = src_v[i + 1].y;
-				mzc[0] = src_v[i + 1].z;
-
-				mxc[1] = src_v[i + 3].x;
-				myc[1] = src_v[i + 3].y;
-				mzc[1] = src_v[i + 3].z;
-
-				mxc[2] = src_v[i + 2].x;
-				myc[2] = src_v[i + 2].y;
-				mzc[2] = src_v[i + 2].z;
-
-
-				centroidx = (mxc[0] + mxc[1] + mxc[2]) * QVALUE;
-				centroidy = (myc[0] + myc[1] + myc[2]) * QVALUE;
-				;
-				centroidz = (mzc[0] + mzc[1] + mzc[2]) * QVALUE;
-				qdist = FastDistance(collisionPackage.realpos.x - centroidx,
-					collisionPackage.realpos.y - centroidy,
-					collisionPackage.realpos.z - centroidz);
-
-				if (qdist < collisiondist)
-					calculate_block_location();
-			}*/
 		}
 		count++;
 		if (count > vertnum - 1)
 		{
 			count = 0;
-			//vertcount++;
-			//vertnum = verts_per_poly[vertcount];
 			vertnum = 3;
 		}
 	}
@@ -369,10 +319,6 @@ void ObjectCollision()
 				myc[2] = boundingbox[i + 2].y;
 				mzc[2] = boundingbox[i + 2].z;
 
-				//  3 2
-				//  1 0
-
-
 				centroidx = (mxc[0] + mxc[1] + mxc[2]) * QVALUE;
 				centroidy = (myc[0] + myc[1] + myc[2]) * QVALUE;
 				centroidz = (mzc[0] + mzc[1] + mzc[2]) * QVALUE;
@@ -398,7 +344,6 @@ void ObjectCollision()
 					myc[2] = boundingbox[i + 2].y;
 					mzc[2] = boundingbox[i + 2].z;
 
-
 					centroidx = (mxc[0] + mxc[1] + mxc[2]) * QVALUE;
 					centroidy = (myc[0] + myc[1] + myc[2]) * QVALUE;
 
@@ -418,8 +363,6 @@ void ObjectCollision()
 			}
 		}
 	}
-
-
 }
 
 void calculate_block_location()
@@ -442,7 +385,6 @@ void calculate_block_location()
 	p3.z = mzc[2] / eRadius.z;
 
 	//check embedded
-
 	VECTOR pp1;
 	VECTOR pp2;
 	VECTOR pp3;
@@ -469,7 +411,6 @@ void calculate_block_location()
 
 float FastDistance(float fx, float fy, float fz)
 {
-
 	int temp;
 	int x, y, z;
 

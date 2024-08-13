@@ -1,4 +1,3 @@
-
 #include "d3dtypes.h"
 #include "LoadWorld.hpp"
 #include "world.hpp"
@@ -22,7 +21,6 @@ extern int hitmonster;
 extern int savefailed;
 extern int criticalhiton;
 int spellhiton = 0;
-
 
 D3DVERTEX2 MakeVertex(float x, float y, float z) {
 
@@ -141,29 +139,11 @@ int MakeDice()
 	y1 = 100.0f + scale;
 	y2 = 40.0f;
 
-	//crosshair[0] = D3DTLVERTEX(D3DVECTOR(0, 0, 0.99f), 0.5f, -1, 0, 0, 1);
-	//crosshair[1] = D3DTLVERTEX(D3DVECTOR(0, 0, 0.99f), 0.5f, -1, 0, 0, 0);
-	//crosshair[2] = D3DTLVERTEX(D3DVECTOR(0, 0, 0.99f), 0.5f, -1, 0, 1, 1);
-	//crosshair[3] = D3DTLVERTEX(D3DVECTOR(0, 0, 0.99f), 0.5f, -1, 0, 1, 0);
-
-	//int offset = 5;
-
-	//crosshair[0].sx = (viewportwidth / 2) - offset;
-	//crosshair[1].sx = (viewportwidth / 2) - offset;
-	//crosshair[2].sx = (viewportwidth / 2) + offset;
-	//crosshair[3].sx = (viewportwidth / 2) + offset;
-
-	//crosshair[0].sy = (viewportheight / 2) + offset;
-	//crosshair[1].sy = (viewportheight / 2) - offset;
-	//crosshair[2].sy = (viewportheight / 2) + offset;
-	//crosshair[3].sy = (viewportheight / 2) - offset;
-
 	return 1;
 }
 
 void MakeDamageDice()
 {
-
 	float x1, x2, y1, y2;
 	float scale = 16.0f;
 
@@ -172,10 +152,9 @@ void MakeDamageDice()
 	y1 = 110.0f + scale;
 	y2 = 50.0f;
 
-	int a;
-
 	int gunmodel = 0;
-	for (a = 0; a < num_your_guns; a++)
+
+	for (int a = 0; a < num_your_guns; a++)
 	{
 		if (your_gun[a].model_id == player_list[trueplayernum].gunid)
 		{
@@ -212,7 +191,6 @@ void MakeDamageDice()
 	}
 	else if (your_gun[gunmodel].damage2 == 10)
 	{
-
 		strcpy_s(dice[1].name, "die10s10");
 		strcpy_s(dice[1].prefix, "die10");
 		dice[1].rollnum = 10;
@@ -222,7 +200,6 @@ void MakeDamageDice()
 	}
 	else if (your_gun[gunmodel].damage2 == 12)
 	{
-
 		strcpy_s(dice[1].name, "die12s12");
 		strcpy_s(dice[1].prefix, "die12");
 		dice[1].rollnum = 12;
@@ -230,7 +207,6 @@ void MakeDamageDice()
 		dice[1].sides = 12;
 		dice[1].rollmax = 4;
 	}
-
 
 	dice[1].dicebox[0] = MakeVertex(0, 0, 1);
 	dice[1].dicebox[1] = MakeVertex(0, 0, 0);
@@ -246,7 +222,6 @@ void MakeDamageDice()
 	dice[1].dicebox[3].y = wHeight - y1;
 	dice[1].dicebox[0].y = wHeight - y2;
 	dice[1].dicebox[2].y = wHeight - y2;
-
 }
 
 void SetDiceTexture(bool showroll)
@@ -271,7 +246,7 @@ void SetDiceTexture(bool showroll)
 
 
 
-	
+
 	char junk[255];
 
 	if (usespell == 1)
@@ -302,7 +277,7 @@ void SetDiceTexture(bool showroll)
 
 	if (numdice == 3 && hitmonster == 1)
 	{
-		
+
 	}
 	else if (numdice == 3 && hitmonster == 0)
 	{
