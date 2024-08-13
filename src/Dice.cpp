@@ -228,11 +228,9 @@ void SetDiceTexture(bool showroll)
 {
 	for (int i = 0; i < numdice; i++)
 	{
-
 		if (dice[i].roll == 1)
 		{
 			//roll the die
-
 			if (maingameloop)
 				dice[i].rollnum++;
 			if (dice[i].rollnum > dice[i].rollmax)
@@ -243,9 +241,6 @@ void SetDiceTexture(bool showroll)
 			sprintf_s(dice[i].name, "%sr%d", dice[i].prefix, dice[i].rollnum);
 		}
 	}
-
-
-
 
 	char junk[255];
 
@@ -260,7 +255,6 @@ void SetDiceTexture(bool showroll)
 
 	if (hitmonster == 1 || usespell == 1)
 	{
-
 		if (strstr(your_gun[current_gun].gunname, "SCROLL-HEALING") != NULL)
 		{
 			strcpy_s(junk, "Attack      Heal");
@@ -277,26 +271,12 @@ void SetDiceTexture(bool showroll)
 
 	if (numdice == 3 && hitmonster == 1)
 	{
-
+		//do nothing for now
 	}
 	else if (numdice == 3 && hitmonster == 0)
 	{
 		strcpy_s(junk, "Attack");
 	}
-
-	if (showsavingthrow > 0)
-	{
-		//display_message((wWidth / 2) + 222.0f - 90.0f, wHeight - 30.0f, "Save", 255, 255, 0, 12.5, 16, 0);
-		//if (savefailed == 1)
-		//	display_message((wWidth / 2) + 212.0f - 90.0f, wHeight - 15.0f, "Failed", 255, 255, 0, 12.5, 16, 0);
-	}
-	//if (showlisten > 0)
-	//{
-
-	//	display_message((wWidth / 2) + 111.0f, wHeight - 30.0f, "Listen", vp, 255, 255, 0, 12.5, 16, 0);
-	//	if (listenfailed == 1)
-	//		display_message((wWidth / 2) + 111.0f, wHeight - 15.0f, "Failed", vp, 255, 255, 0, 12.5, 16, 0);
-	//}
 
 	display_message((wWidth / 2) - 32.0f, wHeight - 30.0f, junk, 255, 255, 0, 12.5, 16, 0);
 
@@ -315,7 +295,6 @@ void SetDiceTexture(bool showroll)
 		int gunmodel = 0;
 		for (int a = 0; a < num_your_guns; a++)
 		{
-
 			if (your_gun[a].model_id == player_list[trueplayernum].gunid)
 			{
 
@@ -333,7 +312,6 @@ void SetDiceTexture(bool showroll)
 		}
 	}
 
-
 	if (showroll) {
 		sprintf_s(junk, "%d", d20roll);
 		display_message((wWidth / 2) - 15.0f, wHeight - 60.0f, junk, 0, 255, 0, 12.5, 16, 0);
@@ -341,19 +319,13 @@ void SetDiceTexture(bool showroll)
 		sprintf_s(junk, "%d", damageroll);
 		display_message((wWidth / 2) + 70.0f, wHeight - 60.0f, junk, 0, 255, 0, 12.5, 16, 0);
 	}
-
-
-
-
 }
 
 int thaco(int ac, int thaco)
 {
-
 	int result;
-
 	result = thaco - ac;
-
 	return result;
 }
+
 
