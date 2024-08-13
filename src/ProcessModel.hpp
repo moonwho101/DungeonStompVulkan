@@ -7,12 +7,6 @@
 #include <wtypes.h>
 #include "world.hpp"
 
-#ifdef SHOW_HOW_TO_USE_TCI
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE)
-#else
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_NORMAL)
-#endif
-
 extern int monstercull[1000];
 extern int monstercount;
 extern float fDot2;
@@ -34,6 +28,5 @@ int FindGunTexture(const char* p);
 int CycleBitMap(int i);
 int CalculateView(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle);
 void ObjectToD3DVertList(int ob_type, float angle, int oblist_index);
-
 
 #endif 

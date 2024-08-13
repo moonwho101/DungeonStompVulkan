@@ -4,7 +4,6 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-
 typedef struct doors
 {
 	int doornum;
