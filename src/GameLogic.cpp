@@ -88,22 +88,6 @@ void statusbardisplay(float x, float length, int type);
 
 void MoveMonsters(float fElapsedTime)
 {
-	//0 = Normal
-	//1 = slave
-	//2 = line of site
-	//3 = dead
-	//4 = statue
-	//5 = 250 distance
-	//6 = fire only
-
-	//if (monstermoveon == 0)
-		//return;
-
-	//Protect against a long game PAUSE and mosnters running off the screen.
-	//if (fTimeKeysave > 1.0f) {
-		//fTimeKeysave = 0;
-	//}
-
 	XMFLOAT3 work1, work2, vw1, vw2;
 	int i;
 
@@ -127,7 +111,6 @@ void MoveMonsters(float fElapsedTime)
 
 	int perspectiveview = 1;
 
-
 	MakeBoundingBox();
 
 	if (player_list[trueplayernum].bIsPlayerAlive == FALSE)
@@ -139,14 +122,11 @@ void MoveMonsters(float fElapsedTime)
 
 		for (cullloop = 0; cullloop < monstercount; cullloop++)
 		{
-
-
 			if (monstercull[cullloop] == monster_list[i].monsterid)
 			{
 				if (monstertype[cullloop] == 0)
 				{
-
-					// is it cloest to me
+					// is it closest to me
 					if (monster_list[i].closest == trueplayernum)
 					{
 						if (monster_list[i].current_frame == 183 || monster_list[i].current_frame == 189 || monster_list[i].current_frame == 197)
@@ -176,7 +156,6 @@ void MoveMonsters(float fElapsedTime)
 							// monster see
 							if (monsteron)
 							{
-
 								if (monster_list[i].ability == 2)
 									monster_list[i].ability = 0;
 
@@ -204,7 +183,6 @@ void MoveMonsters(float fElapsedTime)
 									}
 								}
 							}
-
 							cullflag = 0;
 						}
 					}
@@ -213,11 +191,8 @@ void MoveMonsters(float fElapsedTime)
 			}
 		}
 
-
-
 		if (cullflag)
 		{
-
 			if (perspectiveview == 1)
 			{
 				work1.x = player_list[trueplayernum].x;
@@ -226,7 +201,6 @@ void MoveMonsters(float fElapsedTime)
 			}
 			else
 			{
-
 				work1.x = player_list[trueplayernum].x;
 				work1.y = 0.0f;
 				work1.z = player_list[trueplayernum].z;
@@ -254,7 +228,6 @@ void MoveMonsters(float fElapsedTime)
 			P1 = XMLoadFloat3(&vw1);
 			P2 = XMLoadFloat3(&vw2);
 			XMVECTOR vDiff2 = P1 - P2;
-			//vDiff2 = vw1 - vw2;
 
 			skipmonster = 0;
 
@@ -276,7 +249,6 @@ void MoveMonsters(float fElapsedTime)
 				//if there are close attack right away and set attack speed
 				if (monster_list[i].attackspeed <= 0)
 				{
-
 					SetMonsterAnimationSequence(i, 2);
 					monster_list[i].attackspeed = 30 - (monster_list[i].hd);
 					if (monster_list[i].attackspeed <= 0)
@@ -284,15 +256,12 @@ void MoveMonsters(float fElapsedTime)
 				}
 				else
 				{
-
-
 					if (maingameloop)
 					{
 						monster_list[i].attackspeed--;
 						if (monster_list[i].attackspeed <= 0)
 							monster_list[i].attackspeed = 0;
 					}
-
 
 					if (monster_list[i].current_frame == 53 ||
 						monster_list[i].current_frame == 83 ||
@@ -301,7 +270,6 @@ void MoveMonsters(float fElapsedTime)
 						monster_list[i].current_frame == 122 ||
 						monster_list[i].current_frame == 134)
 					{
-
 						raction = random_num(10);
 
 						if (raction == 0)
@@ -354,21 +322,16 @@ void MoveMonsters(float fElapsedTime)
 
 				if (monster_list[i].current_sequence == 1 || monster_list[i].current_sequence == 0)
 				{
-
 					if (monster_list[i].attackspeed == 0)
 						SetMonsterAnimationSequence(i, 2);
 				}
 				if (monster_list[i].current_sequence == 2 && monster_list[i].current_frame == 53)
 				{
-
 					monster_list[i].attackspeed = 0;
-
 				}
-
 
 				if (monster_list[i].current_frame >= 50 && monster_list[i].current_frame <= 50)
 				{
-
 					XMFLOAT3 work2, work1;
 
 					work1.x = player_list[trueplayernum].x;
@@ -383,7 +346,6 @@ void MoveMonsters(float fElapsedTime)
 					monsteron = CalculateViewMonster(work2, work1, cullAngle, monster_list[i].rot_angle);
 					if (monster_list[i].current_sequence != 5 && monsteron && monster_list[i].dist <= 200.0f)
 					{
-
 						int action = random_num(20) + 1;
 						if (action >= monster_list[i].thaco - player_list[trueplayernum].ac)
 						{
@@ -404,14 +366,11 @@ void MoveMonsters(float fElapsedTime)
 			}
 			else
 			{
-
 				if (monster_list[i].current_sequence == 0)
 				{
-
 					raction = random_num(20);
 					if (monster_list[i].ability != 6 && monster_list[i].ability != 7 && monster_list[i].ability != 8)
 					{
-
 						switch (raction)
 						{
 						case 0:
@@ -447,12 +406,10 @@ void MoveMonsters(float fElapsedTime)
 					int raction = 0;
 					int mspeed = 0;
 
-					if (
-						strstr(monster_list[i].rname, "OGRE") != NULL ||
+					if (strstr(monster_list[i].rname, "OGRE") != NULL ||
 						strstr(monster_list[i].rname, "OGRO") != NULL ||
 						strstr(monster_list[i].rname, "PHANTOM") != NULL)
 					{
-
 						firetype = 1;
 					}
 					else if (strstr(monster_list[i].rname, "WRAITH") != NULL ||
@@ -467,7 +424,6 @@ void MoveMonsters(float fElapsedTime)
 						strstr(monster_list[i].rname, "OKTA") != NULL ||
 						strstr(monster_list[i].rname, "SORB") != NULL)
 					{
-
 						raction = random_num(2) + 1;
 
 						if (raction == 1)
@@ -479,7 +435,6 @@ void MoveMonsters(float fElapsedTime)
 						strstr(monster_list[i].rname, "DEMONESS") != NULL ||
 						strstr(monster_list[i].rname, "FAERIE") != NULL)
 					{
-
 						raction = random_num(3) + 1;
 
 						if (raction == 1)
@@ -543,7 +498,6 @@ void MoveMonsters(float fElapsedTime)
 			}
 			else
 			{
-
 				monster_list[i].rot_angle = fDot;
 			}
 
@@ -556,40 +510,11 @@ void MoveMonsters(float fElapsedTime)
 
 			if (skipmonster == 0)
 			{
-
 				collidenow.x = monster_list[i].x;
 				collidenow.y = monster_list[i].y;
 				collidenow.z = monster_list[i].z;
 
-				//inarea = collidenow + final * 2.0f;
-				//inarea2.x = inarea.z;
-				//inarea2.z = inarea.x;
-				//inarea2.y = inarea.y;
-
-
 				MakeBoundingBox();
-				/*
-				eRadius = D3DVECTOR((float)monsterx[cullloop], monsterheight[cullloop], (float)monsterx[cullloop]);
-
-				savepos = collidenow;
-
-				float realspeed;
-
-				realspeed = (monster_list[i].speed * 10.0f) * fTimeKeysave;
-
-				if (monster_list[i].health <= 2 && monster_list[i].health != monster_list[i].hp && (monster_list[i].hd < player_list[trueplayernum].hd))
-				{
-					//RUN  AWAY!!!!!!!!!!!!!!!!!!!
-					final = final * -1;
-				}
-
-				D3DVECTOR a = final * realspeed;
-
-				result = collideWithWorld(collidenow / eRadius, (final * realspeed) / eRadius);
-				result = result * eRadius;
-				*/
-
-				//float realspeed = 200.0f * fElapsedTime;
 
 				float realspeed = (165.0f + (monster_list[i].speed * 2.0f)) * fElapsedTime;
 
@@ -602,8 +527,6 @@ void MoveMonsters(float fElapsedTime)
 				collidenow.y = monster_list[i].y;
 				collidenow.z = monster_list[i].z;
 
-				//TODO: FIX THIS
-				//result.y = result.y + 10.0f * fElapsedTime;
 				vfinal = collideWithWorld(RadiusDivide(collidenow, eRadius), RadiusDivide(vfinal, eRadius));
 				vfinal = RadiusMultiply(vfinal, eRadius);
 
@@ -613,7 +536,6 @@ void MoveMonsters(float fElapsedTime)
 
 				MakeBoundingBox();
 			}
-
 
 			if (monster_list[i].current_sequence == 1)
 			{
@@ -643,9 +565,7 @@ void MoveMonsters(float fElapsedTime)
 			}
 		}
 	}
-
 	currentmonstercollisionid = -1;
-
 }
 
 XMFLOAT3 RadiusDivide(XMFLOAT3 vector, XMFLOAT3 eRadius) {
@@ -673,7 +593,7 @@ XMFLOAT3 RadiusMultiply(XMFLOAT3  eRadius, XMFLOAT3 vector) {
 int CalculateView(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle, bool distancecheck)
 {
 
-	XMFLOAT3 vw1, vw2, work2, work1;// vDiff, normroadold;
+	XMFLOAT3 vw1, vw2, work2, work1;
 	float fDot;
 	float convangle;
 	float anglework = 0;
@@ -698,9 +618,7 @@ int CalculateView(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle, bool distan
 	work1.z = LookPoint.z;
 	XMVECTOR vDiff = XMLoadFloat3(&work1) - XMLoadFloat3(&work2);
 
-	//D3DXVec3Normalize(&vDiff, &vDiff);
 	vDiff = XMVector3Normalize(vDiff);
-
 
 	vw1.x = work1.x;
 	vw1.y = (float)0;
@@ -714,16 +632,8 @@ int CalculateView(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle, bool distan
 
 	XMVECTOR normroadold = XMVectorSet(50, 0, 0, 0);
 
-	//normroadold.x = 50;
-	//normroadold.y = 0;
-	//normroadold.z = 0;
-
-	//D3DXVec3Normalize(&final, &vDiff);
 	XMVECTOR r1 = XMVector3Normalize(vDiff);
 	XMVECTOR r2 = XMVector3Normalize(normroadold);
-
-	//D3DXVec3Normalize(&final2, &normroadold);
-	//fDot = D3DXVec3Dot(&final, &final2);
 
 	fDot = XMVectorGetX(XMVector3Dot(r1, r2));
 
@@ -778,7 +688,7 @@ int CalculateView(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle, bool distan
 int CalculateViewMonster(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle, float angy)
 {
 
-	XMFLOAT3 vw1, vw2, work2, work1;//, vDiff, normroadold;
+	XMFLOAT3 vw1, vw2, work2, work1;
 	float fDot;
 	float convangle;
 	float anglework = 0;
@@ -791,15 +701,10 @@ int CalculateViewMonster(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle, floa
 	work1.x = LookPoint.x;
 	work1.y = LookPoint.y;
 	work1.z = LookPoint.z;
-	//vDiff = work1 - work2;
 
 	XMVECTOR vDiff = XMLoadFloat3(&work1) - XMLoadFloat3(&work2);
 
-	//D3DXVec3Normalize(&vDiff, &vDiff);
 	vDiff = XMVector3Normalize(vDiff);
-	//D3DXVec3Normalize(&vDiff, &vDiff);
-
-	//vDiff = Normalize(vDiff);
 
 	vw1.x = work1.x;
 	vw1.y = (float)0;
@@ -809,31 +714,15 @@ int CalculateViewMonster(XMFLOAT3 EyeBall, XMFLOAT3 LookPoint, float angle, floa
 	vw2.y = (float)0;
 	vw2.z = work2.z;
 
-	//vDiff = vw1 - vw2;
-
 	vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
 	XMVECTOR normroadold = XMVectorSet(50, 0, 0, 0);
-	//D3DXVec3Normalize(&final, &vDiff);
-
-	//final = Normalize(vDiff);
-	//D3DXVec3Normalize(&final2, &normroadold);
-	//final2 = Normalize(normroadold);
-	//fDot = D3DXVec3Dot(&final, &final2);
-
 
 	XMVECTOR r1 = XMVector3Normalize(vDiff);
 	XMVECTOR r2 = XMVector3Normalize(normroadold);
 
-	//D3DXVec3Normalize(&final2, &normroadold);
-	//fDot = D3DXVec3Dot(&final, &final2);
-
 	fDot = XMVectorGetX(XMVector3Dot(r1, r2));
 
-
-	//fDot = dot(final, final2);
-
 	convangle = (float)acos(fDot) / k;
-
 	fDot = convangle;
 
 	if (vw2.z < vw1.z)
@@ -896,23 +785,10 @@ void WakeUpMonsters()
 		angle = (int)oblist[q].rot_angle;
 		ob_type = oblist[q].type;
 
-		//if (ob_type == 6)
-		//{
-		//	qdist = FastDistance(
-		//		player_list[trueplayernum].x - wx,
-		//		player_list[trueplayernum].y - wy,
-		//		player_list[trueplayernum].z - wz);
-		//	if (qdist <= 1600.0f)
-		//		ObjectToD3DVertList(ob_type, angle, q);
-		//}
-
 		int montry = 0;
 
 		if (strcmp(oblist[q].name, "!monster1") == 0 && oblist[q].monstertexture > 0 && monsterenable == 1)
 		{
-
-
-
 			for (montry = 0; montry < num_monsters; montry++)
 			{
 				if (oblist[q].monsterid == monster_list[montry].monsterid)
@@ -961,8 +837,6 @@ void WakeUpMonsters()
 
 		if (strcmp(oblist[q].name, "!monster1") == 0 && oblist[q].monstertexture == -1 && monsterenable == 1)
 		{
-
-
 			// 3ds monster
 			for (montry = 0; montry < itemlistcount; montry++)
 			{
@@ -1005,9 +879,6 @@ void WakeUpMonsters()
 
 		if (strcmp(oblist[q].name, "!monster1") == 0 && oblist[q].monstertexture == 0 && monsterenable == 1)
 		{
-
-
-
 			for (montry = 0; montry < num_players2; montry++)
 			{
 				if (oblist[q].monsterid == player_list2[montry].monsterid)
@@ -1084,6 +955,7 @@ int SceneInBox(D3DVECTOR point)
 	//left side of me
 	xp[0] = eyex - 1100.0f;
 	xp[1] = eyex - 800.0f;
+
 	//right side of me
 	xp[2] = eyex + 800.0f;
 	xp[3] = eyex + 1100.0f;
@@ -1190,7 +1062,6 @@ int OpenDoor(int doornum, float dist, FLOAT fTimeKey)
 	{
 		if (door[i].doornum == doornum)
 		{
-
 			savedoorspot = i;
 			if (door[i].type == 1)
 			{
@@ -1199,43 +1070,19 @@ int OpenDoor(int doornum, float dist, FLOAT fTimeKey)
 			}
 
 			if (door[i].open == 0 && listendoor == 1 && dist <= 100.0f ||
-				door[i].open == 2 && listendoor == 1 && dist <= 100.0f
-
-				)
+				door[i].open == 2 && listendoor == 1 && dist <= 100.0f)
 			{
-
 				if (door[i].listen == 0)
 				{
-					//dice[2].roll = 1;
 					numdice = 3;
 					door[i].listen = 1;
 					listendoor = 0;
-					//int action = random_num(dice[2].sides) + 1;
-					//dice[2].roll = 0;
-					//sprintf_s(dice[2].name, "%ss%d", dice[2].prefix, action);
-					//PlayWavSound(SoundID("diceroll"), 100);
-					//showlisten = 1;
-					//if (action > 2)
-					//{
-						//listenfailed = 1;
-						//strcpy_s(gActionMessage, "Listen at door failed.");
-						//UpdateScrollList(0, 255, 255);
-					//}
-					//else
-					//{
-
-						//listenfailed = 0;
-						//strcpy_s(gActionMessage, "Listening at the door reveals...");
-						//UpdateScrollList(0, 255, 255);
-						//ListenAtDoor();
-					//}
 				}
 			}
 
 			if (door[i].open == 0 && pressopendoor == 1 && dist <= 170.0f ||
 				door[i].open == 2 && pressopendoor == 1 && dist <= 170.0f)
 			{
-
 				flag = 1;
 				if (door[i].key != 0 && door[i].key != -1 || door[i].key == -2)
 				{
@@ -1319,10 +1166,8 @@ int OpenDoor(int doornum, float dist, FLOAT fTimeKey)
 			}
 			else
 			{
-
 				if (door[i].saveangle == 0 || door[i].saveangle == 270)
 				{
-
 					angle = door[i].angle;
 
 					if (door[i].open == 3)
@@ -1337,7 +1182,6 @@ int OpenDoor(int doornum, float dist, FLOAT fTimeKey)
 
 							oblist[doornum].rot_angle = (float)angle;
 							door[i].angle = angle;
-
 						}
 						else
 						{
@@ -1365,7 +1209,6 @@ int OpenDoor(int doornum, float dist, FLOAT fTimeKey)
 				}
 				else
 				{
-
 					angle = door[i].angle;
 
 					if (door[i].open == 3)
@@ -1422,31 +1265,6 @@ void MakeBoundingBox()
 	int i;
 	countboundingbox = 0;
 
-	//if (excludebox == 0)
-	/*for (int i = 0; i < num_players; i++)
-	{
-		cullflag = 0;
-		for (cullloop = 0; cullloop < monstercount; cullloop++)
-		{
-			if (monstercull[cullloop] == (int)i + (int)999)
-			{
-				if (monstertype[cullloop] == 5 && i != trueplayernum && player_list[i].bIsPlayerAlive == TRUE)
-				{
-
-					wx = player_list[i].x;
-					wy = player_list[i].y;
-					wz = player_list[i].z;
-
-					PlayerNonIndexedBox(0, 0, (int)player_list[i].rot_angle);
-					monsterheight[cullloop] = objectheight;
-					monsterx[cullloop] = objectx;
-					monsterz[cullloop] = objectz;
-				}
-				break;
-			}
-		}
-	}*/
-
 	for (i = 0; i < num_players2; i++)
 	{
 		cullflag = 0;
@@ -1456,56 +1274,42 @@ void MakeBoundingBox()
 			{
 				if (monstertype[cullloop] == 1)
 				{
-
 					float wx = player_list2[i].x;
 					float wy = player_list2[i].y;
 					float wz = player_list2[i].z;
 
 					PlayerIndexedBox(monsterobject[cullloop], 0, (int)player_list2[i].rot_angle, wx, wy, wz);
-
-					//monsterheight[cullloop] = objectheight;
-					//monsterx[cullloop] = objectx;
-					//monsterz[cullloop] = objectz;
 				}
 				break;
 			}
 		}
 	}
 
-	//heee
-	//if (excludebox == 0) {
-		for (i = 0; i < num_monsters; i++)
+	for (i = 0; i < num_monsters; i++)
+	{
+		cullflag = 0;
+		for (cullloop = 0; cullloop < monstercount; cullloop++)
 		{
-			cullflag = 0;
-			for (cullloop = 0; cullloop < monstercount; cullloop++)
+
+			if (monstercull[cullloop] == monster_list[i].monsterid)
 			{
 
-				if (monstercull[cullloop] == monster_list[i].monsterid)
+				if (monster_list[i].bIsPlayerAlive == TRUE &&
+					monster_list[i].bIsPlayerValid == TRUE)
 				{
-
-					if (monster_list[i].bIsPlayerAlive == TRUE &&
-						monster_list[i].bIsPlayerValid == TRUE)
+					if (monstertype[cullloop] == 0 && currentmonstercollisionid != monster_list[i].monsterid)
 					{
 
-						if (monstertype[cullloop] == 0 && currentmonstercollisionid != monster_list[i].monsterid)
-							//if (monstertype[cullloop] == 0 )
-						{
+						float wx = monster_list[i].x;
+						float wy = monster_list[i].y;
+						float wz = monster_list[i].z;
 
-							float wx = monster_list[i].x;
-							float wy = monster_list[i].y;
-							float wz = monster_list[i].z;
-
-							PlayerNonIndexedBox(monsterobject[cullloop], 0, (int)monster_list[i].rot_angle, wx, wy, wz);
-							//monstertrueheight[cullloop] = objecttrueheight;
-							//monsterheight[cullloop] = objectheight;
-							//monsterx[cullloop] = objectx;
-							//monsterz[cullloop] = objectz;
-						}
+						PlayerNonIndexedBox(monsterobject[cullloop], 0, (int)monster_list[i].rot_angle, wx, wy, wz);
 					}
-					break;
 				}
+				break;
 			}
-		//}
+		}
 	}
 }
 
@@ -1544,9 +1348,6 @@ void PlayerNonIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, flo
 		angle = angle - 360;
 	if (angle < 0)
 		angle += 360;
-
-	//float cosine = cos_table[angle];
-	//float sine = sin_table[angle];
 
 	float cosine = (float)cos(angle * k);
 	float sine = (float)sin(angle * k);
@@ -1661,7 +1462,6 @@ void PlayerNonIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, flo
 	countboundingbox++;
 
 	//2nd
-
 	boundingbox[countboundingbox].x = max_x;
 	boundingbox[countboundingbox].y = max_y;
 	boundingbox[countboundingbox].z = max_z;
@@ -1691,7 +1491,6 @@ void PlayerNonIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, flo
 	countboundingbox++;
 
 	//3rd
-
 	boundingbox[countboundingbox].x = min_x;
 	boundingbox[countboundingbox].y = max_y;
 	boundingbox[countboundingbox].z = min_z;
@@ -1748,7 +1547,6 @@ void PlayerNonIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, flo
 	countboundingbox++;
 
 	//5th
-
 	boundingbox[countboundingbox].x = min_x;
 	boundingbox[countboundingbox].y = max_y;
 	boundingbox[countboundingbox].z = max_z;
@@ -1811,17 +1609,12 @@ void PlayerIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, float 
 		curr_frame = 0;
 
 	curr_frame = 0;
-	//float cosine = cos_table[angle];
-	//float sine = sin_table[angle];
 
 	float cosine = (float)cos(angle * k);
 	float sine = (float)sin(angle * k);
 
 	i_count = 0;
 	face_i_count = 0;
-
-	//	if(rendering_first_frame == TRUE)
-	//		fp = fopen("ds.txt","a");
 
 	// process and transfer the model data from the pmdata structure
 	// to the array of D3DVERTEX2 structures, src_v
@@ -1865,17 +1658,15 @@ void PlayerIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, float 
 
 			i_count++;
 
-		} // end for j
+		}
 
-	} // end for vert_cnt
+	}
 
 	// got min & max make box
-
 	boundingbox[countboundingbox].x = max_x;
 	boundingbox[countboundingbox].y = max_y;
 	boundingbox[countboundingbox].z = min_z;
 	boundingbox[countboundingbox].monster = 0;
-
 
 	countboundingbox++;
 
@@ -1901,7 +1692,6 @@ void PlayerIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, float 
 	countboundingbox++;
 
 	//2nd
-
 	boundingbox[countboundingbox].x = max_x;
 	boundingbox[countboundingbox].y = max_y;
 	boundingbox[countboundingbox].z = max_z;
@@ -1931,7 +1721,6 @@ void PlayerIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, float 
 	countboundingbox++;
 
 	//3rd
-
 	boundingbox[countboundingbox].x = min_x;
 	boundingbox[countboundingbox].y = max_y;
 	boundingbox[countboundingbox].z = min_z;
@@ -1986,7 +1775,6 @@ void PlayerIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, float 
 	countboundingbox++;
 
 	//5th
-
 	boundingbox[countboundingbox].x = min_x;
 	boundingbox[countboundingbox].y = max_y;
 	boundingbox[countboundingbox].z = max_z;
@@ -2014,12 +1802,6 @@ void PlayerIndexedBox(int pmodel_id, int curr_frame, int angle, float wx, float 
 	boundingbox[countboundingbox].monster = 0;
 
 	countboundingbox++;
-
-	//objectheight = max_y - min_y;
-	//objectx = max_x - min_x;
-	//objectz = max_z - min_z;
-
-
 	return;
 }
 
@@ -2051,8 +1833,6 @@ void MonsterHit()
 		dice[0].roll = 0;
 		sprintf_s(dice[0].name, "%ss%d", dice[0].prefix, action);
 
-
-
 		if (!hitmonster) {
 			dice[1].roll = 0;
 			sprintf_s(dice[1].name, "dieblank");
@@ -2065,13 +1845,10 @@ void MonsterHit()
 	int savepos = -1;
 	for (i = 0; i < num_monsters; i++)
 	{
-
 		for (cullloop = 0; cullloop < monstercount; cullloop++)
 		{
-
 			if (monstercull[cullloop] == monster_list[i].monsterid)
 			{
-
 				statusbardisplay((float)monster_list[i].hp, (float)monster_list[i].hp, 1);
 				strcpy_s(savehp, statusbar);
 				statusbardisplay((float)monster_list[i].health, (float)monster_list[i].hp, 0);
@@ -2083,7 +1860,6 @@ void MonsterHit()
 				}
 
 				//monsterhitdisplay
-
 				sprintf_s(monster_list[i].chatstr, "%s AC:%d!HP:%d %s",
 					monster_list[i].rname,
 					player_list[trueplayernum].thaco - monster_list[i].ac,
@@ -2101,7 +1877,6 @@ void MonsterHit()
 						cullflag = 1;
 						lastdist = monster_list[i].dist;
 						savepos = i;
-						//monster_list[i].takedamageonce = 0;
 					}
 				}
 			}
@@ -2110,9 +1885,6 @@ void MonsterHit()
 
 	if (savepos == -1)
 	{
-
-		//if (actionnum != 0)
-//			PlayerHit(actionnum);
 		return;
 	}
 
@@ -2120,29 +1892,17 @@ void MonsterHit()
 
 	if (cullflag == 1)
 	{
-
 		float wx = monster_list[i].x;
 		float wy = monster_list[i].y;
 		float wz = monster_list[i].z;
 
-		//if (perspectiveview == 0)
-		//{
-		//	qdist = FastDistance(
-		//		m_vLookatPt.x - wx,
-		//		m_vLookatPt.y - wy,
-		//		m_vLookatPt.z - wz);
-		//}
-		/*else
-		{*/
 		qdist = FastDistance(
 			m_vEyePt.x - wx,
 			m_vEyePt.y - wy,
 			m_vEyePt.z - wz);
-		//}
 
 		if (qdist < 100.0f && player_list[trueplayernum].current_frame >= 50 && player_list[trueplayernum].current_frame <= 50 && (monster_list[i].takedamageonce == 0))
 		{
-
 			XMFLOAT3 work1;
 
 			hitplayer = 1;
@@ -2154,10 +1914,9 @@ void MonsterHit()
 			monsteron = CalculateView(m_vEyePt, work1, 45.0f, false);
 			if (player_list[trueplayernum].current_sequence != 5 && monsteron)
 			{
-
 				action = random_num(dice[0].sides) + 1;
-				//action = random_num(20) + 1;
 				actionnum = action;
+
 				if (action == 20)
 					criticaldamage = 1;
 
@@ -2166,12 +1925,11 @@ void MonsterHit()
 
 				d20roll = action;
 
-				int a;
-
+				int a = 0;
 				int gunmodel = 0;
+
 				for (a = 0; a < num_your_guns; a++)
 				{
-
 					if (your_gun[a].model_id == player_list[trueplayernum].gunid)
 					{
 
@@ -2183,6 +1941,7 @@ void MonsterHit()
 				int damagebonus = your_gun[gunmodel].sdamage;
 				int weapondamage = your_gun[gunmodel].damage2;
 				action = action + attackbonus;
+
 				//No damage if the mosnter is already in pain.
 				if (action >= player_list[trueplayernum].thaco - monster_list[i].ac)
 				{
@@ -2202,7 +1961,6 @@ void MonsterHit()
 
 					if (criticaldamage == 1)
 					{
-
 						action = (action + (damagebonus)) * 2;
 						criticalhiton = 1;
 						PlayWavSound(SoundID("natural20"), 100);
@@ -2215,8 +1973,6 @@ void MonsterHit()
 					}
 					else
 					{
-
-						//PlayWaveFile(".\\Sounds\\impact.wav");
 						action = action + damagebonus;
 						sprintf_s(gActionMessage, "You hit a %s for %d damage", monster_list[i].rname, action);
 						UpdateScrollList(0, 255, 255);
@@ -2228,7 +1984,8 @@ void MonsterHit()
 					monster_list[i].ability = 0;
 					int t = 0;
 					int cullloop2 = 0;
-					// monstersee
+
+					// monster see
 					for (t = 0; t < num_monsters; t++)
 					{
 						for (cullloop2 = 0; cullloop2 < monstercount; cullloop2++)
@@ -2251,11 +2008,6 @@ void MonsterHit()
 
 					if (monster_list[i].health <= 0)
 					{
-						if (bloodspot != -1)
-						{
-							//your_missle[bloodspot].y = your_missle[bloodspot].y - 30.0f;
-							//your_missle[bloodspot].active = 0;
-						}
 						PlayWavSound(monster_list[i].sdie, 100);
 
 						int deathaction = random_num(3);
@@ -2291,24 +2043,16 @@ void MonsterHit()
 						monster_list[i].rname,
 						player_list[trueplayernum].thaco - monster_list[i].ac,
 						monster_list[i].health, savehp);
-
-					//return;
 				}
 			}
 		}
 	}
-
-	//if (hitplayer == 0)
-		//PlayerHit(actionnum);
-
 }
 
 
 
 void DrawPlayerGun(int shadow)
 {
-	// DRAW YOUR GUN ///////////////////////////////////////////
-
 	BOOL use_player_skins_flag = false;
 	int i = 0;
 	float skx, sky;
@@ -2319,7 +2063,6 @@ void DrawPlayerGun(int shadow)
 	float wy = 0;
 	float wz = 0;
 	int perspectiveview = 1;
-
 
 	if (player_list[trueplayernum].model_id == 0 &&
 		player_list[trueplayernum].bIsPlayerAlive &&
@@ -2333,7 +2076,6 @@ void DrawPlayerGun(int shadow)
 		i = 0;
 		if (current_gun < num_your_guns)
 		{
-
 			ob_type = player_list[trueplayernum].gunid;
 			current_frame = player_list[trueplayernum].current_frame;
 			angle = player_list[trueplayernum].gunangle;
@@ -2362,13 +2104,10 @@ void DrawPlayerGun(int shadow)
 					adjust = -15.0f;
 					fDot2 = 0.0f;
 				}
-				
+
 				wx = GunTruesave.x;
-				wy = GunTruesave.y + adjust;// +bobY.getY();
+				wy = GunTruesave.y + adjust;
 				wz = GunTruesave.z;
-				//wx = m_vEyePt.x;
-				//wy = m_vEyePt.y + 50.0f;
-				//wz = m_vEyePt.z;
 			}
 
 			int nextFrame = GetNextFramePlayer();
@@ -2380,19 +2119,15 @@ void DrawPlayerGun(int shadow)
 				USE_DEFAULT_MODEL_TEX, wx, wy, wz, nextFrame);
 			fDot2 = 0.0f;
 			weapondrop = 0;
-
-			//				}
 		}
 	}
 	else if (player_list[trueplayernum].model_id != 0 &&
 		player_list[trueplayernum].bIsPlayerAlive &&
 		strstr(your_gun[current_gun].gunname, "SCROLL") == NULL)
 	{
-
 		ob_type = player_list[trueplayernum].gunid;
 		current_frame = player_list[trueplayernum].current_frame;
 		angle = player_list[trueplayernum].gunangle;
-
 
 		if (perspectiveview == 1)
 		{
@@ -2412,22 +2147,15 @@ void DrawPlayerGun(int shadow)
 		}
 		else
 		{
-
 			wx = GunTruesave.x;
 			wy = GunTruesave.y;
 			wz = GunTruesave.z;
-
-			//wx = m_vEyePt.x;
-			//wy = m_vEyePt.y;
-			//wz = m_vEyePt.z;
-
 		}
 
 		int getgunid = currentmodellist;
 
 		if (strcmp(model_list[getgunid].monsterweapon, "NONE") != 0)
 		{
-
 			PlayerToD3DVertList(FindModelID(model_list[getgunid].monsterweapon),
 				current_frame,
 				angle,
@@ -2439,19 +2167,12 @@ void DrawPlayerGun(int shadow)
 
 void AddTreasure(float x, float y, float z, int gold)
 {
-
-	int i = 0;
-
-	//fix this
-
 	int raction;
 
-	for (i = 0; i < MAX_NUM_ITEMS; i++)
+	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
-
 		if (item_list[i].bIsPlayerValid == FALSE)
 		{
-
 			if (gold == 0)
 			{
 				raction = 0;
@@ -2481,7 +2202,6 @@ void AddTreasure(float x, float y, float z, int gold)
 			}
 			else if (raction == 1)
 			{
-
 				item_list[i].bIsPlayerValid = TRUE;
 				item_list[i].x = x;
 				item_list[i].y = y - 10.0f;
@@ -2500,7 +2220,6 @@ void AddTreasure(float x, float y, float z, int gold)
 			}
 			else if (raction == 2)
 			{
-
 				item_list[i].bIsPlayerValid = TRUE;
 				item_list[i].x = x;
 				item_list[i].y = y - 10.0f;
@@ -2519,7 +2238,6 @@ void AddTreasure(float x, float y, float z, int gold)
 			}
 			else if (raction == 3)
 			{
-
 				item_list[i].bIsPlayerValid = TRUE;
 				item_list[i].x = x;
 				item_list[i].y = y - 10.0f;
@@ -2595,7 +2313,6 @@ void AddTreasure(float x, float y, float z, int gold)
 			}
 			else
 			{
-
 				item_list[i].bIsPlayerValid = TRUE;
 				item_list[i].x = x;
 				item_list[i].y = y - 10.0f;
@@ -2649,10 +2366,8 @@ void DrawModel()
 
 	for (int i = 0; i < num_players2; i++)
 	{
-
 		if (player_list2[i].bIsPlayerValid == TRUE)
 		{
-
 			cullflag = 0;
 			for (int cullloop = 0; cullloop < monstercount; cullloop++)
 			{
@@ -2665,7 +2380,6 @@ void DrawModel()
 
 			if (cullflag == 1)
 			{
-
 				float wx = player_list2[i].x;
 				float wy = player_list2[i].y;
 				float wz = player_list2[i].z;
@@ -2680,7 +2394,6 @@ void DrawModel()
 
 				if (monsteron)
 				{
-
 					use_player_skins_flag = 1;
 					current_frame = player_list2[i].current_frame;
 
@@ -2697,12 +2410,9 @@ void DrawModel()
 							m_vEyePt.z - player_list2[i].z);
 					}
 
-
-
 					if (player_list2[i].model_id == 36 && pressopendoor && qdist <= 100.0f ||
 						strstr(player_list2[i].rname, "cdoorclosed") != NULL && pressopendoor && qdist <= 100.0f)
 					{
-
 						player_list2[i].model_id--;
 						strcpy_s(player_list2[i].rname, "-");
 
@@ -2738,7 +2448,6 @@ void DrawModel()
 
 void ApplyPlayerDamage(int playerid, int damage)
 {
-
 	int raction;
 	int perspectiveview = 1;
 
@@ -2752,7 +2461,6 @@ void ApplyPlayerDamage(int playerid, int damage)
 
 	switch (raction)
 	{
-
 	case 0:
 		SetPlayerAnimationSequence(trueplayernum, 3);// pain1
 		break;
@@ -2767,27 +2475,10 @@ void ApplyPlayerDamage(int playerid, int damage)
 	if (player_list[trueplayernum].health <= 0)
 	{
 		player_list[trueplayernum].health = 0;
-
-		//raction = (int)random_num(3);
-
-		//switch (raction)
-		//{
-		//case 0:
-		//	SetPlayerAnimationSequence(trueplayernum, 12); // death1
-		//	break;
-		//case 1:
-		//	SetPlayerAnimationSequence(trueplayernum, 13);// death2
-		//	break;
-		//case 2:
-		//	SetPlayerAnimationSequence(trueplayernum, 14);// death3
-		//	break;
-		//}
-
 		player_list[trueplayernum].bIsPlayerAlive = FALSE;
 
 		if (perspectiveview == 1)
 			m_vLookatPt = m_vEyePt;
-		//m_vLookatPt=m_vEyePt;
 
 		look_up_ang = -20;
 		perspectiveview = 0;
@@ -2796,12 +2487,10 @@ void ApplyPlayerDamage(int playerid, int damage)
 		sprintf_s(gActionMessage, "Press SPACE to rise again...");
 		UpdateScrollList(0, 255, 255);
 	}
-
 }
 
 void ScanModJump(int jump)
 {
-
 	int flag = 1;
 	int newjump = 0;
 
@@ -2832,7 +2521,6 @@ void ScanMod(float fElapsedTime)
 
 	for (i = 0; i < totalmod; i++)
 	{
-
 		for (j = 0; j < num_monsters; j++)
 		{
 			if (monster_list[j].monsterid == levelmodify[counter].objectid &&
@@ -2889,12 +2577,10 @@ void ScanMod(float fElapsedTime)
 						sprintf_s(gActionMessage, "You got %d XP!.", xp);
 						UpdateScrollList(255, 0, 255);
 						player_list[trueplayernum].xp += xp;
-						//LevelUp(player_list[trueplayernum].xp);
 					}
 				}
 
 				//SetHitPoints
-
 				if (strstr(levelmodify[counter].Function, "SetHitPoints") != NULL &&
 					levelmodify[counter].active == 1)
 				{
@@ -2950,7 +2636,6 @@ void ScanMod(float fElapsedTime)
 							int len = (int)strlen(levelmodify[counter].Text1);
 							len = len / 2;
 							//RenderText(arialFont, charToWChar(levelmodify[counter].Text1), XMFLOAT2(0.5f - (len * 0.005f), 0.5f), XMFLOAT2(0.20f, 0.20f), XMFLOAT2(0.5f, 0.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f));
-
 						}
 						gotone = 1;
 
@@ -2969,7 +2654,6 @@ void ScanMod(float fElapsedTime)
 					}
 				}
 			}
-			// 	break;
 		}
 
 		for (j = 0; j < num_players2; j++)
@@ -2994,14 +2678,13 @@ void ScanMod(float fElapsedTime)
 							player_list[trueplayernum].x - player_list2[j].x,
 							player_list[trueplayernum].y - player_list2[j].y,
 							player_list[trueplayernum].z - player_list2[j].z);
-						//closesoundid[3] = qdist;
 					}
 					else
 					{
 						levelmodify[counter].active = 0;
 					}
 				}
-				//isswitch
+				//isSwitch
 				if (strstr(levelmodify[counter].Function, "IsSwitch") != NULL)
 				{
 					for (int t = 0; t < countswitches; t++)
@@ -3076,14 +2759,12 @@ void ScanMod(float fElapsedTime)
 							player_list[trueplayernum].x - item_list[j].x,
 							player_list[trueplayernum].y - item_list[j].y,
 							player_list[trueplayernum].z - item_list[j].z);
-						//closesoundid[3] = qdist;
 					}
 					else
 					{
 						levelmodify[counter].active = 0;
 					}
 				}
-
 				//TreasueAmount
 				if (strstr(levelmodify[counter].Function, "TreasureAmount") != NULL &&
 					levelmodify[counter].active == 1)
@@ -3098,18 +2779,14 @@ void ScanMod(float fElapsedTime)
 	}
 }
 
-
-
 void ActivateSwitch()
 {
-
 	int i = 0;
 	int j = 0;
 	float qdist;
 
 	for (i = 0; i < countswitches; i++)
 	{
-
 		if (switchmodify[i].active != 2)
 		{
 			qdist = FastDistance(
@@ -3126,7 +2803,6 @@ void ActivateSwitch()
 
 			if (switchmodify[i].active == 1)
 			{
-
 				j = switchmodify[i].num;
 
 				if (switchmodify[i].direction == 1)
@@ -3150,15 +2826,10 @@ void ActivateSwitch()
 
 void AddTreasureDrop(float x, float y, float z, int raction)
 {
-	int i = 0;
-
-	//fix this
-	for (i = 0; i < MAX_NUM_ITEMS; i++)
+	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
-
 		if (item_list[i].bIsPlayerValid == FALSE)
 		{
-
 			if (raction == 0)
 			{
 				item_list[i].bIsPlayerValid = TRUE;
@@ -3179,7 +2850,6 @@ void AddTreasureDrop(float x, float y, float z, int raction)
 			}
 			else if (raction == 1)
 			{
-
 				item_list[i].bIsPlayerValid = TRUE;
 				item_list[i].x = x;
 				item_list[i].y = y + 40.0f;
@@ -3198,7 +2868,6 @@ void AddTreasureDrop(float x, float y, float z, int raction)
 			}
 			else if (raction == 2)
 			{
-
 				item_list[i].bIsPlayerValid = TRUE;
 				item_list[i].x = x;
 				item_list[i].y = y + 40.0f;
@@ -3217,7 +2886,6 @@ void AddTreasureDrop(float x, float y, float z, int raction)
 			}
 			else if (raction == 3)
 			{
-
 				item_list[i].bIsPlayerValid = TRUE;
 				item_list[i].x = x;
 				item_list[i].y = y + 40.0f;
@@ -3260,7 +2928,6 @@ int DisplayDialogText(char* text, float yloc)
 
 	for (i = 0; i <= (int)strlen(text); i++)
 	{
-
 		counter++;
 		if (text[i] == '<' || i >= (int)strlen(text))
 		{
@@ -3279,13 +2946,11 @@ int DisplayDialogText(char* text, float yloc)
 		else
 		{
 			buf[bufcount] = text[i];
-
 			bufcount++;
 		}
 	}
 
 	ystart = (FLOAT)(wHeight / 2.0f) - (dialogtextcount * 13.0f) / 2.0f;
-
 	xstart = (FLOAT)(wWidth / 2.0f) - (xstart * 11.2f) / 2.0f;
 
 	ystart += yloc;
@@ -3305,7 +2970,6 @@ int DisplayDialogText(char* text, float yloc)
 
 int FreeSlave()
 {
-
 	int j = 0;
 	float qdist = 0.0f;
 
@@ -3319,7 +2983,6 @@ int FreeSlave()
 		{
 			if (monster_list[j].bIsPlayerValid == TRUE)
 			{
-
 				if (strcmp(monster_list[j].rname, "SLAVE") == 0)
 				{
 					monster_list[j].bIsPlayerValid = FALSE;
@@ -3339,7 +3002,6 @@ int FreeSlave()
 
 int DisplayDamage(float x, float y, float z, int owner, int id, bool criticalhit)
 {
-
 	D3DVECTOR MissleVelocity;
 	int misslecount = 0;
 	int misslespot = 0;
@@ -3357,11 +3019,7 @@ int DisplayDamage(float x, float y, float z, int owner, int id, bool criticalhit
 		{
 			if (monstercull[cullloop] == monster_list[id].monsterid)
 			{
-
-				//TODO: fix
-				//monstersize = monstertrueheight[cullloop];
 				monstersize = 60.0f;
-
 				monstersize = monstersize / 4.0f;
 			}
 		}
@@ -3375,25 +3033,21 @@ int DisplayDamage(float x, float y, float z, int owner, int id, bool criticalhit
 			break;
 		}
 	}
+
 	your_missle[misslespot].model_id = 104;
 	your_missle[misslespot].skin_tex_id = 370;
-
 	your_missle[misslespot].current_frame = 0;
 	your_missle[misslespot].current_sequence = 0;
 	your_missle[misslespot].x = x;
 	your_missle[misslespot].y = y + monstersize;
 	your_missle[misslespot].z = z;
 	your_missle[misslespot].rot_angle = (float)gun_angle;
-	//your_missle[misslespot].velocity = savevelocity;
 	your_missle[misslespot].active = 2;
 	your_missle[misslespot].owner = (int)owner;
-
 	your_missle[misslespot].playernum = (int)owner;
 	your_missle[misslespot].playertype = (int)1;
 	your_missle[misslespot].guntype = current_gun;
-
 	your_missle[misslespot].critical = criticalhit;
-
 	your_missle[misslespot].blood = 1;
 
 	return misslespot;
@@ -3401,14 +3055,6 @@ int DisplayDamage(float x, float y, float z, int owner, int id, bool criticalhit
 
 void GetItem()
 {
-
-	//  normal cyan 0, 255, 255
-	//	action gold : 255, 255, 0
-	//	money green : 0, 255, 0
-	//	xp purple : 255, 0, 255
-	//	health white 255, 255, 255
-	//	damage red 255, 0, 0
-
 	int i = 0;
 	int cullflag = 0;
 	int cullloop = 0;
@@ -3457,7 +3103,6 @@ void GetItem()
 
 				if (strcmp(item_list[i].rname, "spiral") == 0)
 				{
-
 					foundsomething = 1;
 					num_players2 = 0;
 					itemlistcount = 0;
@@ -3465,7 +3110,6 @@ void GetItem()
 
 					ClearObjectList();
 					ResetSound();
-					//pCWorld->LoadSoundFiles(m_hWnd, "sounds.dat");
 
 					sprintf_s(levelname, "level%d", item_list[i].ability);
 					sprintf_s(gActionMessage, "Loading %s...", levelname);
@@ -3483,12 +3127,6 @@ void GetItem()
 					strcpy_s(level, levelname);
 					strcat_s(level, ".cmp");
 
-					//if (!pCWorld->InitPreCompiledWorldMap(m_hWnd, level))
-					//{
-					//    //PrintMessage(m_hWnd, "InitPreCompiledWorldMap failed", NULL, LOGFILE_ONLY);
-					//    //return FALSE;
-					//}
-
 					strcpy_s(level, levelname);
 					strcat_s(level, ".mod");
 
@@ -3497,7 +3135,6 @@ void GetItem()
 					ResetPlayer();
 					SetStartSpot();
 					PlayWavSound(SoundID("goal2"), 100);
-					//StartFlare(2);
 				}
 				else if (strcmp(item_list[i].rname, "AXE") == 0 ||
 					strcmp(item_list[i].rname, "FLAMESWORD") == 0 ||
@@ -3511,12 +3148,10 @@ void GetItem()
 					strcmp(item_list[i].rname, "LIGHTNINGSWORD") == 0 ||
 					strstr(item_list[i].rname, "SCROLL") != NULL)
 				{
-
 					foundsomething = 1;
 
 					if (strstr(item_list[i].rname, "SCROLL") != NULL)
 					{
-
 						if (strstr(item_list[i].rname, "SCROLL-MAGICMISSLE") != NULL)
 						{
 							sprintf_s(gActionMessage, "You found a scroll of magic missle");
@@ -3543,7 +3178,7 @@ void GetItem()
 					//you got something good! (weapon)
 					item_list[i].bIsPlayerAlive = FALSE;
 					PlayWavSound(SoundID("potion"), 100);
-					//PlayWaveFile(".\\Sounds\\item.wav");
+
 					for (int q = 0; q <= num_your_guns; q++)
 					{
 						char junk[255];
@@ -3559,7 +3194,7 @@ void GetItem()
 								your_gun[q].x_offset = your_gun[q].x_offset + 1;
 							}
 							else {
-								//Switch to this wepaon if it is better
+								//Switch to this weapon if it is better
 								your_gun[q].active = 1;
 								SwitchGun(q);
 							}
@@ -3568,7 +3203,6 @@ void GetItem()
 				}
 				else if (strcmp(item_list[i].rname, "POTION") == 0)
 				{
-
 					if (player_list[trueplayernum].health < player_list[trueplayernum].hp)
 					{
 						item_list[i].bIsPlayerAlive = FALSE;
@@ -3580,16 +3214,13 @@ void GetItem()
 							player_list[trueplayernum].health = player_list[trueplayernum].hp;
 
 						PlayWavSound(SoundID("potion"), 100);
-						//StartFlare(3);
 						sprintf_s(gActionMessage, "You found a potion worth %d health", hp);
 						UpdateScrollList(255, 255, 255);
 						foundsomething = 1;
-						//LevelUp(player_list[trueplayernum].xp);
 					}
 				}
 				else if (strcmp(item_list[i].rname, "cheese1") == 0)
 				{
-
 					if (player_list[trueplayernum].health < player_list[trueplayernum].hp)
 					{
 						item_list[i].bIsPlayerAlive = FALSE;
@@ -3601,16 +3232,13 @@ void GetItem()
 							player_list[trueplayernum].health = player_list[trueplayernum].hp;
 
 						PlayWavSound(SoundID("potion"), 100);
-						//StartFlare(3);
 						sprintf_s(gActionMessage, "You found some cheese %d health", hp);
 						UpdateScrollList(255, 255, 255);
 						foundsomething = 1;
-						//LevelUp(player_list[trueplayernum].xp);
 					}
 				}
 				else if (strcmp(item_list[i].rname, "bread1") == 0)
 				{
-
 					if (player_list[trueplayernum].health < player_list[trueplayernum].hp)
 					{
 						item_list[i].bIsPlayerAlive = FALSE;
@@ -3622,46 +3250,43 @@ void GetItem()
 							player_list[trueplayernum].health = player_list[trueplayernum].hp;
 
 						PlayWavSound(SoundID("potion"), 100);
-						//StartFlare(3);
 						sprintf_s(gActionMessage, "You found some bread %d health", hp);
 						UpdateScrollList(255, 255, 255);
 						foundsomething = 1;
-						//LevelUp(player_list[trueplayernum].xp);
 					}
 				}
 				else if (strcmp(item_list[i].rname, "spellbook") == 0)
 				{
-						item_list[i].bIsPlayerAlive = FALSE;
-						item_list[i].bIsPlayerValid = FALSE;
+					item_list[i].bIsPlayerAlive = FALSE;
+					item_list[i].bIsPlayerValid = FALSE;
 
-						PlayWavSound(SoundID("potion"), 100);
-						//StartFlare(3);
-						sprintf_s(gActionMessage, "You found a spellbook");
-						UpdateScrollList(255, 255, 255);
-						foundsomething = 1;
+					PlayWavSound(SoundID("potion"), 100);
+					sprintf_s(gActionMessage, "You found a spellbook");
+					UpdateScrollList(255, 255, 255);
+					foundsomething = 1;
 
-						char junk[255];
+					char junk[255];
 
-						for (int m = 0; m < 4; m++) {
+					for (int m = 0; m < 4; m++) {
 
-							if (m == 0)
-								strcpy_s(junk, "SCROLL-MAGICMISSLE");
-							else if (m == 1)
-								strcpy_s(junk, "SCROLL-FIREBALL");
-							else if (m == 2)
-								strcpy_s(junk, "SCROLL-LIGHTNING");
-							else if (m == 3)
-								strcpy_s(junk, "SCROLL-HEALING");
+						if (m == 0)
+							strcpy_s(junk, "SCROLL-MAGICMISSLE");
+						else if (m == 1)
+							strcpy_s(junk, "SCROLL-FIREBALL");
+						else if (m == 2)
+							strcpy_s(junk, "SCROLL-LIGHTNING");
+						else if (m == 3)
+							strcpy_s(junk, "SCROLL-HEALING");
 
-							for (int q = 0; q <= num_your_guns; q++)
+						for (int q = 0; q <= num_your_guns; q++)
+						{
+							if (strcmp(your_gun[q].gunname, junk) == 0)
 							{
-								if (strcmp(your_gun[q].gunname, junk) == 0)
-								{
-									your_gun[q].active = 1;
-									your_gun[q].x_offset = your_gun[q].x_offset + 1;
-								}
+								your_gun[q].active = 1;
+								your_gun[q].x_offset = your_gun[q].x_offset + 1;
 							}
 						}
+					}
 				}
 				else if (strcmp(item_list[i].rname, "COIN") == 0)
 				{
@@ -3670,7 +3295,7 @@ void GetItem()
 
 					player_list[trueplayernum].gold += item_list[i].gold;
 					player_list[trueplayernum].xp += item_list[i].gold;
-					//LevelUp(player_list[trueplayernum].xp);
+
 					PlayWavSound(SoundID("coin"), 100);
 					item_list[i].bIsPlayerAlive = FALSE;
 					item_list[i].bIsPlayerValid = FALSE;
@@ -3678,7 +3303,7 @@ void GetItem()
 					foundsomething = 1;
 					sprintf_s(gActionMessage, "You found %d coin", item_list[i].gold);
 					UpdateScrollList(0, 255, 0);
-					//LevelUp(player_list[trueplayernum].xp);
+					LevelUp(player_list[trueplayernum].xp);
 				}
 				else if (strcmp(item_list[i].rname, "GOBLET") == 0)
 				{
@@ -3695,7 +3320,7 @@ void GetItem()
 					foundsomething = 1;
 					sprintf_s(gActionMessage, "You found a goblet worth %d coin", item_list[i].gold);
 					UpdateScrollList(0, 255, 0);
-					//LevelUp(player_list[trueplayernum].xp);
+					LevelUp(player_list[trueplayernum].xp);
 				}
 
 				else if (strcmp(item_list[i].rname, "KEY2") == 0)
@@ -3710,7 +3335,6 @@ void GetItem()
 					foundsomething = 1;
 					sprintf_s(gActionMessage, "You found a key");
 					UpdateScrollList(255, 255, 0);
-					//LevelUp(player_list[trueplayernum].xp);
 				}
 				else if (strcmp(item_list[i].rname, "diamond") == 0)
 				{
@@ -3723,7 +3347,7 @@ void GetItem()
 					foundsomething = 1;
 					sprintf_s(gActionMessage, "You found a diamond worth %d coin", item_list[i].gold);
 					UpdateScrollList(0, 255, 0);
-					//LevelUp(player_list[trueplayernum].xp);
+					LevelUp(player_list[trueplayernum].xp);
 				}
 				else if (strcmp(item_list[i].rname, "armour") == 0)
 				{
@@ -3733,7 +3357,6 @@ void GetItem()
 					foundsomething = 1;
 					sprintf_s(gActionMessage, "You found some armour");
 					UpdateScrollList(0, 100, 255);
-					//StartFlare(2);
 					PlayWavSound(SoundID("potion"), 100);
 					PlayWavSound(SoundID("goal4"), 100);
 					item_list[i].bIsPlayerAlive = FALSE;
@@ -3746,12 +3369,7 @@ void GetItem()
 
 int ResetPlayer()
 {
-
 	int perspectiveview = 1;
-	//DSLevel();
-
-	//merchantcurrent = 0;
-	//merchantfound = 0;
 
 	m_vEyePt.x = 780;
 	m_vEyePt.y = 160;
@@ -3763,40 +3381,16 @@ int ResetPlayer()
 
 	angy = 0;
 
-	//gravitytime = 0.0f;
-
-	//cameraf.x = m_vEyePt.x;
-	//cameraf.y = m_vEyePt.y;
-	//cameraf.z = m_vEyePt.z;
-	//perspectiveview = 1;
-	//gravityvector.y = 0.0f;
-
 	if (perspectiveview == 0)
 		look_up_ang = 35.0f;
 	else
 		look_up_ang = 0.0f;
 
 	return 0;
-
 }
 
 void ClearObjectList()
 {
-
-
-	int q = 0;
-
-	//for (q = 0; q < oblist_length; q++)
-	//{
-
-	//    delete oblist[q].light_source;
-	//}
-	//delete oblist;
-
-	////TODO: FIx this
-	//oblist = new OBJECTLIST[3000];
-
-
 	for (int i = 0; i < MAX_NUM_ITEMS; i++)
 	{
 		item_list[i].frags = 0;
@@ -3828,7 +3422,6 @@ void ClearObjectList()
 
 int XpPoints(int hd, int hp)
 {
-
 	int bxp = 0;
 	int hpxp = 0;
 	int xp = 0;
@@ -3941,13 +3534,11 @@ int XpPoints(int hd, int hp)
 
 int LevelUp(int xp)
 {
-
 	int countlevels = 0;
 	int adjust = 800;
 
 	if (xp > 0 && xp <= 2000)
 	{
-
 		countlevels = 1;
 	}
 	else if (xp >= 2001 && xp <= 4000)
@@ -4211,7 +3802,6 @@ int LevelUp(int xp)
 
 		sprintf_s(gActionMessage, "You went up a level.  Hit Dice: %d", player_list[trueplayernum].hd);
 		UpdateScrollList(255, 0, 255);
-		//StartFlare(2);
 
 		PlayWavSound(SoundID("win"), 100);
 	}
@@ -4221,7 +3811,6 @@ int LevelUp(int xp)
 
 int LevelUpXPNeeded(int xp)
 {
-
 	int countlevels = 0;
 
 	if (xp >= 0 && xp <= 2000)
@@ -4471,12 +4060,10 @@ int LevelUpXPNeeded(int xp)
 	}
 
 	return countlevels;
-
 }
 
 void statusbardisplay(float x, float length, int type)
 {
-
 	int bar = 8;
 	int truelength = 0;
 	int i = 0;
@@ -4486,7 +4073,6 @@ void statusbardisplay(float x, float length, int type)
 
 	for (i = 0; i < truelength; i++)
 	{
-
 		if (type == 0)
 			strcat_s(statusbar, "|");
 		else
