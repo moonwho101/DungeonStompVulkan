@@ -2340,34 +2340,19 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 					if (dp_command_index_mode[i] == 1) {  //USE_NON_INDEXED_DP
 						
 						v = verts_per_poly[currentObject];
-						//cmdList->DrawInstanced(v, 1, vert_index, 0);
 						vert_index = ObjectsToDraw[currentObject].srcstart;
 
 						texture = texture_number + 26;
 
-
-						if (texture == 152) {
-							texture = 152;
-						}
-
-						//texture = 152;
-
-						if (lastTexture != texture) {
-
-							uint32_t dyoffsets[2] = { (uint32_t)(texture * objectSize) };
-							pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptor1, 1, dyoffsets);
-							lastTexture = texture;
-						}
+						uint32_t dyoffsets[2] = { (uint32_t)(texture * objectSize) };
+						pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptor1, 1, dyoffsets);
+						lastTexture = texture;
 
 						vkCmdDraw(cmd, v, 1, vert_index, 0);
-
 					}
 				}
-
 			}
-
 		}
-
 	}
 }
 
