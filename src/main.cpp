@@ -20,7 +20,6 @@
 const int gNumFrameResources = 3;
 void ShutDownSound();
 
-
 struct RenderItem {
 	RenderItem() = default;
 	RenderItem(const RenderItem& rhs) = delete;
@@ -57,7 +56,6 @@ enum class RenderLayer : int
 	Count
 };
 
-
 enum class RenderDungeon : int
 {
 	NormalMap = 0,
@@ -67,10 +65,8 @@ enum class RenderDungeon : int
 	Quad
 };
 
-
-
 enum class ProgState : int {
-	Init=0,
+	Init = 0,
 	Draw,
 	Exit
 };
@@ -129,7 +125,7 @@ class DungeonStompApp : public VulkApp
 
 	PassConstants mMainPassCB;  // index 0 of pass cbuffer.
 	PassConstants mShadowPassCB;// index 1 of pass cbuffer.
-	
+
 	Light LightContainer[MaxLights];
 	Camera mCamera;
 
@@ -176,16 +172,13 @@ class DungeonStompApp : public VulkApp
 	void UpdateMainPassCB(const GameTimer& gt);
 	void UpdateShadowPassCB(const GameTimer& gt);
 	void UpdateMaterialsBuffer(const GameTimer& gt);
-	void AnimateMaterials(const GameTimer& gt);
 	void UpdateWaves(const GameTimer& gt);
-	
+
 
 	static void asyncInitStatic(DungeonStompApp* pThis);
 	void asyncInit();
 
-	void UpdateDungeon();
 	void LoadTextures();
-	//BOOL LoadRRTextures11(const char* filename);
 	void BuildWavesGeometry();
 	void BuildBuffers();
 	void BuildDescriptors();
@@ -196,7 +189,6 @@ class DungeonStompApp : public VulkApp
 	void BuildShapeGeometry();
 	void BuildSkullGeometry();
 	void DrawRenderItems(VkCommandBuffer, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, RenderDungeon item = RenderDungeon::NormalMap);
-	void DrawSceneToShadowMap();
 
 	BOOL LoadRRTextures11(const char* filename);
 	void SetTextureNormalMap();
@@ -206,7 +198,6 @@ class DungeonStompApp : public VulkApp
 
 public:
 
-	
 	DungeonStompApp(HINSTANCE hInstance);
 	DungeonStompApp(const DungeonStompApp& rhs) = delete;
 	DungeonStompApp& operator=(const DungeonStompApp& rhs) = delete;
@@ -229,11 +220,8 @@ DungeonStompApp::DungeonStompApp(HINSTANCE hInstance) :VulkApp(hInstance) {
 	mSceneBounds.Center = glm::vec3(0.0f, 0.0f, 0.0f);
 	mSceneBounds.Radius = sqrtf(10.0f * 10.0f + 15.0f * 15.0f);
 
-
 	float scale = 1415.0f;
 	mSceneBounds.Radius = sqrtf((10.0f * 10.0f) * scale + (15.0f * 15.0f) * scale);
-
-	
 }
 DungeonStompApp::~DungeonStompApp() {
 	vkDeviceWaitIdle(mDevice);
@@ -242,7 +230,6 @@ DungeonStompApp::~DungeonStompApp() {
 		Vulkan::unmapBuffer(mDevice, buffer);
 		Vulkan::cleanupBuffer(mDevice, buffer);
 	}
-
 
 	for (auto& pair : mGeometries) {
 		free(pair.second->indexBufferCPU);
@@ -266,12 +253,12 @@ bool DungeonStompApp::Initialize() {
 	if (!VulkApp::Initialize())
 		return false;
 
+	//Startup Dungeon Stomp and load textures.
 	srand((unsigned int)time(NULL));
 	SoundInit();
 	CreateDInput(mhMainWnd);
 	LoadRRTextures11("textures.dat");
 	InitDS();
-
 
 	mCamera.SetPosition(0.0f, 2.0f, -15.0f);
 #define __USE__THREAD__
@@ -287,28 +274,25 @@ void DungeonStompApp::asyncInitStatic(DungeonStompApp* pThis) {
 	pThis->asyncInit();
 }
 
-void DungeonStompApp::asyncInit(){
+void DungeonStompApp::asyncInit() {
 
 	mShadowMap = std::make_unique<ShadowMap>(mDevice, mMemoryProperties, mBackQueue, mCommandBuffer, 2048, 2048);
 
 	mWaves = std::make_unique<Waves>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);
 
-
-	LoadTextures();	
+	LoadTextures();
 	BuildShapeGeometry();
 	BuildSkullGeometry();
 	BuildWavesGeometry();
 	BuildMaterials();
-	BuildRenderItems();	
+	BuildRenderItems();
 	BuildBuffers();
 	BuildDescriptors();
 	BuildPSOs();
 
-	
 	BuildFrameResources();
 
 	state = ProgState::Draw;
-	
 }
 
 extern int number_of_tex_aliases;
@@ -316,12 +300,6 @@ extern int number_of_tex_aliases;
 void DungeonStompApp::LoadTextures() {
 
 	auto grassTex = std::make_unique<Texture>();
-
-	/*for (int i = 0; i < 10; i++) {
-		grassTex->Name = TexMap[i].tex_alias_name;
-		grassTex->FileName = TexMap[i].texpath;
-		loadTexture(mDevice, mCommandBuffer, mGraphicsQueue, mMemoryProperties, grassTex->FileName.c_str(), *grassTex);
-	}*/
 
 	auto imageLoader = ImageLoader::begin(mDevice, mCommandBuffer, mBackQueue, mMemoryProperties);
 
@@ -333,7 +311,7 @@ void DungeonStompApp::LoadTextures() {
 		.addImage("../Textures/tile_nmap.png")
 		.addImage("../Textures/white1x1.png")
 		.addImage("../Textures/default_nmap.png"); //.addImage("../Textures/WoodCrate01.png");
-		
+
 
 	for (int i = 0; i < number_of_tex_aliases; i++) {
 		imageLoader.addImage(TexMap[i].texpath);
@@ -353,7 +331,6 @@ void DungeonStompApp::LoadTextures() {
 		.load(texturesList);
 	cubeMapTexture = std::make_unique <VulkanImage>(mDevice, texturesList[0]);
 
-
 	Vulkan::SamplerProperties sampProps;
 	sampProps.addressMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	sampler = std::make_unique<VulkanSampler>(mDevice, Vulkan::initSampler(mDevice, sampProps));
@@ -365,7 +342,7 @@ void DungeonStompApp::BuildBuffers() {
 	std::vector<UniformBufferInfo> bufferInfo{};
 	UniformBufferBuilder::begin(mDevice, mDeviceProperties, mMemoryProperties, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, true)
 		.AddBuffer(sizeof(PassConstants), 2, gNumFrameResources)//one for main, one for shadow
-		.AddBuffer(sizeof(ObjectConstants), mAllRitems.size(), gNumFrameResources)		
+		.AddBuffer(sizeof(ObjectConstants), mAllRitems.size(), gNumFrameResources)
 		.build(dynamicBuffer, bufferInfo);
 	uniformBuffer = std::make_unique<VulkanUniformBuffer>(mDevice, dynamicBuffer, bufferInfo);
 
@@ -575,13 +552,13 @@ void DungeonStompApp::BuildSkullGeometry() {
 		glm::vec3 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
 		if (fabsf(glm::dot(vertices[i].Normal, up)) < 1.0f - 0.001f)
 		{
-			
+
 			vertices[i].TangentU = glm::normalize(glm::cross(up, vertices[i].Normal));
 		}
 		else
 		{
 			up = glm::vec3(0.0f, 0.0f, 1.0f);
-			vertices[i].TangentU = glm::normalize(glm::cross(vertices[i].Normal, up));			
+			vertices[i].TangentU = glm::normalize(glm::cross(vertices[i].Normal, up));
 		}
 
 		vMin = MathHelper::vectorMin(vMin, p);
@@ -631,8 +608,6 @@ void DungeonStompApp::BuildSkullGeometry() {
 	IndexBufferBuilder::begin(mDevice, mBackQueue, mCommandBuffer, mMemoryProperties)
 		.AddIndices(ibByteSize, indices.data())
 		.build(geo->indexBufferGPU, indexLocations);
-
-
 
 	geo->VertexByteStride = sizeof(Vertex);
 	geo->VertexBufferByteSize = vbByteSize;
@@ -957,15 +932,12 @@ void DungeonStompApp::BuildMaterials()
 
 	//new material - increment MatCBIndex 
 
-
 	mMaterials["bricks0"] = std::move(bricks0);
 	mMaterials["tile0"] = std::move(tile0);
 	mMaterials["mirror0"] = std::move(mirror0);
 	mMaterials["skullMat"] = std::move(skullMat);
 	mMaterials["sky"] = std::move(sky);
 	mMaterials["wall0"] = std::move(wall0);
-
-
 
 	mMaterials["default"] = std::move(default2);
 	mMaterials["grass"] = std::move(grass);
@@ -1002,9 +974,6 @@ void DungeonStompApp::BuildMaterials()
 
 	mMaterials["ceilingmain"] = std::move(ceilingmain);
 	mMaterials["pillar"] = std::move(pillar);
-
-
-	
 }
 
 void DungeonStompApp::BuildRenderItems()
@@ -1028,7 +997,7 @@ void DungeonStompApp::BuildRenderItems()
 	quadRitem->ObjCBIndex = 1;
 	quadRitem->Mat = mMaterials["bricks0"].get();
 	quadRitem->Geo = mGeometries["shapeGeo"].get();
-	
+
 	quadRitem->IndexCount = quadRitem->Geo->DrawArgs["quad"].IndexCount;
 	quadRitem->StartIndexLocation = quadRitem->Geo->DrawArgs["quad"].StartIndexLocation;
 	quadRitem->BaseVertexLocation = quadRitem->Geo->DrawArgs["quad"].BaseVertexLocation;
@@ -1154,8 +1123,6 @@ void DungeonStompApp::BuildRenderItems()
 	mRitemLayer[(int)RenderLayer::Opaque].push_back(wavesRitem.get());
 	mAllRitems.push_back(std::move(wavesRitem));
 
-
-
 	for (int i = 0; i < number_of_tex_aliases; i++) {
 
 		auto wavesRitem = std::make_unique<RenderItem>();
@@ -1177,12 +1144,7 @@ void DungeonStompApp::BuildRenderItems()
 		mRitemLayer[(int)RenderLayer::Opaque].push_back(wavesRitem.get());
 		mAllRitems.push_back(std::move(wavesRitem));
 	}
-
-
-
 }
-
-
 
 void DungeonStompApp::BuildWavesGeometry() {
 	std::vector<uint32_t> indices(3 * mWaves->TriangleCount());//3 indices per face
@@ -1294,8 +1256,6 @@ void DungeonStompApp::BuildWavesGeometry() {
 
 }
 
-
-
 void DungeonStompApp::BuildDescriptors() {
 	descriptorSetPoolCache = std::make_unique<DescriptorSetPoolCache>(mDevice);
 	descriptorSetLayoutCache = std::make_unique<DescriptorSetLayoutCache>(mDevice);
@@ -1348,7 +1308,7 @@ void DungeonStompApp::BuildDescriptors() {
 	DescriptorSetBuilder::begin(descriptorSetPoolCache.get(), descriptorSetLayoutCache.get())
 		.AddBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, (uint32_t)1)
 		.build(descriptor5, descriptorLayout5);
-	descriptors = { descriptor5};
+	descriptors = { descriptor5 };
 	shadowDescriptors = std::make_unique<VulkanDescriptorList>(mDevice, descriptors);
 
 
@@ -1395,11 +1355,8 @@ void DungeonStompApp::BuildDescriptors() {
 			.AddBinding(0, VK_DESCRIPTOR_TYPE_SAMPLER, &sampInfo)
 			.AddBinding(1, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, imageInfos.data(), (uint32_t)tl)
 			.update();
-
-
 	}
 	{
-
 		VkDescriptorImageInfo imageInfo{};
 
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -1425,11 +1382,11 @@ void DungeonStompApp::BuildDescriptors() {
 		.AddDescriptorSetLayout(descriptorLayout1)
 		.AddDescriptorSetLayout(descriptorLayout2)
 		.AddDescriptorSetLayout(descriptorLayout3)
-		.AddDescriptorSetLayout(descriptorLayout4)		
+		.AddDescriptorSetLayout(descriptorLayout4)
 		.build(layout);
 	shadowPipelineLayout = std::make_unique<VulkanPipelineLayout>(mDevice, layout);
 
-	
+
 	PipelineLayoutBuilder::begin(mDevice)
 		.AddDescriptorSetLayout(descriptorLayout0)
 		.AddDescriptorSetLayout(descriptorLayout1)
@@ -1503,7 +1460,6 @@ void DungeonStompApp::BuildPSOs() {
 		for (auto& shader : shaders) {
 			Vulkan::cleanupShaderModule(mDevice, shader.shaderModule);
 		}
-
 	}
 	{
 		std::vector<Vulkan::ShaderModule> shaders;
@@ -1537,7 +1493,7 @@ void DungeonStompApp::BuildPSOs() {
 			.AddShaderPath("..//Shaders/shadow.frag.spv")
 			.load(shaders, vertexInputDescription, vertexAttributeDescriptions);
 		VkPipeline pipeline = VK_NULL_HANDLE;
-		
+
 		PipelineBuilder::begin(mDevice, *shadowPipelineLayout, mShadowMap->getRenderPass(), shaders, vertexInputDescription, vertexAttributeDescriptions)
 			.setCullMode(VK_CULL_MODE_BACK_BIT)
 			.setPolygonMode(VK_POLYGON_MODE_FILL)
@@ -1563,7 +1519,7 @@ void DungeonStompApp::BuildPSOs() {
 		VkPipeline pipeline = VK_NULL_HANDLE;
 		PipelineBuilder::begin(mDevice, *debugPipelineLayout, mRenderPass, shaders, vertexInputDescription, vertexAttributeDescriptions)
 			.setCullMode(VK_CULL_MODE_FRONT_BIT)
-			.setPolygonMode(VK_POLYGON_MODE_FILL)	
+			.setPolygonMode(VK_POLYGON_MODE_FILL)
 			.setDepthTest(VK_TRUE)
 			.setDepthCompareOp(VK_COMPARE_OP_LESS_OR_EQUAL)
 			.build(pipeline);
@@ -1605,7 +1561,6 @@ void DungeonStompApp::OnMouseMove(WPARAM btnState, int x, int y) {
 		mCamera.RotateY(dx);
 	}
 
-
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 }
@@ -1634,20 +1589,17 @@ void DungeonStompApp::Update(const GameTimer& gt) {
 		mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
 		mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
-
 		float t = gt.DeltaTime();
 		UpdateControls();
 		FrameMove(0.0f, t);
 		UpdateWorld(t);
-		//OnKeyboardInput(gt);
 
 		//bobY.update(t);
 		//bobX.update(t);
 
 		UpdateCamera(gt, mCamera);
 
-		mSceneBounds.Center = glm::vec3(m_vEyePt.x, m_vEyePt.y, m_vEyePt.z); 
-
+		mSceneBounds.Center = glm::vec3(m_vEyePt.x, m_vEyePt.y, m_vEyePt.z);
 
 		OnKeyboardInput(gt);
 		//
@@ -1662,7 +1614,6 @@ void DungeonStompApp::Update(const GameTimer& gt) {
 
 		}
 
-		AnimateMaterials(gt);
 		UpdateObjectCBs(gt);
 		UpdateMaterialsBuffer(gt);
 		UpdateShadowTransform(gt);
@@ -1676,40 +1627,12 @@ extern int cutoff;
 
 void DungeonStompApp::UpdateWaves(const GameTimer& gt)
 {
-	// Every quarter second, generate a random wave.
-	static float t_base = 0.0f;
-	if ((mTimer.TotalTime() - t_base) >= 0.25f)
-	{
-		t_base += 0.25f;
-
-		int i = MathHelper::Rand(4, mWaves->RowCount() - 5);
-		int j = MathHelper::Rand(4, mWaves->ColumnCount() - 5);
-
-		float r = MathHelper::RandF(0.2f, 0.5f);
-
-		mWaves->Disturb(i, j, r);
-	}
-
 	// Update the wave simulation.
 	mWaves->Update(gt.DeltaTime());
-	//VkDeviceSize waveBufferSize = sizeof(Vertex) * cnt;
-
-	//VkDeviceSize waveBufferSize = sizeof(Vertex) * mWaves->VertexCount();
 
 	Vertex* pWaves = mCurrFrameResource->pWavesVB;
 
-	//for (int i = 0; i < mWaves->VertexCount(); ++i) {
-	//	pWaves[i].Pos = mWaves->Position(i);
-	//	pWaves[i].Normal = mWaves->Normal(i);
-	//	// Derive tex-coords from position by 
-	//	// mapping [-w/2,w/2] --> [0,1]
-	//	pWaves[i].TexC.x = 0.5f + pWaves[i].Pos.x / mWaves->Width();
-	//	pWaves[i].TexC.y = 0.5f - pWaves[i].Pos.z / mWaves->Depth();
-	//}
-
-
 	// Update the dungeon vertex buffer with the new solution.
-
 	for (int j = 0; j < cutoff; j++)
 	{
 		pWaves[j].Pos.x = src_v[j].x;
@@ -1728,18 +1651,15 @@ void DungeonStompApp::UpdateWaves(const GameTimer& gt)
 		pWaves[j].TangentU.z = src_v[j].nmz;
 	}
 
-
 	mWavesRitem->Geo->vertexBufferGPU = WaveVertexBuffers[mCurrFrameResourceIndex];
-
 }
+
 bool isFullscreen = false;
 bool enableWindowKey = false;
 WINDOWPLACEMENT                          wpc{};                                           // window placement information
 
-
 void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 {
-
 	//rise from the dead
 	if (player_list[trueplayernum].bIsPlayerAlive == FALSE) {
 		if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
@@ -1749,18 +1669,11 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 	}
 
 	const float dt = gt.DeltaTime();
-	//if (GetAsyncKeyState('P') & 0x8000)
-		//saveScreenCap(mDevice, mCommandBuffer, mBackQueue, mSwapchainImages[mIndex], mFormatProperties, mSwapchainFormat.format, mSwapchainExtent, mFrameCount);
 
 	if (GetAsyncKeyState('1') & 0x8000)
 		mIsWireframe = true;
 	else
 		mIsWireframe = false;
-	
-	if (GetAsyncKeyState('2') & 0x8000)
-		mIsFlatShader = false;
-	else
-		mIsFlatShader = true;
 
 	if (GetAsyncKeyState('F') && !enableWindowKey) {
 
@@ -1838,7 +1751,6 @@ void  DungeonStompApp::UpdateObjectCBs(const GameTimer& gt) {
 	auto& ub = *uniformBuffer;
 	VkDeviceSize objSize = ub[1].objectSize;
 
-
 	for (auto& e : mAllRitems) {
 		//Only update the cbuffer data if the constants have changed.
 		//This needs to be tracked per frame resource.
@@ -1878,10 +1790,6 @@ void DungeonStompApp::UpdateMaterialsBuffer(const GameTimer& gt) {
 	}
 }
 
-void DungeonStompApp::AnimateMaterials(const GameTimer& gt)
-{
-
-}
 
 void DungeonStompApp::UpdateShadowTransform(const GameTimer& gt)
 {
@@ -2013,7 +1921,7 @@ void DungeonStompApp::UpdateShadowPassCB(const GameTimer& gt) {
 	mShadowPassCB.InvViewProj = invViewProj;
 	mShadowPassCB.ShadowTransform = mShadowTransform;
 	mShadowPassCB.EyePosW = mLightPosW;
-	mShadowPassCB.RenderTargetSize = glm::vec2(w,h);
+	mShadowPassCB.RenderTargetSize = glm::vec2(w, h);
 	mShadowPassCB.InvRenderTargetSize = glm::vec2(1.0f / w, 1.0f / h);
 	mShadowPassCB.NearZ = mLightNearZ;
 	mShadowPassCB.FarZ = mLightFarZ;
@@ -2043,7 +1951,7 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 		cmd = BeginRender(true);
 		EndRender(cmd);
 	}
-	else if(ProgState::Draw == state) {
+	else if (ProgState::Draw == state) {
 
 		auto& ub = *uniformBuffer;
 		VkDeviceSize passSize = ub[0].objectSize;
@@ -2142,9 +2050,6 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["sky"]);
 			//DrawRenderItems(cmd, *cubeMapPipelineLayout, mRitemLayer[(int)RenderLayer::Sky]);
 
-
-
-
 			//Draw normalmap
 			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaque"]);
 
@@ -2154,10 +2059,8 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 4, 1, &descriptor4, 0, 0);//bind PC data once
 			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipelineLayout, 5, 1, &descriptor5, 0, 0);//bind PC data once
 
-			
-
+			//Finally, draw the dungeon.
 			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::NormalMap);
-		
 			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaqueFlat"]);
 			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::Flat);
 
@@ -2171,14 +2074,10 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 
 			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["sky"]);
 			DrawRenderItems(cmd, *cubeMapPipelineLayout, mRitemLayer[(int)RenderLayer::Sky], RenderDungeon::Sky);
-
-
 		}
-		
-
 		EndRender(cmd);
 	}
-	
+
 	ScanMod(gt.DeltaTime());
 }
 
@@ -2196,8 +2095,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 
 	ProcessLights11();
 
-
-	//for (size_t i = 0; i < ritems.size(); i++) {
 	//for (size_t i = 0; i < ritems.size(); i++) {
 	{
 		int i = 23;
@@ -2208,15 +2105,10 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 		if (item == RenderDungeon::Quad)
 			i = 0;
 
-
 		auto ri = ritems[i];
 
-
-		//if (i > 25)
-			//return;
-
 		if (ri->ObjCBIndex == 0 || ri->ObjCBIndex == 1) {
-
+			//Draw the sky or the debug quad.
 			uint32_t indexOffset = ri->StartIndexLocation;
 
 			const auto vbv = ri->Geo->vertexBufferGPU;
@@ -2230,10 +2122,9 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 			pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptor1, 1, dyoffsets);
 			pvkCmdDrawIndexed(cmd, ri->IndexCount, 1, 0, ri->BaseVertexLocation, 0);
 		}
-		
+
 		if (ri->ObjCBIndex == 25) {
-
-
+			//Draw the dungeon 
 			uint32_t indexOffset = ri->StartIndexLocation;
 
 			const auto vbv = ri->Geo->vertexBufferGPU;
@@ -2255,13 +2146,11 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 			cbvIndex = texture_alias_number;
 
 			//uint32_t dyoffsets[2] = { (uint32_t)(cbvIndex * objectSize) };
-			
-
-		
 			//for (int j = 0; j < cutoff; j++)    //number_of_polys_per_frame
 			//{
 			//	vkCmdDraw(cmd, 3, 1, j * 3, 0);
 			//}
+
 			bool draw = true;
 			int v = 0;
 			int vert_index = 0;
@@ -2269,8 +2158,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 
 			for (int currentObject = 0; currentObject < number_of_polys_per_frame; currentObject++)
 			{
-				
-
 				int i = ObjectsToDraw[currentObject].vert_index;
 				int vert_index = ObjectsToDraw[currentObject].srcstart;
 				int fperpoly = ObjectsToDraw[currentObject].srcfstart;
@@ -2281,13 +2168,12 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 				int oid = 0;
 				int normal_map_texture = TexMap[texture_alias_number].normalmaptextureid;
 
-
 				draw = false;
-				
+
 				if (item == RenderDungeon::NormalMap && normal_map_texture == -1) {
 					draw = false;
 				}
-				if (item == RenderDungeon::NormalMap && normal_map_texture != -1 ) {
+				if (item == RenderDungeon::NormalMap && normal_map_texture != -1) {
 					draw = true;
 				}
 
@@ -2298,8 +2184,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 				if (item == RenderDungeon::Flat && normal_map_texture != -1) {
 					draw = false;
 				}
-
-
 
 				if (currentObject >= playerObjectStart && currentObject < playerObjectEnd) {
 					draw = false;
@@ -2315,7 +2199,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 				}
 
 				if (item == RenderDungeon::Shadow) {
-
 					if (oid == -1) {
 						//Draw 3DS and MD2 Shadows
 						draw = true;
@@ -2338,7 +2221,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 
 				if (draw) {
 					if (dp_command_index_mode[i] == 1) {  //USE_NON_INDEXED_DP
-						
+
 						v = verts_per_poly[currentObject];
 						vert_index = ObjectsToDraw[currentObject].srcstart;
 
@@ -2348,6 +2231,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 						pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptor1, 1, dyoffsets);
 						lastTexture = texture;
 
+						//Draw the dungeon, monsters and items.
 						vkCmdDraw(cmd, v, 1, vert_index, 0);
 					}
 				}
@@ -2380,8 +2264,6 @@ int main() {
 	}
 }
 
-
-
 extern int number_of_tex_aliases;
 
 BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
@@ -2411,18 +2293,9 @@ BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
 		//return FALSE;
 	}
 
-	//TODO: fix this
-	//for (int i = 0;i < 400;i++) {
-		//textures[i] = NULL;
-	//}
-
-	//CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-
 	int flip = 0;
 
 	auto grassTex = std::make_unique<Texture>();
-
 
 	while (done == 0)
 	{
@@ -2443,10 +2316,6 @@ BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
 			fscanf_s(fp, "%s", &p, 256);
 			strcpy_s((char*)TexMap[tex_alias_counter].tex_alias_name, 100, (char*)&p);
 
-
-			
-
-
 			TexMap[tex_alias_counter].texture = tex_counter - 1;
 
 			bool exists = true;
@@ -2464,13 +2333,11 @@ BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
 				strcpy_s(t, "../Textures/bluetile1.png");
 			}
 
-
 			strcpy_s(TexMap[tex_alias_counter].texpath, t);
 
 			grassTex->Name = t;
 			grassTex->FileName = t;
-//			loadTexture(mDevice, mCommandBuffer, mGraphicsQueue, mMemoryProperties, grassTex->FileName.c_str(), *grassTex);
-
+			//loadTexture(mDevice, mCommandBuffer, mGraphicsQueue, mMemoryProperties, grassTex->FileName.c_str(), *grassTex);
 
 			fscanf_s(fp, "%s", &p, 256);
 			if (strcmp(p, "AlphaTransparent") == 0)
@@ -2624,8 +2491,6 @@ BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
 	return TRUE;
 }
 
-
-
 void DungeonStompApp::SetTextureNormalMap() {
 
 	char junk[255];
@@ -2653,8 +2518,6 @@ void DungeonStompApp::SetTextureNormalMapEmpty() {
 		TexMap[i].normalmaptextureid = -1;
 	}
 }
-
-
 
 void DungeonStompApp::ProcessLights11()
 {
@@ -2849,4 +2712,5 @@ void DungeonStompApp::ProcessLights11()
 		LightContainer[i + 16].SpotPower = 1.9f;
 	}
 }
+
 
