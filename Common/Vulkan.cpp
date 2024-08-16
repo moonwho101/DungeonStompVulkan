@@ -530,7 +530,7 @@ namespace Vulkan {
 		samplerCI.maxAnisotropy = 1.0f;
 		samplerCI.compareOp = VK_COMPARE_OP_NEVER;
 		samplerCI.minLod = 0.0f;
-		samplerCI.maxLod = (float)mipLevels;
+		samplerCI.maxLod = (float)5;
 		samplerCI.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 		VkSampler sampler;
 		VkResult res = vkCreateSampler(device, &samplerCI, nullptr, &sampler);

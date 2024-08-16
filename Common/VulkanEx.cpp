@@ -846,6 +846,10 @@ void ImageLoader::loadImageArray(std::vector<uint8_t*>& pixelArray, uint32_t wid
 
 void ImageLoader::loadImage(uint8_t* pixels, uint32_t width, uint32_t height, VkFormat format, bool enableLod, Vulkan::Image& image) {
 	VkDeviceSize imageSize = (VkDeviceSize)(width * height * 4);
+
+	image.mipLevels = 5;
+
+
 	Vulkan::TextureProperties props;
 	props.format = PREFERRED_IMAGE_FORMAT;
 	props.imageUsage = (VkImageUsageFlagBits)(VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
@@ -856,7 +860,7 @@ void ImageLoader::loadImage(uint8_t* pixels, uint32_t width, uint32_t height, Vk
 #endif
 	props.width = (uint32_t)width;
 	props.height = (uint32_t)height;
-	props.mipLevels = enableLod ? 0 : 1;
+	props.mipLevels = 5;
 	props.samplerProps.addressMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	initImage(device, memoryProperties, props, image);
 	Vulkan::transitionImage(device, queue, commandBuffer, image.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, image.mipLevels);
