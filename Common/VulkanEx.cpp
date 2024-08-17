@@ -3,7 +3,7 @@
 
 //#define DESCRIPTOR_POOL_SIZE 0x100 //allocate this for a block
 #define DESCRIPTOR_POOL_SIZE 0x600 //allocate this for a block
-
+extern int MIPS_LEVEL;
 
 #include <stb_image.h>
 #include <fstream>
@@ -847,7 +847,7 @@ void ImageLoader::loadImageArray(std::vector<uint8_t*>& pixelArray, uint32_t wid
 void ImageLoader::loadImage(uint8_t* pixels, uint32_t width, uint32_t height, VkFormat format, bool enableLod, Vulkan::Image& image) {
 	VkDeviceSize imageSize = (VkDeviceSize)(width * height * 4);
 
-	image.mipLevels = 5;
+	image.mipLevels = MIPS_LEVEL;
 
 
 	Vulkan::TextureProperties props;
@@ -860,7 +860,7 @@ void ImageLoader::loadImage(uint8_t* pixels, uint32_t width, uint32_t height, Vk
 #endif
 	props.width = (uint32_t)width;
 	props.height = (uint32_t)height;
-	props.mipLevels = 5;
+	props.mipLevels = MIPS_LEVEL;
 	props.samplerProps.addressMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	initImage(device, memoryProperties, props, image);
 	Vulkan::transitionImage(device, queue, commandBuffer, image.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, image.mipLevels);

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 
-
+int MIPS_LEVEL = 5;
 
 namespace Vulkan {
 #ifdef __USE__VMA__
@@ -530,7 +530,7 @@ namespace Vulkan {
 		samplerCI.maxAnisotropy = 1.0f;
 		samplerCI.compareOp = VK_COMPARE_OP_NEVER;
 		samplerCI.minLod = 0.0f;
-		samplerCI.maxLod = (float)5;
+		samplerCI.maxLod = (float)MIPS_LEVEL;
 		samplerCI.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 		VkSampler sampler;
 		VkResult res = vkCreateSampler(device, &samplerCI, nullptr, &sampler);

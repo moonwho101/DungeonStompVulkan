@@ -5,6 +5,9 @@
 #include <stb_image_write.h>
 //#include <ktx.h>
 //#include <ktxvulkan.h>
+
+extern int MIPS_LEVEL;
+
 using namespace Vulkan;
 
 void loadTexture(VkDevice device, VkCommandBuffer commandBuffer, VkQueue queue, VkPhysicalDeviceMemoryProperties memoryProperties, uint8_t* pixels, uint32_t width, uint32_t height, VkFormat format, Vulkan::Texture& image, bool enableLod) {
@@ -20,7 +23,7 @@ void loadTexture(VkDevice device, VkCommandBuffer commandBuffer, VkQueue queue, 
 #endif
 	props.width = (uint32_t)width;
 	props.height = (uint32_t)height;
-	props.mipLevels = 5;	
+	props.mipLevels = MIPS_LEVEL;
 	props.samplerProps.addressMode = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 	initTexture(device, memoryProperties, props, image);
 	transitionImage(device, queue, commandBuffer, image.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, image.mipLevels);
