@@ -2217,8 +2217,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 					}
 				}
 
-
-				if (currentObject >= playerGunObjectStart && currentObject < playerObjectStart) {
+				if (currentObject >= playerGunObjectStart && currentObject < playerObjectStart && item == RenderDungeon::Shadow) {
 					//don't draw the onscreen player weapon
 					draw = false;
 				}
@@ -2231,8 +2230,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 				if (currentObject >= playerObjectStart && currentObject < playerObjectEnd && item == RenderDungeon::Shadow) {
 					draw = true;
 				}
-
-
 
 				if (draw) {
 					if (dp_command_index_mode[i] == 1) {  //USE_NON_INDEXED_DP
