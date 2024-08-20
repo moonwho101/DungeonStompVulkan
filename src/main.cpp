@@ -2084,6 +2084,7 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 
 extern int playerObjectStart;
 extern int playerObjectEnd;
+extern int  playerGunObjectStart;
 bool ObjectHasShadow(int object_id);
 int lastTexture = -1;
 
@@ -2185,9 +2186,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 					draw = false;
 				}
 
-				if (currentObject >= playerObjectStart && currentObject < playerObjectEnd) {
-					draw = false;
-				}
 
 				if (item == RenderDungeon::Shadow) {
 					oid = ObjectsToDraw[currentObject].objectId;
@@ -2218,6 +2216,23 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 						draw = false;
 					}
 				}
+
+
+				if (currentObject >= playerGunObjectStart && currentObject < playerObjectStart) {
+					//don't draw the onscreen player weapon
+					draw = false;
+				}
+
+
+				if (currentObject >= playerObjectStart && currentObject < playerObjectEnd && item != RenderDungeon::Shadow) {
+					draw = false;
+				}
+
+				if (currentObject >= playerObjectStart && currentObject < playerObjectEnd && item == RenderDungeon::Shadow) {
+					draw = true;
+				}
+
+
 
 				if (draw) {
 					if (dp_command_index_mode[i] == 1) {  //USE_NON_INDEXED_DP
