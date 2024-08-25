@@ -382,6 +382,9 @@ void main(){
 	// Vector from point being lit to eye. 
     //float3 toEyeW = normalize(gEyePosW - pin.PosW);
 	vec3 toEyeW = normalize(gEyePosW - inPosW);	
+
+	vec3 camFrag =  inPosW - gEyePosW;
+    float distToEye = length(camFrag);
 	
 	// Light terms.
     //float4 ambient = gAmbientLight*diffuseAlbedo;
@@ -407,7 +410,10 @@ void main(){
 	vec4 reflectionColor = texture(samplerCube(cubeMap,samp),r);
 	vec3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
 	litColor.rgb += shininess * fresnelFactor; // * reflectionColor.rgb;
-	
+
+	//Add fog
+	float fogAmount = clamp((distToEye - gFogStart) / gFogRange, 0.0, 1.0);
+    litColor = mix(litColor, gFogColor, fogAmount);
 	
     // Common convention to take alpha from diffuse material.
     litColor.a = diffuseAlbedo.a;
