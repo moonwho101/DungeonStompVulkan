@@ -30,7 +30,7 @@ struct PassConstants {
 	float TotalTime = 0.0f;
 	float DeltaTime = 0.0f;
 	glm::vec4 AmbientLight = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	glm::vec4 FogColor = { 0.7f, 0.7f, 0.7f, 1.0f }; // { 0.4f, 0.4f, 1.0f, 1.0f };
+	glm::vec4 FogColor = { 0.4f, 0.4f, 1.0f, 1.0f }; // { 0.4f, 0.4f, 1.0f, 1.0f };
 	float gFogStart = 500.0f;
 	float gFogRange = 1000.0f;
 	glm::vec2 cbPerObjectPad2;
