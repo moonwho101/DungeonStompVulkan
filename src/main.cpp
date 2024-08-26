@@ -62,7 +62,8 @@ enum class RenderDungeon : int
 	Flat,
 	Sky,
 	Shadow,
-	Quad
+	Quad,
+	Torch
 };
 
 enum class ProgState : int {
@@ -93,6 +94,7 @@ class DungeonStompApp : public VulkApp
 	std::unique_ptr<VulkanPipelineLayout> shadowPipelineLayout;
 	std::unique_ptr<VulkanPipelineLayout> debugPipelineLayout;
 	std::unique_ptr<VulkanPipeline> opaquePipeline;
+	std::unique_ptr<VulkanPipeline> torchPipeline;
 	std::unique_ptr<VulkanPipeline> wireframePipeline;
 	std::unique_ptr<VulkanPipeline> opaqueFlatPipeline;
 	std::unique_ptr<VulkanPipeline> cubeMapPipeline;
@@ -1440,6 +1442,18 @@ void DungeonStompApp::BuildPSOs() {
 		opaquePipeline = std::make_unique<VulkanPipeline>(mDevice, pipeline);
 		mPSOs["opaque"] = *opaquePipeline;
 
+
+		PipelineBuilder::begin(mDevice, *pipelineLayout, mRenderPass, shaders, vertexInputDescription, vertexAttributeDescriptions)
+			.setCullMode(VK_CULL_MODE_FRONT_BIT)
+			.setPolygonMode(VK_POLYGON_MODE_FILL)
+			.setDepthTest(VK_TRUE)
+			.setSpecializationConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 3)
+			.setSpecializationConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 1)
+			.setSpecializationConstant(VK_SHADER_STAGE_FRAGMENT_BIT, 1)
+			.build(pipeline);
+		torchPipeline = std::make_unique<VulkanPipeline>(mDevice, pipeline);
+		mPSOs["torch"] = *torchPipeline;
+
 		PipelineBuilder::begin(mDevice, *pipelineLayout, mRenderPass, shaders, vertexInputDescription, vertexAttributeDescriptions)
 			.setCullMode(VK_CULL_MODE_FRONT_BIT)
 			.setPolygonMode(VK_POLYGON_MODE_FILL)
@@ -2064,6 +2078,9 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["opaqueFlat"]);
 			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::Flat);
 
+			pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["torch"]);
+			DrawRenderItems(cmd, *pipelineLayout, mRitemLayer[(int)RenderLayer::Opaque], RenderDungeon::Torch);
+
 			//pvkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, mPSOs["debug"]);
 			//DrawRenderItems(cmd, *debugPipelineLayout, mRitemLayer[(int)RenderLayer::Debug], RenderDungeon::Quad);
 
@@ -2229,6 +2246,20 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 
 				if (currentObject >= playerObjectStart && currentObject < playerObjectEnd && item == RenderDungeon::Shadow) {
 					draw = true;
+				}
+
+
+				if (texture_number >= 94 && texture_number <= 101 ||
+					texture_number >= 289 - 1 && texture_number <= 296 - 1 ||
+					texture_number >= 279 - 1 && texture_number <= 288 - 1 ||
+					texture_number >= 206 - 1 && texture_number <= 210 - 1 ||
+					texture_number == 378) {
+
+					draw = false;
+
+					if (item == RenderDungeon::Torch) {
+						draw = true;
+					}
 				}
 
 				if (draw) {

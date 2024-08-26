@@ -360,6 +360,12 @@ void main(){
 		if(diffuseAlbedo.a -0.1 < 0.0)
 			discard;
 	//}
+
+	if(enableAlphaTest>0){
+		outFragColor = texture(sampler2D(textureMap[diffuseTexIndex],samp),inTexC);
+		return;
+	}
+
 	
 	
 	// Interpolating normal can unnormalize it, so renormalize it.
