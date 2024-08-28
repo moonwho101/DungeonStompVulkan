@@ -10,10 +10,14 @@
 #include "GameLogic.hpp"
 #include "Dice.hpp"
 
-//Only one input device should be true.  Set g_bUseJoystick=true for xbox controller.
+//Only one input device should be true.\
+//Set g_bUseJoystick=true for xbox controller.
 BOOL g_bUseMouse = true;
 BOOL g_bUseJoystick = false;
 BOOL g_bUseKeyboard = false;
+
+//Adjust Mouse speed here.
+float mousediv = 35.0f;
 
 void PlaySong();
 extern int damageinprogress;
@@ -58,7 +62,7 @@ float filtery = 0;
 BOOL have_i_moved_flag;
 float rotate_camera;
 
-float mousediv = 35.0f;
+
 D3DVALUE angx = 0;
 
 D3DVALUE angz = 0;
