@@ -167,6 +167,7 @@
     <ClInclude Include="col_global.h" />
     <ClInclude Include="col_local.h" />
     <ClInclude Include="DirectInput.hpp" />
+    <ClInclude Include="DungeonStomp.h" />
     <ClInclude Include="FrameMove.hpp" />
     <ClInclude Include="FrameResource.h" />
     <ClInclude Include="GameLogic.hpp" />
