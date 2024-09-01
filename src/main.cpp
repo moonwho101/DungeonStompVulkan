@@ -38,7 +38,6 @@ DungeonStompApp::~DungeonStompApp() {
 	ShutDownSound();
 }
 
-
 int SoundInit();
 HRESULT CreateDInput(HWND hWnd);
 extern void InitDS();
@@ -84,7 +83,6 @@ void DungeonStompApp::asyncInit() {
 	BuildBuffers();
 	BuildDescriptors();
 	BuildPSOs();
-
 	BuildFrameResources();
 
 	state = ProgState::Draw;
@@ -607,7 +605,6 @@ void DungeonStompApp::BuildMaterials()
 	tilebrown->FresnelR0 = glm::vec3(0.02f, 0.02f, 0.02f);
 	tilebrown->Roughness = 0.324f;
 
-
 	auto monster = std::make_unique<Material>();
 	monster->Name = "monster";
 	monster->NumFramesDirty = gNumFrameResources;
@@ -616,7 +613,6 @@ void DungeonStompApp::BuildMaterials()
 	monster->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	monster->FresnelR0 = glm::vec3(0.05f, 0.05f, 0.05f);
 	monster->Roughness = 0.833f;
-
 
 	auto monsterweapon = std::make_unique<Material>();
 	monsterweapon->Name = "monsterweapon";
@@ -635,7 +631,6 @@ void DungeonStompApp::BuildMaterials()
 	playerweapon->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	playerweapon->FresnelR0 = glm::vec3(0.07f, 0.07f, 0.07f);
 	playerweapon->Roughness = 0.742f;
-
 
 	auto coin = std::make_unique<Material>();
 	coin->Name = "coin";
@@ -900,7 +895,6 @@ void DungeonStompApp::BuildRenderItems()
 		mAllRitems.push_back(std::move(leftSphereRitem));
 		mAllRitems.push_back(std::move(rightSphereRitem));
 	}
-
 
 	auto wavesRitem = std::make_unique<RenderItem>();
 	wavesRitem->World = MathHelper::Identity4x4();
@@ -1409,10 +1403,8 @@ void DungeonStompApp::Update(const GameTimer& gt) {
 		mSceneBounds.Center = glm::vec3(m_vEyePt.x, m_vEyePt.y, m_vEyePt.z);
 
 		OnKeyboardInput(gt);
-		//
-		// Animate the lights (and hence shadows).
-		//
 
+		// Animate the lights (and hence shadows).
 		//mLightRotationAngle += 0.9f * gt.DeltaTime();
 		glm::mat4 R = glm::rotate(glm::mat4(1.0f), mLightRotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 		for (int i = 0; i < 3; ++i) {
@@ -1518,11 +1510,10 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 	//mCamera.UpdateViewMatrix();
 }
 
-
 void  DungeonStompApp::ToggleFullscreen(bool isFullscreen) {
 
-	LONG HWND_style = 0;                         // current Hwnd style
-	LONG HWND_extended_style = 0;                         // previous Hwnd style
+	LONG HWND_style = 0;// current Hwnd style
+	LONG HWND_extended_style = 0;// previous Hwnd style
 
 	if (HWND_style == 0)
 		HWND_style = GetWindowLong(mhMainWnd, GWL_STYLE);
@@ -1550,7 +1541,6 @@ void  DungeonStompApp::ToggleFullscreen(bool isFullscreen) {
 		ShowCursor(true);
 	}
 }
-
 
 void  DungeonStompApp::UpdateObjectCBs(const GameTimer& gt) {
 
@@ -1596,7 +1586,6 @@ void DungeonStompApp::UpdateMaterialsBuffer(const GameTimer& gt) {
 		}
 	}
 }
-
 
 void DungeonStompApp::UpdateShadowTransform(const GameTimer& gt)
 {
@@ -1659,8 +1648,6 @@ void DungeonStompApp::UpdateMainPassCB(const GameTimer& gt) {
 	glm::mat4 invProj = glm::inverse(proj);
 	glm::mat4 invViewProj = glm::inverse(viewProj);
 
-
-
 	PassConstants* pPassConstants = mCurrFrameResource->pPCs;
 	mMainPassCB.View = view;
 	mMainPassCB.Proj = proj;
@@ -1684,9 +1671,6 @@ void DungeonStompApp::UpdateMainPassCB(const GameTimer& gt) {
 	mMainPassCB.Lights[2].Direction = mRotatedLightDirections[2];
 	mMainPassCB.Lights[2].Strength = { 0.2f, 0.2f, 0.2f };
 
-
-	//mMainPassCB.AmbientLight = { 0.1f, 0.1f, 0.15f, 1.0f };
-
 	//XMVECTOR lightDir = -MathHelper::SphericalToCartesian(1.0f, mSunTheta, mSunPhi);
 	//XMStoreFloat3(&mMainPassCB.Lights[0].Direction, lightDir);
 	//mMainPassCB.Lights[0].Strength = { 1.0f, 1.0f, 0.9f };
@@ -1700,7 +1684,7 @@ void DungeonStompApp::UpdateMainPassCB(const GameTimer& gt) {
 		mMainPassCB.Lights[i].SpotPower = LightContainer[i].SpotPower;
 	}
 
-	//mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
+
 	mMainPassCB.Lights[0].Direction = mRotatedLightDirections[0];
 
 
@@ -1747,7 +1731,6 @@ void DungeonStompApp::UpdateShadowPassCB(const GameTimer& gt) {
 	uint8_t* ptr = (uint8_t*)pPassConstants + size;
 	memcpy(ptr, &mShadowPassCB, sizeof(PassConstants));
 }
-
 
 void ScanMod(float fElapsedTime);
 
@@ -1891,7 +1874,6 @@ void DungeonStompApp::Draw(const GameTimer& gt) {
 	ScanMod(gt.DeltaTime());
 }
 
-
 extern int playerObjectStart;
 extern int playerObjectEnd;
 extern int  playerGunObjectStart;
@@ -1943,9 +1925,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 			pvkCmdBindVertexBuffers(cmd, 0, 1, &vbv.buffer, mOffsets);
 
 			int texture_alias_number = texture_list_buffer[ri->TextureIndex];
-			//int texture_alias_number = texture_list_buffer[i];
 			int texture_number = TexMap[texture_alias_number].texture;
-
 
 			if (texture_alias_number == 112) {
 				int a = 1;
@@ -1955,12 +1935,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 			uint32_t cbvIndex = ri->ObjCBIndex;
 
 			cbvIndex = texture_alias_number;
-
-			//uint32_t dyoffsets[2] = { (uint32_t)(cbvIndex * objectSize) };
-			//for (int j = 0; j < cutoff; j++)    //number_of_polys_per_frame
-			//{
-			//	vkCmdDraw(cmd, 3, 1, j * 3, 0);
-			//}
 
 			bool draw = true;
 			int v = 0;
@@ -1995,7 +1969,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 				if (item == RenderDungeon::Flat && normal_map_texture != -1) {
 					draw = false;
 				}
-
 
 				if (item == RenderDungeon::Shadow) {
 					oid = ObjectsToDraw[currentObject].objectId;
@@ -2041,7 +2014,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 					draw = true;
 				}
 
-
 				if (texture_number >= 94 && texture_number <= 101 ||
 					texture_number >= 289 - 1 && texture_number <= 296 - 1 ||
 					texture_number >= 279 - 1 && texture_number <= 288 - 1 ||
@@ -2056,7 +2028,7 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 				}
 
 				if (draw) {
-					if (dp_command_index_mode[i] == 1) {  //USE_NON_INDEXED_DP
+					if (dp_command_index_mode[i] == 1) {//USE_NON_INDEXED_DP
 
 						v = verts_per_poly[currentObject];
 						vert_index = ObjectsToDraw[currentObject].srcstart;
@@ -2075,9 +2047,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 		}
 	}
 }
-
-
-
 
 int main() {
 #if defined(DEBUG) | defined(_DEBUG)
@@ -2321,7 +2290,6 @@ BOOL DungeonStompApp::LoadRRTextures11(const char* filename)
 	}
 	fclose(fp);
 
-
 	SetTextureNormalMap();
 
 	return TRUE;
@@ -2420,7 +2388,7 @@ void DungeonStompApp::ProcessLights11()
 
 		int angle = (int)oblist[q].rot_angle;
 		int ob_type = oblist[q].type;
-		//LightContainer[i+1].Strength = { 1.5f, 1.5f, 1.5f };
+
 		LightContainer[i].Strength = { 1.0f, 1.0f, 1.0f };
 		LightContainer[i].Position = glm::vec3{ oblist[q].x,oblist[q].y + 50.0f, oblist[q].z };
 	}

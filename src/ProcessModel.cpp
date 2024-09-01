@@ -162,7 +162,6 @@ void CalculateTangentBinormal(D3DVERTEX2& vertex1, D3DVERTEX2& vertex2, D3DVERTE
 }
 
 bool ObjectHasShadow(int object_id) {
-
 	if (object_id == -99 || object_id == -111 || object_id == -1) {
 		return false;
 	}
@@ -176,7 +175,6 @@ bool ObjectHasShadow(int object_id) {
 
 void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 {
-
 	int ob_vert_count = 0;
 	int poly;
 	float qdist = 0;
@@ -229,7 +227,6 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 		int fan_cnt = -1;
 
 		fan_cnt = cnt;
-
 
 		if (strstr(oblist[oblist_index].name, "!") != NULL)
 		{
@@ -452,7 +449,6 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 				{
 					CalculateTangentBinormal(src_v[cnt - 3], src_v[cnt - 2], src_v[cnt - 1]);
 				}
-
 			}
 		}
 
@@ -757,7 +753,6 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 				vw3.z = D3DVAL(mz[j]);
 
 				// calculate the NORMAL
-
 				XMVECTOR   vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
 				XMVECTOR   vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
 				XMVECTOR  vCross, final;
@@ -1035,7 +1030,6 @@ void SmoothNormalsWeighted(int start_cnt) {
 	}
 }
 
-
 void ComputerWeightedAverages(int start_cnt) {
 
 	int count = 0;
@@ -1154,7 +1148,6 @@ void ComputerWeightedAverages(int start_cnt) {
 		src_v[i + 2].weight = fabsf(fDot);
 	}
 }
-
 
 void ConvertTraingleFan(int fan_cnt) {
 
@@ -1577,7 +1570,6 @@ void ConvertQuad(int fan_cnt) {
 	}
 	cnt = fan_cnt + counter;
 }
-
 
 int GetNextFrame(int monsterId);
 

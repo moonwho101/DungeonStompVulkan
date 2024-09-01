@@ -8,8 +8,6 @@
 #include "Missle.hpp"
 
 int endc = 0;
-
-//TODO: fix
 float wWidth = 1;
 float wHeight = 1;
 int num_players2 = 0;
@@ -146,7 +144,6 @@ void InitDS()
 
 	for (int i = 0; i < MAX_NUM_VERTICES; i++)
 	{
-		//src_on[i] = 1;
 		src_collide[i] = 1;
 	}
 
@@ -201,8 +198,6 @@ void InitDS()
 		player_list[i].attackspeed = 0;
 		player_list[i].applydamageonce = 0;
 		player_list[i].takedamageonce = 0;
-		//		player_list[i].gunid=FindModelID("AXE");
-		//		player_list[i].guntex=FindGunTexture("AXE");
 	}
 
 	for (int i = 0; i < MAX_NUM_3DS; i++)
@@ -350,7 +345,6 @@ void InitDS()
 		else
 			your_gun[i].active = 0;
 
-		//		your_gun[i].active = 1;
 		your_gun[i].damage1 = 1;
 		your_gun[i].damage2 = 4;
 	}
@@ -461,13 +455,11 @@ void UpdateWorld(float fElapsedTime) {
 		CheckMidiMusic();
 	}
 
-
 	float distance = 1500.0f;
 
 	if (outside) {
 		distance = 3000.0f;
 	}
-
 
 	for (int q = 0; q < oblist_length; q++)
 	{
@@ -479,7 +471,6 @@ void UpdateWorld(float fElapsedTime) {
 		//131 startpos /58 torch
 		//120 = text
 
-		//if (ob_type != 120 && ob_type != 35 && ob_type != 131 && ob_type != 6)
 		if (ob_type != 35 && ob_type != 131 && ob_type != 6 && ob_type != 120)
 		{
 			float	qdist = FastDistance(m_vEyePt.x - oblist[q].x, m_vEyePt.y - oblist[q].y, m_vEyePt.z - oblist[q].z);
@@ -508,36 +499,19 @@ void UpdateWorld(float fElapsedTime) {
 	DrawMonsters();
 	DrawModel();
 	DrawItems(fElapsedTime);
-	
-
-	
-
-
-	//PlayerToD3DVertList(player_list[trueplayernum].model_id,
-	//	player_list[trueplayernum].current_frame, angy,
-	//	player_list[trueplayernum].skin_tex_id,
-	//	0, player_list[trueplayernum].x + 200.0f, player_list[trueplayernum].y, player_list[trueplayernum].z);
-
-
 	MakeBoundingBox();
 
-	//TODO: fix this
 	DirectX::XMFLOAT3 em = { 0.0f, 0.0f, 0.0f };
-	
+
 	float wx = player_list[trueplayernum].x;
 	float wy = player_list[trueplayernum].y;
 	float wz = player_list[trueplayernum].z;
 
-	FirePlayerMissle(wx,wy,wz, angy, trueplayernum, 0, em, look_up_ang, fElapsedTime);
-
+	FirePlayerMissle(wx, wy, wz, angy, trueplayernum, 0, em, look_up_ang, fElapsedTime);
 	DrawMissle(fElapsedTime);
-
 
 	playerGunObjectStart = number_of_polys_per_frame;
 	DrawPlayerGun(0);
-
-
-	
 
 	//Draw player model
 	int nextFrame = GetNextFramePlayer();
@@ -547,7 +521,6 @@ void UpdateWorld(float fElapsedTime) {
 		player_list[trueplayernum].current_frame, player_list[trueplayernum].gunangle,
 		112,
 		0, player_list[trueplayernum].x, player_list[trueplayernum].y - 55.0f, player_list[trueplayernum].z, nextFrame);
-	//playerObjectEnd = number_of_polys_per_frame;
 
 	DrawPlayerGun(1);
 	playerObjectEnd = number_of_polys_per_frame;
@@ -560,7 +533,7 @@ void UpdateWorld(float fElapsedTime) {
 		int fperpoly = ObjectsToDraw[lsort].srcfstart;
 		int face_index = ObjectsToDraw[lsort].srcfstart;
 
-		if (dp_command_index_mode[i] == 1) {  //USE_NON_INDEXED_DP
+		if (dp_command_index_mode[i] == 1) {//USE_NON_INDEXED_DP
 
 
 		}
@@ -574,7 +547,6 @@ void UpdateWorld(float fElapsedTime) {
 	//DrawBoundingBox();
 
 	num_light_sources = 0;
-
 }
 
 void SetMonsterAnimationSequence(int player_number, int sequence_number)
@@ -593,7 +565,6 @@ void SetMonsterAnimationSequence(int player_number, int sequence_number)
 	monster_list[player_number].animationdir = 0;
 	start_frame = pmdata[model_id].sequence_start_frame[sequence_number];
 	monster_list[player_number].current_frame = start_frame;
-
 }
 
 void SetPlayerAnimationSequence(int player_number, int sequence_number)
@@ -619,7 +590,6 @@ void SetPlayerAnimationSequence(int player_number, int sequence_number)
 		player_list[player_number].animationdir = 1;
 	}
 	player_list[player_number].current_frame = start_frame;
-
 }
 
 HRESULT AnimateCharacters()
@@ -631,8 +601,6 @@ HRESULT AnimateCharacters()
 	int curr_seq;
 	static LONGLONG fLastTimeRun = 0;
 	static LONGLONG fLastTimeRunLast = 0;
-
-	//TODO:
 	int jump = 0;
 
 	//Only take damge from one swing
@@ -645,123 +613,86 @@ HRESULT AnimateCharacters()
 
 	for (int i = 0; i < 1; i++)
 	{
-
 		int mod_id = player_list[i].model_id;
 		curr_frame = player_list[i].current_frame;
 		stop_frame = pmdata[mod_id].sequence_stop_frame[player_list[i].current_sequence];
 		startframe = pmdata[mod_id].sequence_start_frame[player_list[i].current_sequence];
 		if (player_list[i].bStopAnimating == FALSE)
 		{
+			if (curr_frame >= stop_frame)
+			{
+				curr_seq = player_list[i].current_sequence;
 
-			//if (player_list[i].animationdir == 0)
-			//{
-				if (curr_frame >= stop_frame)
+				player_list[i].animationdir = 1;
+
+				if (player_list[i].current_frame == 71)
 				{
-					curr_seq = player_list[i].current_sequence;
-					
-					player_list[i].animationdir = 1;
-
-					if (player_list[i].current_frame == 71)
+					if (i == trueplayernum)
 					{
-						if (i == trueplayernum)
-						{
-							//current player
-							jump = 0;
+						//current player
+						jump = 0;
 
-							if (runflag == 1 && jump == 0)
-							{
-								SetPlayerAnimationSequence(i, 1);
-							}
-							else if (runflag == 1 && jump == 1)
-							{
-							}
-							else
-							{
-								SetPlayerAnimationSequence(i, 0);
-							}
+						if (runflag == 1 && jump == 0)
+						{
+							SetPlayerAnimationSequence(i, 1);
+						}
+						else if (runflag == 1 && jump == 1)
+						{
 						}
 						else
 						{
-
-							//SetPlayerAnimationSequence(i, 0);
+							SetPlayerAnimationSequence(i, 0);
 						}
-					}
-
-					player_list[i].current_frame = pmdata[mod_id].sequence_start_frame[curr_seq];
-
-					if (player_list[i].current_frame == 183 || player_list[i].current_frame == 189 || player_list[i].current_frame == 197)
-					{
-						//player is dead
-						player_list[i].bStopAnimating = TRUE;
-					}
-
-					if (i == trueplayernum && curr_seq == 1 && runflag == 1)
-					{
 					}
 					else
 					{
-						if (curr_seq == 0 || curr_seq == 1 || curr_seq == 6)
-						{
-							if (i == trueplayernum && curr_seq == 0 && jump == 0)
-							{
-
-								//TODO:Remove
-								SetPlayerAnimationSequence(i, 0);
-
-								int raction = random_num(8);
-
-								//if (raction == 0)
-								//	SetPlayerAnimationSequence(i, 7);// flip
-								//else if (raction == 1)
-								//	SetPlayerAnimationSequence(i, 8);// Salute
-								//else if (raction == 2)
-								//	SetPlayerAnimationSequence(i, 9);// Taunt
-								//else if (raction == 3)
-								//	SetPlayerAnimationSequence(i, 10);// Wave
-								//else if (raction == 4)
-								//	SetPlayerAnimationSequence(i, 11); // Point
-								//else
-								//	SetPlayerAnimationSequence(i, 0);
-
-							}
-						}
-						else
-						{
-							if (runflag == 1 && i == trueplayernum && jump == 0)
-							{
-								SetPlayerAnimationSequence(i, 1);
-							}
-							else
-							{
-								if (i == trueplayernum && jump == 1)
-								{
-								}
-								else {
-									SetPlayerAnimationSequence(i, 0);
-								}
-
-							}
-						}
+						//SetPlayerAnimationSequence(i, 0);
 					}
+				}
+
+				player_list[i].current_frame = pmdata[mod_id].sequence_start_frame[curr_seq];
+
+				if (player_list[i].current_frame == 183 || player_list[i].current_frame == 189 || player_list[i].current_frame == 197)
+				{
+					//player is dead
+					player_list[i].bStopAnimating = TRUE;
+				}
+
+				if (i == trueplayernum && curr_seq == 1 && runflag == 1)
+				{
 				}
 				else
 				{
-					player_list[i].current_frame++;
+					if (curr_seq == 0 || curr_seq == 1 || curr_seq == 6)
+					{
+						if (i == trueplayernum && curr_seq == 0 && jump == 0)
+						{
+							SetPlayerAnimationSequence(i, 0);
+						}
+					}
+					else
+					{
+						if (runflag == 1 && i == trueplayernum && jump == 0)
+						{
+							SetPlayerAnimationSequence(i, 1);
+						}
+						else
+						{
+							if (i == trueplayernum && jump == 1)
+							{
+							}
+							else {
+								SetPlayerAnimationSequence(i, 0);
+							}
+
+						}
+					}
 				}
-			//}
-			//else
-			//{
-			//	if (curr_frame <= startframe)
-			//	{
-			//		curr_seq = player_list[i].current_sequence;
-			//		player_list[i].current_frame = pmdata[mod_id].sequence_start_frame[curr_seq];
-			//		player_list[i].animationdir = 0;
-			//	}
-			//	else
-			//	{
-			//		player_list[i].current_frame--;
-			//	}
-			//}
+			}
+			else
+			{
+				player_list[i].current_frame++;
+			}
 		}
 	}
 
@@ -780,8 +711,6 @@ HRESULT AnimateCharacters()
 				{
 					curr_seq = monster_list[i].current_sequence;
 					monster_list[i].current_frame = pmdata[mod_id].sequence_stop_frame[curr_seq];
-					//monster_list[i].animationdir = 1;
-
 					SetMonsterAnimationSequence(i, 0);
 
 					if (monster_list[i].current_frame == 183 || monster_list[i].current_frame == 189 || monster_list[i].current_frame == 197)
@@ -826,7 +755,6 @@ HRESULT AnimateCharacters()
 
 float fixangle(float angle, float adjust)
 {
-
 	float chunka = 0;
 
 	if (adjust >= 0)
@@ -861,7 +789,6 @@ float fixangle(float angle, float adjust)
 
 int initDSTimer()
 {
-
 	LONGLONG perf_cnt;
 	LONGLONG count;
 	int a = 0;
@@ -888,7 +815,6 @@ void ComputeMissles(float fElapsedTime)
 	{
 		if (your_missle[misslecount].active == 2)
 		{
-
 			if (your_missle[misslecount].blood) {
 				your_missle[misslecount].y = your_missle[misslecount].y + (40.0f * fElapsedTime);
 			}
@@ -933,6 +859,7 @@ void ComputeMissles(float fElapsedTime)
 
 			if (work2.z < work1.z)
 			{
+				//do nothing
 			}
 			else
 			{
@@ -984,11 +911,8 @@ void ComputeMissles(float fElapsedTime)
 
 			if (maingameloop2)
 			{
-
 				cresult = CycleBitMap(your_missle[misslecount].skin_tex_id);
 
-				//remove this
-				//your_missle[misslecount].active = 0;
 				if (cresult != -1)
 				{
 
@@ -1007,7 +931,8 @@ void ComputeMissles(float fElapsedTime)
 	}
 }
 
-void display_message(float x, float y, char *text, int r, int g, int b, float fontx, float fonty, int fonttype) {
+void display_message(float x, float y, char* text, int r, int g, int b, float fontx, float fonty, int fonttype) {
+	//TODO:Add text support.
 	return;
 }
 
@@ -1018,7 +943,7 @@ void DrawIndexedItems(int fakel, int vert_index)
 	XMFLOAT3 vw1, vw2, vw3;
 	float workx, worky, workz;
 
-	if (dp_command_index_mode[fakel] == 0) //USE_INDEXED_DP
+	if (dp_command_index_mode[fakel] == 0)//USE_INDEXED_DP
 	{
 		int dwIndexCount = ObjectsToDraw[fakel].facesperpoly * 3;
 		int dwVertexCount = ObjectsToDraw[fakel].vertsperpoly;
@@ -1046,7 +971,6 @@ void DrawIndexedItems(int fakel, int vert_index)
 		{
 			if (counttri == 0)
 			{
-
 				vw1.x = temp_v[t].x;
 				vw1.y = temp_v[t].y;
 				vw1.z = temp_v[t].z;
@@ -1060,8 +984,6 @@ void DrawIndexedItems(int fakel, int vert_index)
 				vw3.z = temp_v[t + 2].z;
 
 				CalculateTangentBinormal(temp_v[t], temp_v[t + 1], temp_v[t + 2]);
-
-				// calculate the NORMAL for the road using the CrossProduct <-important!
 
 				XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
 				XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
@@ -1090,7 +1012,6 @@ void DrawIndexedItems(int fakel, int vert_index)
 			temp_v[t].nx = workx;
 			temp_v[t].ny = worky;
 			temp_v[t].nz = workz;
-
 		}
 
 		int start_cnt = cnt;
@@ -1111,8 +1032,6 @@ void DrawIndexedItems(int fakel, int vert_index)
 			src_v[cnt].nmz = temp_v[j].nmz;
 
 			cnt++;
-
-			
 		}
 		SmoothNormals(start_cnt);
 	}
