@@ -1455,7 +1455,10 @@ void DungeonStompApp::UpdateWaves(const GameTimer& gt)
 
 bool isFullscreen = false;
 bool enableWindowKey = false;
-WINDOWPLACEMENT                          wpc{};                                           // window placement information
+bool enableNormalmap = true;
+bool enableNormalmapKey = false;
+
+WINDOWPLACEMENT wpc{};// window placement information
 
 void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 {
@@ -1491,6 +1494,25 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 	}
 	else {
 		enableWindowKey = 0;
+	}
+
+	if (GetAsyncKeyState('N') && !enableNormalmapKey) {
+
+		if (enableNormalmap) {
+			enableNormalmap = false;
+			SetTextureNormalMapEmpty();
+		}
+		else {
+			enableNormalmap = true;
+			SetTextureNormalMap();
+		}
+	}
+
+	if (GetAsyncKeyState('N')) {
+		enableNormalmapKey = 1;
+	}
+	else {
+		enableNormalmapKey = 0;
 	}
 
 	//float speed = 100.0f;
