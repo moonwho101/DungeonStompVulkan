@@ -22,6 +22,7 @@ To build, you'll need Vulkan, glm, and stbi image lib.  Compile using Microsoft 
 * P - Random music
 * X - Give experience points
 * K - Give all weapons and spells
+* B - Toggle Camera head bob
 * N - Toggle Normal map
 * ] - Next Dungeon Level
 * [ - Previous Dungeon Level

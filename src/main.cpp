@@ -1463,6 +1463,8 @@ bool isFullscreen = false;
 bool enableWindowKey = false;
 bool enableNormalmap = true;
 bool enableNormalmapKey = false;
+bool enableCameraBob = true;
+bool enableCameraBobKey = false;
 
 WINDOWPLACEMENT wpc{};// window placement information
 
@@ -1520,6 +1522,24 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 	else {
 		enableNormalmapKey = 0;
 	}
+
+	if (GetAsyncKeyState('B') && !enableCameraBobKey) {
+
+		if (enableCameraBob) {
+			enableCameraBob = false;
+		}
+		else {
+			enableCameraBob = true;
+		}
+	}
+
+	if (GetAsyncKeyState('B')) {
+		enableCameraBobKey = 1;
+	}
+	else {
+		enableCameraBobKey = 0;
+	}
+
 
 	//float speed = 100.0f;
 

@@ -92,7 +92,7 @@ bool stopy = false;
 
 extern CameraBob bobY;
 extern CameraBob bobX;
-
+extern bool enableCameraBob;
 
 void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 {
@@ -121,13 +121,9 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 	XMFLOAT3 newspot;
 	XMFLOAT3 newspot2;
 
-	bool enableCameraBob = true;
-
-
 	auto posVulkan = glm::vec3(player_list[trueplayernum].x, player_list[trueplayernum].y, player_list[trueplayernum].z);
 	auto targetVulkan = glm::vec3(m_vLookatPt.x, m_vLookatPt.y + adjust, m_vLookatPt.z);
 	auto worldUpVulkan = glm::vec3(0.0f, 1.0f, 0.0f);
-
 
 	if (enableCameraBob) {
 		float step_left_angy = 0;
@@ -142,7 +138,6 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 			step_left_angy = step_left_angy - 360;
 
 		r = bx;
-
 
 		if (playercurrentmove == 1 || playercurrentmove == 4) {
 			centre = false;
@@ -159,7 +154,6 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 		}
 
 		if (centre) {
-
 			//X bob bring to centre
 			if (centrex <= 0) {
 				if (bobX.getY() >= 0) {
@@ -183,7 +177,6 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 					stopy = true;
 				}
 			}
-
 		}
 
 		if (stopy) {
@@ -211,14 +204,10 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 		newspot2.y = newspot.y + cameradist * cosf(newangle * k);
 		newspot2.z = newspot.z + cameradist * sinf(newangle * k) * cosf(angy * k);
 
-
 		mEyePos = newspot;
-
 		GunTruesave = newspot;
 
-
 		// Build the view matrix.
-
 		pos = XMVectorSet(newspot.x, newspot.y, newspot.z, 1.0f);
 
 		posVulkan.x = newspot.x;
@@ -230,11 +219,8 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 		targetVulkan.x = newspot2.x;
 		targetVulkan.y = newspot2.y;
 		targetVulkan.z = newspot2.z;
-			
 	}
 	else {
-
-
 		// Build the view matrix.
 		pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);
 
@@ -247,7 +233,6 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 		targetVulkan.x = m_vLookatPt.x;
 		targetVulkan.y = m_vLookatPt.y + adjust;
 		targetVulkan.z = m_vLookatPt.z;
-
 	}
 	GunTruesave = mEyePos;
 
@@ -255,14 +240,11 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 
 	//Check for collision and nan errors
 	XMVECTOR EyeDirection = XMVectorSubtract(pos, target);
+
 	//assert(!XMVector3Equal(EyeDirection, XMVectorZero()));
 	if (XMVector3Equal(EyeDirection, XMVectorZero())) {
 		return;
 	}
-
-	
-
-	//XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 
 	mCamera.SetPosition(posVulkan);
 	mCamera.LookAt(posVulkan, targetVulkan, worldUpVulkan);
