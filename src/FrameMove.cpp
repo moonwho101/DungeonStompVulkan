@@ -84,13 +84,24 @@ HRESULT FrameMove(double fTime, FLOAT fTimeKey)
 
 XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
 
+float centrex = 0;
+float centrey = 0;
+bool centre = false;
+bool stopx = false;
+bool stopy = false;
+
+extern CameraBob bobY;
+extern CameraBob bobX;
+
+
 void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 {
 	float adjust = 50.0f;
 	float bx = 0.0f;
 	float by = 0.0f;
-
-
+	
+	bx = bobX.getY();
+	by = bobY.getY();
 
 	if (player_list[trueplayernum].bIsPlayerAlive == FALSE) {
 		//Dead on floor
@@ -107,10 +118,137 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 
 	XMVECTOR pos, target;
 
-	// Build the view matrix.
-	pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);
-	target = XMVectorSet(m_vLookatPt.x, m_vLookatPt.y + adjust, m_vLookatPt.z, 1.0f);
+	XMFLOAT3 newspot;
+	XMFLOAT3 newspot2;
 
+	bool enableCameraBob = true;
+
+
+	auto posVulkan = glm::vec3(player_list[trueplayernum].x, player_list[trueplayernum].y, player_list[trueplayernum].z);
+	auto targetVulkan = glm::vec3(m_vLookatPt.x, m_vLookatPt.y + adjust, m_vLookatPt.z);
+	auto worldUpVulkan = glm::vec3(0.0f, 1.0f, 0.0f);
+
+
+	if (enableCameraBob) {
+		float step_left_angy = 0;
+		float r = 15.0f;
+
+		step_left_angy = angy - 90;
+
+		if (step_left_angy < 0)
+			step_left_angy += 360;
+
+		if (step_left_angy >= 360)
+			step_left_angy = step_left_angy - 360;
+
+		r = bx;
+
+
+		if (playercurrentmove == 1 || playercurrentmove == 4) {
+			centre = false;
+			stopx = false;
+			stopy = false;
+		}
+
+		if (playercurrentmove == 0) {
+			if (!centre) {
+				centre = true;
+				centrex = bobX.getY();
+				centrey = bobY.getY();
+			}
+		}
+
+		if (centre) {
+
+			//X bob bring to centre
+			if (centrex <= 0) {
+				if (bobX.getY() >= 0) {
+					stopx = true;
+				}
+			}
+			else if (centrex > 0) {
+				if (bobX.getY() <= 0) {
+					stopx = true;
+				}
+			}
+
+			//Y bob 
+			if (centrey <= 0) {
+				if (bobY.getY() >= 0) {
+					stopy = true;
+				}
+			}
+			else if (centrey > 0) {
+				if (bobY.getY() <= 0) {
+					stopy = true;
+				}
+			}
+
+		}
+
+		if (stopy) {
+			by = 0.0f;
+			bobY.setX(0);
+			bobY.setY(0);
+		}
+
+		if (stopx) {
+			r = 1.0f;
+			bobX.setX(0);
+			bobX.setY(0);
+		}
+
+		newspot.x = player_list[trueplayernum].x + r * sinf(step_left_angy * k);
+		newspot.y = player_list[trueplayernum].y + by;
+		newspot.z = player_list[trueplayernum].z + r * cosf(step_left_angy * k);
+
+		float cameradist = 50.0f;
+
+		float newangle = 0;
+		newangle = fixangle(look_up_ang, 90);
+
+		newspot2.x = newspot.x + cameradist * sinf(newangle * k) * sinf(angy * k);
+		newspot2.y = newspot.y + cameradist * cosf(newangle * k);
+		newspot2.z = newspot.z + cameradist * sinf(newangle * k) * cosf(angy * k);
+
+
+		mEyePos = newspot;
+
+		GunTruesave = newspot;
+
+
+		// Build the view matrix.
+
+		pos = XMVectorSet(newspot.x, newspot.y, newspot.z, 1.0f);
+
+		posVulkan.x = newspot.x;
+		posVulkan.y = newspot.y;
+		posVulkan.z = newspot.z;
+
+		target = XMVectorSet(newspot2.x, newspot2.y, newspot2.z, 1.0f);
+
+		targetVulkan.x = newspot2.x;
+		targetVulkan.y = newspot2.y;
+		targetVulkan.z = newspot2.z;
+			
+	}
+	else {
+
+
+		// Build the view matrix.
+		pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);
+
+		posVulkan.x = mEyePos.x;
+		posVulkan.y = mEyePos.y;
+		posVulkan.z = mEyePos.z;
+
+		target = XMVectorSet(m_vLookatPt.x, m_vLookatPt.y + adjust, m_vLookatPt.z, 1.0f);
+
+		targetVulkan.x = m_vLookatPt.x;
+		targetVulkan.y = m_vLookatPt.y + adjust;
+		targetVulkan.z = m_vLookatPt.z;
+
+	}
 	GunTruesave = mEyePos;
 
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -122,11 +260,9 @@ void UpdateCamera(const GameTimer& gt, Camera& mCamera)
 		return;
 	}
 
-	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	
 
-	auto posVulkan = glm::vec3(player_list[trueplayernum].x, player_list[trueplayernum].y, player_list[trueplayernum].z);
-	auto targetVulkan = glm::vec3(m_vLookatPt.x, m_vLookatPt.y + adjust, m_vLookatPt.z);
-	auto worldUpVulkan = glm::vec3(0.0f, 1.0f, 0.0f);
+	//XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 
 	mCamera.SetPosition(posVulkan);
 	mCamera.LookAt(posVulkan, targetVulkan, worldUpVulkan);

@@ -1,6 +1,8 @@
 #include "DungeonStomp.h"
 
 void ShutDownSound();
+CameraBob bobY;
+CameraBob bobX;
 
 DungeonStompApp::DungeonStompApp(HINSTANCE hInstance) :VulkApp(hInstance) {
 	mAllowWireframe = true;
@@ -53,6 +55,10 @@ bool DungeonStompApp::Initialize() {
 	CreateDInput(mhMainWnd);
 	LoadRRTextures11("textures.dat");
 	InitDS();
+
+	//Set headbob
+	bobX.SinWave(4.0f, 2.0f, 2.0f);
+	bobY.SinWave(4.0f, 2.0f, 4.0f);
 
 	mCamera.SetPosition(0.0f, 2.0f, -15.0f);
 #define __USE__THREAD__
@@ -1395,8 +1401,8 @@ void DungeonStompApp::Update(const GameTimer& gt) {
 		FrameMove(0.0f, t);
 		UpdateWorld(t);
 
-		//bobY.update(t);
-		//bobX.update(t);
+		bobY.update(t);
+		bobX.update(t);
 
 		UpdateCamera(gt, mCamera);
 

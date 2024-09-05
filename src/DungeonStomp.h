@@ -16,6 +16,7 @@
 #include "ShadowMap.h"
 #include "world.hpp"
 #include "Missle.hpp"
+#include "CameraBob.hpp"
 
 const int gNumFrameResources = 3;
 
