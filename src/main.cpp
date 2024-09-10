@@ -1373,13 +1373,13 @@ void DungeonStompApp::OnMouseMove(WPARAM btnState, int x, int y) {
 }
 
 void DungeonStompApp::OnMouseDown(WPARAM btnState, int x, int y) {
-	mLastMousePos.x = x;
-	mLastMousePos.y = y;
-	SetCapture(mhMainWnd);
+	//mLastMousePos.x = x;
+	//mLastMousePos.y = y;
+	//SetCapture(mhMainWnd);
 }
 
 void DungeonStompApp::OnMouseUp(WPARAM btnState, int x, int y) {
-	ReleaseCapture();
+	//ReleaseCapture();
 }
 
 extern HRESULT FrameMove(double fTime, FLOAT fTimeKey);
