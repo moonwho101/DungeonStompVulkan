@@ -43,7 +43,6 @@ DungeonStompApp::~DungeonStompApp() {
 int SoundInit();
 HRESULT CreateDInput(HWND hWnd);
 extern void InitDS();
-BOOL LoadRRTextures11(const char* filename);
 
 bool DungeonStompApp::Initialize() {
 	if (!VulkApp::Initialize())
