@@ -5,6 +5,7 @@
 //
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License (MIT).
+// Modified 2022 by Mark Longo
 //--------------------------------------------------------------------------------------
 #define WIN32_LEAN_AND_MEAN
 
@@ -59,12 +60,10 @@ BOOL LoadSoundFiles(const char* filename);
 HRESULT PlayWave(_In_z_ LPCWSTR szFilename);
 HRESULT FindMediaFileCch(_Out_writes_(cchDest) WCHAR* strDestPath, _In_ int cchDest, _In_z_ LPCWSTR strFilename);
 
-
 ComPtr<IXAudio2> pXAudio2;
 IXAudio2SourceVoice* pSourceVoice;
 std::unique_ptr<uint8_t[]> waveFile;
 IXAudio2MasteringVoice* pMasteringVoice = nullptr;
-
 
 int musicon = 1;
 int playingsong = 0;
@@ -129,10 +128,7 @@ int SoundInit()
     pXAudio2->SetDebugConfiguration(&debug, 0);
 #endif
 
-    //
     // Create a mastering voice
-    //
-
 
     if (FAILED(hr = pXAudio2->CreateMasteringVoice(&pMasteringVoice)))
     {
@@ -202,16 +198,8 @@ void StopMusic();
 
 void ShutDownSound() {
 
-    //
     // Cleanup XAudio2
-    //
-    //wprintf(L"\nFinished playing\n");
-
-    // All XAudio2 interfaces are released when the engine is destroyed, but being tidy
-    //pMasteringVoice->DestroyVoice();
-
     StopMusic();
-    //ResetSound();
 
     pXAudio2.Reset();
     pXAudio2.Detach();
@@ -230,9 +218,6 @@ void PlayWaveFile(char* filename) {
     HRESULT hr;
 
     wchar_t wtext[120];
-
-    //todo: fix this
-    //mbstowcs(wtext, filename, strlen(filename) + 1);//Plus null
 
     hr = PlayWave(wtext);
 
@@ -275,12 +260,9 @@ HRESULT PlayWave(LPCWSTR szFilename)
         return hr;
     }
 
-    //
     // Play the wave using a XAudio2SourceVoice
-    //
 
     // Create the source voice
-
     if (FAILED(hr = pXAudio2->CreateSourceVoice(&pSourceVoice, waveData.wfx)))
     {
         wprintf(L"Error %#X creating source voice\n", hr);
@@ -413,15 +395,10 @@ HRESULT FindMediaFileCch(WCHAR* strDestPath, int cchDest, LPCWSTR strFilename)
 
 void MakeWave(char* file, std::unique_ptr<uint8_t[]> waveFile) {
 
-
     HRESULT hr;
 
     DirectX::WAVData waveData;
     hr = DirectX::LoadWAVAudioFromFileEx(charToWChar(file), waveFile, waveData);
-    //{
-        //wprintf(L"Failed reading WAV file: %#X (%s)\n", hr, strFilePath);
-        //return;
-   // }
 }
 
 BOOL LoadSoundFiles(const char* filename)
@@ -445,12 +422,9 @@ BOOL LoadSoundFiles(const char* filename)
 
     if (fopen_s(&fp, filename, "r") != 0)
     {
-        //PrintMessage(hwnd, "Error can't load file ", filename, SCN_AND_FILE);
-        //MessageBox(hwnd, "Error can't load file", NULL, MB_OK);
         return FALSE;
     }
 
-    //PrintMessage(hwnd, "Loading ", filename, SCN_AND_FILE);
     numsounds = 0;
     nummidi = 0;
 
@@ -465,15 +439,7 @@ BOOL LoadSoundFiles(const char* filename)
             strcpy_s(sound_list[numsounds].file, file);
             strcpy_s(sound_list[numsounds].name, name);
 
-            //soundid = DSound_Load_WAV(file);
-            //int soundid = 1;
-
-            //if (soundid == -1)
-            //{
-                //MessageBox(hwnd, "sounds.dat wave file not found", "sounds.dat wave file not found", MB_OK);
-            //}
             sound_list[numsounds].id = numsounds;
-
 
             if (strcmp(type, "WAV") == 0) {
                 sound_list[numsounds].type = 0;
@@ -488,26 +454,21 @@ BOOL LoadSoundFiles(const char* filename)
 
             sound_list[numsounds].playing = 0;
 
-            //MakeWave(sound_list[numsounds].file, sound_buffer[numsounds].waveFile)
-
             HRESULT hr;
 
             TCHAR NPath[100];
             GetCurrentDirectory(100, NPath);
 
-            //DirectX::WAVData waveData;
             hr = DirectX::LoadWAVAudioFromFileEx(charToWChar(file), sound_buffer[numsounds].waveFile, sound_buffer[numsounds].waveData);
             hr = pXAudio2->CreateSourceVoice(&sound_list[numsounds].pSourceVoice, sound_buffer[numsounds].waveData.wfx);
             strcpy_s(sound_buffer[numsounds].name, name);
             sound_list[numsounds].soundbufferid = numsounds;
-
 
             numsounds++;
         }
 
         if (strcmp(type, "END_FILE") == 0)
         {
-
             done = 1;
         }
     }
@@ -541,7 +502,6 @@ void PlayWavSound(int id, int volume)
     HRESULT hr;
 
     int soundbufferid = sound_list[id].soundbufferid;
-
 
     sound_list[id].playing = 1;
 
@@ -596,8 +556,6 @@ void PlayWavSound(int id, int volume)
 
 int DSound_Delete_Sound(int id)
 {
-    //sound_list[id].pSourceVoice->Stop(0);
-    //sound_list[id].pSourceVoice->FlushSourceBuffers();
     sound_list[id].pSourceVoice->DestroyVoice();
     sound_list[id].type = -1;
     sound_list[id].playing = 0;
@@ -735,16 +693,8 @@ void CheckMidiMusic()
             PlayWavSound(SoundID("effect4"), 100);
     }
 
-    //if (DMusic_Status_MIDI(currentmidi) != MIDI_STOPPED && musicon == 0)
-    //{
-
-    //    DMusic_Stop(currentmidi);
-    //}
-
-
     if (playingsong != 0)
         WaveSongPlaying(playingsong);
-
 
     if (playingsong == 0 && skipmusic == 0 && musicon == 1)
     {
@@ -757,7 +707,6 @@ void CheckMidiMusic()
 
 int ResetSound()
 {
-
     bool loop = true;
 
     while (loop) {
@@ -775,9 +724,7 @@ int ResetSound()
 
     for (int i = numcoresounds; i < numsounds; i++)
     {
-        //DSound_Delete_Sound(i);
         sound_list[i].type = 0;
-        //sound_list[i].pSourceVoice->DestroyVoice();
     }
     numsounds = numcoresounds;
 
