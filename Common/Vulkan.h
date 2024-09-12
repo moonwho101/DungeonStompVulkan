@@ -21,7 +21,7 @@
 
 namespace Vulkan {
 
-	
+
 
 	VkInstance initInstance(std::vector<const char*>& requiredExtensions, std::vector<const char*>& requiredLayers);
 	void cleanupInstance(VkInstance instance);
@@ -39,10 +39,10 @@ namespace Vulkan {
 	VkPhysicalDevice choosePhysicalDevice(VkInstance instance, VkSurfaceKHR surface, Queues& queues);
 
 
-	VkDevice initDevice(VkPhysicalDevice physicalDevice, std::vector<const char*> deviceExtensions, Queues queues, VkPhysicalDeviceFeatures enabledFeatures,uint32_t queueCount=1);
+	VkDevice initDevice(VkPhysicalDevice physicalDevice, std::vector<const char*> deviceExtensions, Queues queues, VkPhysicalDeviceFeatures enabledFeatures, uint32_t queueCount = 1);
 	void cleanupDevice(VkDevice device);
 
-	VkQueue getDeviceQueue(VkDevice device, uint32_t queueFamily,uint32_t queueIndex=0);
+	VkQueue getDeviceQueue(VkDevice device, uint32_t queueFamily, uint32_t queueIndex = 0);
 
 	VkPresentModeKHR chooseSwapchainPresentMode(std::vector<VkPresentModeKHR>& presentModes);
 
@@ -64,7 +64,7 @@ namespace Vulkan {
 	void cleanupCommandPools(VkDevice device, std::vector<VkCommandPool>& commandPools);
 	void cleanupCommandPool(VkDevice device, VkCommandPool commandPool);
 
-	VkSwapchainKHR initSwapchain(VkDevice device, VkSurfaceKHR surface, uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR& surfaceCaps, VkPresentModeKHR& presentMode, VkSurfaceFormatKHR& swapchainFormat, VkExtent2D& swapchainExtent,uint32_t imageCount=UINT32_MAX, VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE);
+	VkSwapchainKHR initSwapchain(VkDevice device, VkSurfaceKHR surface, uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR& surfaceCaps, VkPresentModeKHR& presentMode, VkSurfaceFormatKHR& swapchainFormat, VkExtent2D& swapchainExtent, uint32_t imageCount = UINT32_MAX, VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE);
 	void getSwapchainImages(VkDevice device, VkSwapchainKHR swapchain, std::vector<VkImage>& images);
 	void initSwapchainImageViews(VkDevice device, std::vector<VkImage>& swapchainImages, VkFormat& swapchainFormat, std::vector<VkImageView>& swapchainImageViews);
 	void cleanupSwapchainImageViews(VkDevice device, std::vector<VkImageView>& imageViews);
@@ -80,7 +80,7 @@ namespace Vulkan {
 #ifdef __USE__VMA__
 		VmaMemoryUsage usage;
 #else
-		
+
 		VkMemoryPropertyFlagBits memoryProps{ VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT };
 #endif
 		VkSampleCountFlagBits samples{ VK_SAMPLE_COUNT_1_BIT };//set to sample count for MSAA
@@ -167,12 +167,12 @@ namespace Vulkan {
 
 
 	void initImage(VkDevice device, /*VkFormatProperties& formatProperties,*/ VkPhysicalDeviceMemoryProperties& memoryProperties, ImageProperties& props, Image& image);
-	void initImage(VkDevice device, VkImageCreateInfo& pCreateInfo, Image& image,bool isMapped=false);
+	void initImage(VkDevice device, VkImageCreateInfo& pCreateInfo, Image& image, bool isMapped = false);
 	struct SamplerProperties {
 		VkFilter filter{ VK_FILTER_LINEAR };
 		VkSamplerAddressMode addressMode{ VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE };
 	};
-	VkSampler initSampler(VkDevice device, SamplerProperties& samplerProps,uint32_t mipLevels=1);
+	VkSampler initSampler(VkDevice device, SamplerProperties& samplerProps, uint32_t mipLevels = 1);
 	void initSampler(VkDevice device, SamplerProperties& samplerProps, Texture& image);
 	struct TextureProperties : public ImageProperties {
 		SamplerProperties samplerProps;
@@ -187,8 +187,8 @@ namespace Vulkan {
 	struct Buffer;
 	void CopyBufferToImage(VkDevice device, VkQueue queue, VkCommandBuffer cmd, Buffer& src, Image& dst, uint32_t width, uint32_t height, VkDeviceSize offset = 0, uint32_t arrayLayer = 0);
 	void CopyBufferToImage(VkDevice device, VkQueue queue, VkCommandBuffer cmd, Buffer& src, Image& dst, std::vector<VkBufferImageCopy>& copyRegions);
-	void transitionImage(VkDevice device, VkQueue queue, VkCommandBuffer cmd, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels = 1, uint32_t layerCount = 1,uint32_t layoutIndex=0);
-	void transitionImageNoSubmit(VkCommandBuffer cmd, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout,uint32_t mipLevels = 1, uint32_t layerCount = 1, uint32_t layoutIndex = 0);
+	void transitionImage(VkDevice device, VkQueue queue, VkCommandBuffer cmd, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels = 1, uint32_t layerCount = 1, uint32_t layoutIndex = 0);
+	void transitionImageNoSubmit(VkCommandBuffer cmd, VkImage image, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels = 1, uint32_t layerCount = 1, uint32_t layoutIndex = 0);
 
 
 	struct RenderPassProperties {
@@ -286,7 +286,7 @@ namespace Vulkan {
 	void cleanupShaderModule(VkDevice device, VkShaderModule shaderModule);
 
 	struct PipelineInfo {
-		VkPrimitiveTopology topology= VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+		VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 		VkFrontFace	frontFace = VK_FRONT_FACE_CLOCKWISE;
 		VkCullModeFlagBits	cullMode = VK_CULL_MODE_BACK_BIT;
 		VkSampleCountFlagBits samples = VK_SAMPLE_COUNT_1_BIT;

@@ -30,7 +30,6 @@
 #define USING_XAUDIO2_7_DIRECTX
 #endif
 
-
 int  DSound_Replicate_Sound(int id);
 int DSound_Delete_Sound(int id);
 int FindSoundSlot();

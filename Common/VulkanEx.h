@@ -34,7 +34,7 @@ class VulkanSurface {
 	VkInstance instance{ VK_NULL_HANDLE };
 	VkSurfaceKHR surface{ VK_NULL_HANDLE };
 public:
-	VulkanSurface(VkInstance instance_,VkSurfaceKHR surface_);
+	VulkanSurface(VkInstance instance_, VkSurfaceKHR surface_);
 	VulkanSurface() = delete;
 	~VulkanSurface();
 	operator VkSurfaceKHR()const { return surface; }
@@ -48,9 +48,9 @@ public:
 	VulkanPhysicalDevice(VkPhysicalDevice physicalDevice_);
 	~VulkanPhysicalDevice();
 	operator VkPhysicalDevice()const { return physicalDevice; }
-	operator VkPhysicalDeviceProperties&() { return deviceProperties; }
+	operator VkPhysicalDeviceProperties& () { return deviceProperties; }
 	operator VkPhysicalDeviceMemoryProperties& () { return memoryProperties; }
-	
+
 	VkSurfaceCapabilitiesKHR getSurfaceCaps(VkSurfaceKHR surface_);
 	VkFormatProperties getFormatProperties(VkFormat format_);
 	std::vector<VkSurfaceFormatKHR> getSurfaceFormats(VkSurfaceKHR surface_);
@@ -91,15 +91,15 @@ class SwapchainBuilder {
 	VkSurfaceFormatKHR swapchainFormat;
 	VkExtent2D swapchainExtent;
 	uint32_t imageCount{ UINT32_MAX };
-	SwapchainBuilder(VkDevice device_, VkSurfaceKHR surface_,VkSurfaceCapabilitiesKHR&surfaceCaps_);
+	SwapchainBuilder(VkDevice device_, VkSurfaceKHR surface_, VkSurfaceCapabilitiesKHR& surfaceCaps_);
 public:
-	static SwapchainBuilder begin(VkDevice device_, VkSurfaceKHR surface_,VkSurfaceCapabilitiesKHR& surfaceCaps_);
+	static SwapchainBuilder begin(VkDevice device_, VkSurfaceKHR surface_, VkSurfaceCapabilitiesKHR& surfaceCaps_);
 	SwapchainBuilder& setPresentMode(VkPresentModeKHR presentMode_);
 	SwapchainBuilder& setFormat(VkSurfaceFormatKHR& format_);
 	SwapchainBuilder& setExtent(VkExtent2D& extent_);
 	SwapchainBuilder& setExtent(uint32_t width, uint32_t height);
 	SwapchainBuilder& setImageCount(uint32_t imageCount_);
-	VkSwapchainKHR build();	
+	VkSwapchainKHR build();
 };
 
 class VulkanSwapchain {
@@ -108,7 +108,7 @@ class VulkanSwapchain {
 	VulkanSwapchain() = delete;
 	const VulkanSwapchain& operator=(const VulkanSwapchain& rhs) = delete;
 public:
-	VulkanSwapchain(VkDevice device_,VkSwapchainKHR swapchain_);
+	VulkanSwapchain(VkDevice device_, VkSwapchainKHR swapchain_);
 	~VulkanSwapchain();
 	operator VkSwapchainKHR()const { return swapchain; }
 	std::vector<VkImage> getImages();
@@ -119,7 +119,7 @@ class VulkanSwapchainImageViews {
 	std::vector<VkImageView> swapchainImageViews;
 	VulkanSwapchainImageViews() = delete;
 public:
-	VulkanSwapchainImageViews(VkDevice device_,std::vector<VkImageView>& swapchainImageViews_);
+	VulkanSwapchainImageViews(VkDevice device_, std::vector<VkImageView>& swapchainImageViews_);
 	~VulkanSwapchainImageViews();
 	operator size_t()const { return swapchainImageViews.size(); }
 	const VkImageView& operator[](int i)const { return swapchainImageViews[i]; }
@@ -131,7 +131,7 @@ class VulkanSemaphore {
 	VulkanSemaphore() = delete;
 	const VulkanSemaphore& operator=(const VulkanSemaphore& rhs) = delete;
 public:
-	VulkanSemaphore(VkDevice device_,VkSemaphore semaphore_);
+	VulkanSemaphore(VkDevice device_, VkSemaphore semaphore_);
 	~VulkanSemaphore();
 	operator VkSemaphore()const { return semaphore; }
 };
@@ -169,14 +169,14 @@ public:
 	VulkanCommandBuffers(VkDevice device_, VkCommandPool commandPool_, std::vector<VkCommandBuffer>& commandBuffers_);
 	~VulkanCommandBuffers();
 	operator size_t()const { return commandBuffers.size(); }
-	const VkCommandBuffer& operator[](int i)const { return commandBuffers[i]; }	
+	const VkCommandBuffer& operator[](int i)const { return commandBuffers[i]; }
 };
 
 
 class VulkanFence {
 	VkDevice device{ VK_NULL_HANDLE };
 	VkFence fence{ VK_NULL_HANDLE };
-	VulkanFence()=delete;
+	VulkanFence() = delete;
 	const VulkanFence& operator=(const VulkanFence& rhs) = delete;
 public:
 	VulkanFence(VkDevice device_, VkFence fence_);
@@ -242,7 +242,7 @@ class DescriptorSetBuilder {
 	DescriptorSetBuilder(DescriptorSetPoolCache* pPool_, DescriptorSetLayoutCache* pLayout_);
 public:
 	static DescriptorSetBuilder begin(DescriptorSetPoolCache* pPool_, DescriptorSetLayoutCache* pLayout_);
-	DescriptorSetBuilder& AddBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags stageFlags,uint32_t descriptorCount=1);
+	DescriptorSetBuilder& AddBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags stageFlags, uint32_t descriptorCount = 1);
 	bool build(VkDescriptorSet& set, VkDescriptorSetLayout& layout);
 	bool build(VkDescriptorSet& set);
 	bool build(std::vector<VkDescriptorSet>& sets, VkDescriptorSetLayout& layout, uint32_t count);
@@ -261,7 +261,7 @@ class DescriptorSetUpdater {
 public:
 	static DescriptorSetUpdater begin(DescriptorSetLayoutCache* pLayout_, VkDescriptorSetLayout descriptorSetLayout_, VkDescriptorSet descriptorSet_);
 	DescriptorSetUpdater& AddBinding(uint32_t binding, VkDescriptorType type, VkDescriptorBufferInfo* bufferInfo);
-	DescriptorSetUpdater& AddBinding(uint32_t binding, VkDescriptorType type, VkDescriptorImageInfo* imageInfo,uint32_t count=1);
+	DescriptorSetUpdater& AddBinding(uint32_t binding, VkDescriptorType type, VkDescriptorImageInfo* imageInfo, uint32_t count = 1);
 	void update();
 };
 
@@ -298,7 +298,7 @@ class VertexBufferBuilder {
 	std::vector<VkDeviceSize> vertexSizes;
 	std::vector<float*> vertexPtrs;
 	std::vector<uint32_t> vertexLocations;
-	VertexBufferBuilder(VkDevice device_,VkQueue queue_,VkCommandBuffer cmd_, VkPhysicalDeviceMemoryProperties& memoryProperties_);
+	VertexBufferBuilder(VkDevice device_, VkQueue queue_, VkCommandBuffer cmd_, VkPhysicalDeviceMemoryProperties& memoryProperties_);
 public:
 	static VertexBufferBuilder begin(VkDevice device_, VkQueue queue_, VkCommandBuffer cmd_, VkPhysicalDeviceMemoryProperties& memoryProperties_);
 	VertexBufferBuilder& AddVertices(VkDeviceSize vertexSize, float* pVertexData);
@@ -366,13 +366,13 @@ class TextureLoader {
 	bool isArray{ false };
 	TextureLoader(VkDevice device_, VkCommandBuffer commandBuffer_, VkQueue queue_, VkPhysicalDeviceMemoryProperties memoryProperties_);
 	void loadTexture(uint8_t* pixels, uint32_t width, uint32_t height, VkFormat format, bool enableLod, Vulkan::Texture& texture);
-	void loadTextureArray(std::vector<uint8_t*>& pixelArray,uint32_t width,uint32_t height, bool enableLod, Vulkan::Texture& texture);
+	void loadTextureArray(std::vector<uint8_t*>& pixelArray, uint32_t width, uint32_t height, bool enableLod, Vulkan::Texture& texture);
 public:
 	static TextureLoader begin(VkDevice device_, VkCommandBuffer commandBuffer_, VkQueue queue_, VkPhysicalDeviceMemoryProperties memoryProperties_);
 	TextureLoader& addTexture(const char* imagePath, bool enableLod = false);
 	TextureLoader& setIsArray(bool isArray_);
 	bool load(std::vector<Vulkan::Texture>& textures);
-	
+
 };
 
 
@@ -427,7 +427,7 @@ class PipelineBuilder {
 	VkCompareOp depthCompareOp{ VK_COMPARE_OP_LESS };
 	VkBool32 stencilTest{ VK_FALSE };
 	VkStencilOpState stencil;
-	
+
 	VkBool32 blend{ VK_FALSE };
 	VkBlendFactor srcBlend{ VK_BLEND_FACTOR_SRC_ALPHA };
 	VkBlendFactor dstBlend{ VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA };
@@ -438,7 +438,7 @@ class PipelineBuilder {
 	VkFrontFace frontFace{ VK_FRONT_FACE_COUNTER_CLOCKWISE };
 	VkBool32 noDraw{ VK_FALSE };
 	std::vector<SpecInfo> specializationInfo;
-	
+
 	PipelineBuilder(VkDevice device_, VkPipelineLayout pipelineLayout_, VkRenderPass renderPass_, std::vector<Vulkan::ShaderModule>& shaders_, VkVertexInputBindingDescription& vertexInputDescription_, std::vector<VkVertexInputAttributeDescription>& vertexAttributeDescriptions_);
 public:
 	static PipelineBuilder begin(VkDevice device_, VkPipelineLayout pipelineLayout_, VkRenderPass renderPass_, std::vector<Vulkan::ShaderModule>& shaders_, VkVertexInputBindingDescription& vertexInputDescription_, std::vector<VkVertexInputAttributeDescription>& vertexAttributeDescriptions_);
@@ -453,7 +453,7 @@ public:
 	PipelineBuilder& setNoDraw(VkBool32 noDraw_);
 	PipelineBuilder& setStencilState(VkStencilOp failOp, VkStencilOp passOp, VkStencilOp depthFailOp, VkCompareOp compareOp, uint32_t compareMask, uint32_t writeMask, uint32_t reference);
 	PipelineBuilder& setTopology(VkPrimitiveTopology topology_);
-	PipelineBuilder& setSpecializationConstant(VkShaderStageFlagBits shaderStage,uint32_t uval);
+	PipelineBuilder& setSpecializationConstant(VkShaderStageFlagBits shaderStage, uint32_t uval);
 	PipelineBuilder& setSpecializationConstant(VkShaderStageFlagBits shaderStage, int32_t ival);
 	PipelineBuilder& setSpecializationConstant(VkShaderStageFlagBits shaderStage, float fval);
 	void build(VkPipeline& pipeline);
@@ -537,7 +537,7 @@ class TextureBuilder {
 	uint32_t height{ 0 };
 	uint32_t mipLevels{ 1 };
 	VkFormat format{ PREFERRED_IMAGE_FORMAT };
-	
+
 
 	VkImageUsageFlags imageUsage{ VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT };
 	VkImageAspectFlags aspect{ VK_IMAGE_ASPECT_COLOR_BIT };
@@ -585,7 +585,7 @@ public:
 	RenderPassBuilder& setDepthLoadOp(VkAttachmentLoadOp depthLoadOp_);
 	RenderPassBuilder& setDepthStoreOp(VkAttachmentStoreOp depthStoreOp_);
 	RenderPassBuilder& setDependency(uint32_t srcSubpass_, uint32_t dstSubpass_, VkPipelineStageFlags srcStage_, VkPipelineStageFlags dstStage_, VkAccessFlags srcAccessFlags_, VkAccessFlags dstAccessFlags_, VkDependencyFlags dependencyFlags_);
-	VkRenderPass build();	
+	VkRenderPass build();
 	void build(VkRenderPass& renderPass_);
 };
 
@@ -605,7 +605,7 @@ public:
 	FramebufferBuilder& setResolveImageView(VkImageView resolveImageView_);
 	FramebufferBuilder& setDimensions(uint32_t width_, uint32_t height_);
 	FramebufferBuilder& setRenderPass(VkRenderPass renderPass_);
-	
+
 	void build(std::vector<VkFramebuffer>& framebuffers);
 };
 
@@ -645,7 +645,7 @@ public:
 	operator VkImage()const { return texture.image; }
 	operator Vulkan::Image()const { return texture; }
 	operator Vulkan::Texture()const { return texture; }
-	
+
 };
 
 class VulkanImageList : public VulkanObject {
@@ -676,7 +676,7 @@ class VulkanDescriptor : public VulkanObject {
 	//VkDevice device{ VK_NULL_HANDLE };
 	VkDescriptorSet descriptor{ VK_NULL_HANDLE };
 public:
-	VulkanDescriptor(VkDevice device_,VkDescriptorSet descriptorSet_):VulkanObject(device_),descriptor(descriptorSet_){}
+	VulkanDescriptor(VkDevice device_, VkDescriptorSet descriptorSet_) :VulkanObject(device_), descriptor(descriptorSet_) {}
 	operator VkDescriptorSet()const { return descriptor; }
 };
 
@@ -726,7 +726,7 @@ class VulkanFramebuffers : public VulkanObject {
 	std::vector<VkFramebuffer> frameBuffers;
 public:
 	VulkanFramebuffers(VkDevice device_, std::vector<VkFramebuffer>& frameBuffers_) :VulkanObject(device_), frameBuffers(frameBuffers_) {}
-	~VulkanFramebuffers() { Vulkan::cleanupFramebuffers(device,frameBuffers); }
+	~VulkanFramebuffers() { Vulkan::cleanupFramebuffers(device, frameBuffers); }
 	operator size_t()const { return frameBuffers.size(); }
 	VkFramebuffer operator[](int n) { return frameBuffers[n]; }
 };

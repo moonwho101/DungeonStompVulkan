@@ -27,7 +27,7 @@ public:
 	~Camera();
 
 	//get/set world camera position
-	glm::vec3 GetPosition()const {return mPosition;	};
+	glm::vec3 GetPosition()const { return mPosition; };
 	void SetPosition(float x, float y, float z);
 	void SetPosition(const glm::vec3& v);
 
@@ -69,7 +69,4 @@ public:
 
 	//after modifying camera position/orientation, call to rebuild the view matrix.
 	void UpdateViewMatrix();
-	
-
-
 };

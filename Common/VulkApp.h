@@ -137,7 +137,7 @@ protected:
     uint32_t                            mFrameCount = 0;
     uint32_t                            mCurrFrame{ (uint32_t)(-1) };
     uint32_t                            mMaxFrames{ 0 };
-    VkCommandBuffer BeginRender(bool startRenderPass=true);
+    VkCommandBuffer BeginRender(bool startRenderPass = true);
     void            EndRender(VkCommandBuffer cmd);
 public:
     static VulkApp* GetApp();

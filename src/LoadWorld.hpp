@@ -11,7 +11,6 @@
 #define DIRECTIONAL_LIGHT_SOURCE 2
 #define POINT_LIGHT_SOURCE 3
 
-
 class CLoadWorld //: public CMyD3DApplication
 {
 
@@ -83,8 +82,6 @@ typedef struct msoundlist
 	int playing;
 
 } MSOUNDLIST;
-
-
 
 
 #endif //__LOADWORLD_H

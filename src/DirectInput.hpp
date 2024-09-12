@@ -33,7 +33,6 @@ typedef struct Controls_typ
 	BOOL bPreviousLevel;
 } CONTROLS, * Controls_ptr;
 
-
 extern FLOAT elapsegametimersave;
 extern int playermove;
 extern int playermovestrife;
@@ -43,12 +42,9 @@ void CycleNextWeapon();
 void CyclePreviousWeapon();
 void GiveWeapons();
 
-
-
 VOID MovePlayer(CONTROLS* Controls);
 void DestroyInputDevice();
 float fixangle(float angle, float adjust);
 HRESULT SelectInputDevice();
 void MakeDamageDice();
-
 #endif

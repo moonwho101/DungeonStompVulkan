@@ -18,7 +18,7 @@ struct AABB {
 	}
 
 	bool within(float l, float a, float r) {
-		return l < a&& a < r;
+		return l < a && a < r;
 	}
 	//test if within clip space
 	bool InsideFrustum(glm::mat4& MVP);// {
@@ -47,7 +47,7 @@ struct AABB {
 	//	return inside;
 	//}
 	bool Intersects(glm::vec3 Origin, glm::vec3 Direction, float& dist)const;/* {
-		
+
 		dist = -1.0f;
 		float div, tmin, tmax, tymin, tymax, tzmin, tzmax;
 		div = 1.0f / Direction.x;
@@ -59,7 +59,7 @@ struct AABB {
 			tmin = (max.x - Origin.x) * div;
 			tmax = (min.x - Origin.x) * div;
 		}
-		if (tmax < 0.0f) 
+		if (tmax < 0.0f)
 			return false;
 
 		div = 1.0f / Direction.y;
@@ -91,7 +91,7 @@ struct AABB {
 		dist= glm::length(vec);
 		return true;
 	}*/
-	
+
 };
 
 class Ray {
@@ -102,7 +102,7 @@ class Ray {
 public:
 	Ray(glm::vec3& orig_, glm::vec3& dir_) :orig(orig_), dir(dir_) {}
 	template <typename T> float IntersectMesh(std::vector<T>& vertices, std::vector<uint32_t>& indices);
-	template<typename T> bool IntersectMesh(T* vertices, uint32_t* indices, size_t indexCount,uint32_t&tri,float &dist)
+	template<typename T> bool IntersectMesh(T* vertices, uint32_t* indices, size_t indexCount, uint32_t& tri, float& dist)
 	{
 
 		bool hit = false;
@@ -113,13 +113,13 @@ public:
 			uint32_t i0 = indices[f + 0];
 			uint32_t i1 = indices[f + 1];
 			uint32_t i2 = indices[f + 2];
-			glm::vec3 *p = (glm::vec3*)&vertices[i0];
+			glm::vec3* p = (glm::vec3*)&vertices[i0];
 			glm::vec3 v0 = *p;
 			p = (glm::vec3*)&vertices[i1];
 			glm::vec3 v1 = *p;
 			p = (glm::vec3*)&vertices[i2];
 			glm::vec3 v2 = *p;
-			
+
 			glm::vec2 bary;
 			float currDist = 0.0f;
 			if (glm::intersectRayTriangle(orig, dir, v0, v1, v2, bary, currDist)) {
@@ -154,7 +154,7 @@ struct MeshGeometry {
 	Vulkan::Buffer indexBufferGPU;
 	void* vertexBufferCPU{ nullptr };
 	void* indexBufferCPU{ nullptr };
-	
+
 	uint32_t VertexByteStride{ 0 };
 	uint32_t VertexBufferByteSize{ 0 };
 	uint32_t IndexBufferByteSize{ 0 };
@@ -217,7 +217,7 @@ struct Texture : Vulkan::Texture {
 	std::string	Name;
 	std::string FileName;
 	std::vector<const char*> FileNames;
-	
+
 };
 
 ////"Borrowed" from DirectXCollisions

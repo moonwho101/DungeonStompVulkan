@@ -13,7 +13,6 @@ private:
 public:
 
     CameraBob() {
-
     }
 
     void SinWave(float speed, float amplitude, float frequency);
@@ -32,6 +31,4 @@ public:
 };
 
 #endif // CAMERABOB_H
-
-
 

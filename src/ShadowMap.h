@@ -23,8 +23,8 @@ public:
 	~ShadowMap();
 	ShadowMap& operator=(const ShadowMap& rhs) = delete;
 	VkViewport Viewport()const { return viewport; }
-	VkRect2D ScissorRect()const {		return scissorRect;	}
-	uint32_t Width()const {	return width;	}
+	VkRect2D ScissorRect()const { return scissorRect; }
+	uint32_t Width()const { return width; }
 	uint32_t Height()const { return height; }
 	VkRenderPass getRenderPass()const { return renderPass->operator VkRenderPass(); }
 	VkFramebuffer getFramebuffer()const { return frameBuffer->operator VkFramebuffer(); }

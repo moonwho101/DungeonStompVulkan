@@ -551,7 +551,7 @@ void MonsterHit();
 void DrawPlayerGun(int sshadow);
 XMFLOAT3 RadiusMultiply(XMFLOAT3 vector, XMFLOAT3 eRadius);
 XMFLOAT3 RadiusDivide(XMFLOAT3 vector, XMFLOAT3 eRadius);
-void display_message(float x, float y, char *text, int r, int g, int b, float fontx, float fonty, int fonttype);
+void display_message(float x, float y, char* text, int r, int g, int b, float fontx, float fonty, int fonttype);
 void SetPlayerAnimationSequence(int player_number, int sequence_number);
 void ActivateSwitch();
 void PlayWaveFile(char* filename);
