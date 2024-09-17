@@ -52,7 +52,7 @@ struct CUSTOMVERTEX { FLOAT X, Y, Z; DWORD COLOR; };
 float sin_table[361];
 float cos_table[361];
 
-int src_collide[MAX_NUM_VERTICES];
+int src_collide[MAX_NUM_QUADS];
 
 float playerx = 0;
 float playery = 0;
