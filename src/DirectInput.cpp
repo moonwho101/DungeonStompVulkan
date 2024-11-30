@@ -17,7 +17,7 @@ BOOL g_bUseJoystick = false;
 BOOL g_bUseKeyboard = false;
 
 //Adjust Mouse speed here.
-float mousediv = 35.0f;
+float mousediv = 25.0f;
 
 void PlaySong();
 extern int damageinprogress;
