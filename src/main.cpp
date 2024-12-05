@@ -2082,9 +2082,11 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 
 						texture = texture_number + 26;
 
-						uint32_t dyoffsets[2] = { (uint32_t)(texture * objectSize) };
-						pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptor1, 1, dyoffsets);
-						lastTexture = texture;
+						if (lastTexture != texture) {
+							uint32_t dyoffsets[2] = { (uint32_t)(texture * objectSize) };
+							pvkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, 1, 1, &descriptor1, 1, dyoffsets);
+							lastTexture = texture;
+						}
 
 						//Draw the dungeon, monsters and items.
 						vkCmdDraw(cmd, v, 1, vert_index, 0);
