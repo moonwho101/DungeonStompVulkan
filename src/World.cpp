@@ -381,13 +381,13 @@ void InitDS()
 		//return FALSE;
 	}
 
-	if (!pCWorld->LoadWorldMap("level1.map"))
+	if (!pCWorld->LoadWorldMap("level15.map"))
 	{
 		//PrintMessage(m_hWnd, "LoadObjectData failed", NULL, LOGFILE_ONLY);
 		//return FALSE;
 	}
 
-	pCWorld->LoadMod("level1.mod");
+	pCWorld->LoadMod("level15.mod");
 	SetStartSpot();
 	float fangle = (float)90 * k;
 
