@@ -126,10 +126,10 @@ void CalculateTangentBinormal(D3DVERTEX2& vertex1, D3DVERTEX2& vertex2, D3DVERTE
     tangentZ *= length;
 
     // Normalize the binormal
-    length = 1.0f / sqrtf(binormalX * binormalX + binormalY * binormalY + binormalZ * binormalZ);
-    binormalX *= length;
-    binormalY *= length;
-    binormalZ *= length;
+    //length = 1.0f / sqrtf(binormalX * binormalX + binormalY * binormalY + binormalZ * binormalZ);
+    //binormalX *= length;
+    //binormalY *= length;
+    //binormalZ *= length;
 
     vertex1.nmx = vertex2.nmx = vertex3.nmx = tangentX;
     vertex1.nmy = vertex2.nmy = vertex3.nmy = tangentY;
