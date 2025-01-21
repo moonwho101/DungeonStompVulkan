@@ -78,87 +78,62 @@ void ConvertQuad(int fan_cnt);
 
 void CalculateTangentBinormal(D3DVERTEX2& vertex1, D3DVERTEX2& vertex2, D3DVERTEX2& vertex3)
 {
-	float vector1[3], vector2[3];
-	float tuVector[2], tvVector[2];
-	float den;
-	float length;
+    float vector1[3], vector2[3];
+    float tuVector[2], tvVector[2];
+    float den;
 
-	D3DVERTEX2 tangent, binormal;
+    // Calculate the two vectors for this face.
+    vector1[0] = vertex2.x - vertex1.x;
+    vector1[1] = vertex2.y - vertex1.y;
+    vector1[2] = vertex2.z - vertex1.z;
 
-	// Calculate the two vectors for this face.
-	vector1[0] = vertex2.x - vertex1.x;
-	vector1[1] = vertex2.y - vertex1.y;
-	vector1[2] = vertex2.z - vertex1.z;
+    vector2[0] = vertex3.x - vertex1.x;
+    vector2[1] = vertex3.y - vertex1.y;
+    vector2[2] = vertex3.z - vertex1.z;
 
-	vector2[0] = vertex3.x - vertex1.x;
-	vector2[1] = vertex3.y - vertex1.y;
-	vector2[2] = vertex3.z - vertex1.z;
+    // Calculate the tu and tv texture space vectors.
+    tuVector[0] = vertex2.tu - vertex1.tu;
+    tvVector[0] = vertex2.tv - vertex1.tv;
 
-	// Calculate the tu and tv texture space vectors.
-	tuVector[0] = vertex2.tu - vertex1.tu;
-	tvVector[0] = vertex2.tv - vertex1.tv;
+    tuVector[1] = vertex3.tu - vertex1.tu;
+    tvVector[1] = vertex3.tv - vertex1.tv;
 
-	tuVector[1] = vertex3.tu - vertex1.tu;
-	tvVector[1] = vertex3.tv - vertex1.tv;
+    // Calculate the denominator of the tangent/binormal equation.
+    float result = (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
 
-	// Calculate the denominator of the tangent/binormal equation.
-	float result = (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
+    if (result == 0.0f) {
+        vertex1.nmx = vertex1.nmy = vertex1.nmz = 0.0f;
+        vertex2.nmx = vertex2.nmy = vertex2.nmz = 0.0f;
+        vertex3.nmx = vertex3.nmy = vertex3.nmz = 0.0f;
+        return;
+    }
 
-	if (result == 0) {
-		vertex1.nmx = 0;
-		vertex1.nmy = 0;
-		vertex1.nmz = 0;
+    den = 1.0f / result;
 
-		vertex2.nmx = 0;
-		vertex2.nmy = 0;
-		vertex2.nmz = 0;
+    // Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
+    float tangentX = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
+    float tangentY = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
+    float tangentZ = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
 
-		vertex3.nmx = 0;
-		vertex3.nmy = 0;
-		vertex3.nmz = 0;
-		return;
-	}
+    float binormalX = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
+    float binormalY = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
+    float binormalZ = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
 
-	den = 1.0f / (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
+    // Normalize the tangent
+    float length = 1.0f / sqrtf(tangentX * tangentX + tangentY * tangentY + tangentZ * tangentZ);
+    tangentX *= length;
+    tangentY *= length;
+    tangentZ *= length;
 
-	// Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
-	tangent.x = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
-	tangent.y = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
-	tangent.z = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
+    // Normalize the binormal
+    length = 1.0f / sqrtf(binormalX * binormalX + binormalY * binormalY + binormalZ * binormalZ);
+    binormalX *= length;
+    binormalY *= length;
+    binormalZ *= length;
 
-	binormal.x = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
-	binormal.y = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
-	binormal.z = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
-
-	// Calculate the length of this normal.
-	length = (float)sqrt((tangent.x * tangent.x) + (tangent.y * tangent.y) + (tangent.z * tangent.z));
-
-	// Normalize the normal and then store it
-	tangent.x = tangent.x / length;
-	tangent.y = tangent.y / length;
-	tangent.z = tangent.z / length;
-
-	// Calculate the length of this normal.
-	length = (float)sqrt((binormal.x * binormal.x) + (binormal.y * binormal.y) + (binormal.z * binormal.z));
-
-	// Normalize the normal and then store it
-	binormal.x = binormal.x / length;
-	binormal.y = binormal.y / length;
-	binormal.z = binormal.z / length;
-
-	vertex1.nmx = tangent.x;
-	vertex1.nmy = tangent.y;
-	vertex1.nmz = tangent.z;
-
-	vertex2.nmx = tangent.x;
-	vertex2.nmy = tangent.y;
-	vertex2.nmz = tangent.z;
-
-	vertex3.nmx = tangent.x;
-	vertex3.nmy = tangent.y;
-	vertex3.nmz = tangent.z;
-
-	return;
+    vertex1.nmx = vertex2.nmx = vertex3.nmx = tangentX;
+    vertex1.nmy = vertex2.nmy = vertex3.nmy = tangentY;
+    vertex1.nmz = vertex2.nmz = vertex3.nmz = tangentZ;
 }
 
 bool ObjectHasShadow(int object_id) {
@@ -895,20 +870,19 @@ void SmoothNormals(int start_cnt) {
 			}
 
 			if (scount > 1) {
-				sum = XMVectorSet(0, 0, 0, 0);
-				sumtan = XMVectorSet(0, 0, 0, 0);
+				sum = XMVectorZero();
+				sumtan = XMVectorZero();
 
 				for (int k = 0; k < scount; k++) {
 					x1.x = src_v[sharedv[k]].nx;
 					x1.y = src_v[sharedv[k]].ny;
 					x1.z = src_v[sharedv[k]].nz;
-					sum = sum + XMLoadFloat3(&x1);
+					sum = XMVectorAdd(sum, XMLoadFloat3(&x1));
 
 					xtan.x = src_v[sharedv[k]].nmx;
 					xtan.y = src_v[sharedv[k]].nmy;
 					xtan.z = src_v[sharedv[k]].nmz;
-					sumtan = sumtan + XMLoadFloat3(&xtan);
-
+					sumtan = XMVectorAdd(sumtan, XMLoadFloat3(&xtan));
 				}
 
 				average = XMVector3Normalize(sum);
@@ -1149,428 +1123,190 @@ void ComputerWeightedAverages(int start_cnt) {
 	}
 }
 
+
 void ConvertTraingleFan(int fan_cnt) {
+    int counter = 0;
 
-	int counter = 0;
+    for (int i = fan_cnt; i < cnt; i++) {
+        if (counter < 3) {
+            temp_v[counter] = src_v[i];
+            counter++;
+        } else {
+            temp_v[counter] = src_v[fan_cnt];
+            counter++;
+            temp_v[counter] = src_v[i - 1];
+            counter++;
+            temp_v[counter] = src_v[i];
+            counter++;
+        }
+    }
 
-	for (int i = fan_cnt; i < cnt; i++) {
-		if (counter < 3) {
+    int normal = 0;
 
-			temp_v[counter].x = src_v[i].x;
-			temp_v[counter].y = src_v[i].y;
-			temp_v[counter].z = src_v[i].z;
-			temp_v[counter].nx = src_v[i].nx;
-			temp_v[counter].ny = src_v[i].ny;
-			temp_v[counter].nz = src_v[i].nz;
-			temp_v[counter].tu = src_v[i].tu;
-			temp_v[counter].tv = src_v[i].tv;
-			counter++;
-		}
-		else {
-			temp_v[counter].x = src_v[fan_cnt].x;
-			temp_v[counter].y = src_v[fan_cnt].y;
-			temp_v[counter].z = src_v[fan_cnt].z;
-			temp_v[counter].nx = src_v[fan_cnt].nx;
-			temp_v[counter].ny = src_v[fan_cnt].ny;
-			temp_v[counter].nz = src_v[fan_cnt].nz;
-			temp_v[counter].tu = src_v[fan_cnt].tu;
-			temp_v[counter].tv = src_v[fan_cnt].tv;
-			counter++;
+    for (int i = 0; i < counter; i++) {
+        src_v[fan_cnt + i] = temp_v[i];
 
-			temp_v[counter].x = src_v[i - 1].x;
-			temp_v[counter].y = src_v[i - 1].y;
-			temp_v[counter].z = src_v[i - 1].z;
-			temp_v[counter].nx = src_v[i - 1].nx;
-			temp_v[counter].ny = src_v[i - 1].ny;
-			temp_v[counter].nz = src_v[i - 1].nz;
-			temp_v[counter].tu = src_v[i - 1].tu;
-			temp_v[counter].tv = src_v[i - 1].tv;
-			counter++;
+        if (normal == 2) {
+            normal = 0;
+            XMFLOAT3 vw1 = { src_v[(fan_cnt + i) - 2].x, src_v[(fan_cnt + i) - 2].y, src_v[(fan_cnt + i) - 2].z };
+            XMFLOAT3 vw2 = { src_v[(fan_cnt + i) - 1].x, src_v[(fan_cnt + i) - 1].y, src_v[(fan_cnt + i) - 1].z };
+            XMFLOAT3 vw3 = { src_v[(fan_cnt + i)].x, src_v[(fan_cnt + i)].y, src_v[(fan_cnt + i)].z };
 
-			temp_v[counter].x = src_v[i].x;
-			temp_v[counter].y = src_v[i].y;
-			temp_v[counter].z = src_v[i].z;
-			temp_v[counter].nx = src_v[i].nx;
-			temp_v[counter].ny = src_v[i].ny;
-			temp_v[counter].nz = src_v[i].nz;
-			temp_v[counter].tu = src_v[i].tu;
-			temp_v[counter].tv = src_v[i].tv;
-			counter++;
-		}
-	}
+            // calculate the NORMAL
+            XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+            XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+            XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
+            XMVECTOR final = XMVector3Normalize(vCross);
 
-	int normal = 0;
+            XMFLOAT3 final2;
+            XMStoreFloat3(&final2, final);
 
-	for (int i = 0; i < counter; i++) {
-		src_v[fan_cnt + i].x = temp_v[i].x;
-		src_v[fan_cnt + i].y = temp_v[i].y;
-		src_v[fan_cnt + i].z = temp_v[i].z;
+            float workx = -final2.x;
+            float worky = -final2.y;
+            float workz = -final2.z;
 
-		src_v[fan_cnt + i].nx = temp_v[i].nx;
-		src_v[fan_cnt + i].ny = temp_v[i].ny;
-		src_v[fan_cnt + i].nz = temp_v[i].nz;
+            src_v[(fan_cnt + i) - 2].nx = workx;
+            src_v[(fan_cnt + i) - 2].ny = worky;
+            src_v[(fan_cnt + i) - 2].nz = workz;
 
-		src_v[fan_cnt + i].tu = temp_v[i].tu;
-		src_v[fan_cnt + i].tv = temp_v[i].tv;
+            src_v[(fan_cnt + i) - 1].nx = workx;
+            src_v[(fan_cnt + i) - 1].ny = worky;
+            src_v[(fan_cnt + i) - 1].nz = workz;
 
-		if (normal == 2) {
+            src_v[(fan_cnt + i)].nx = workx;
+            src_v[(fan_cnt + i)].ny = worky;
+            src_v[(fan_cnt + i)].nz = workz;
 
-			normal = 0;
-			XMFLOAT3 vw1, vw2, vw3;
-
-			vw1.x = D3DVAL(src_v[(fan_cnt + i) - 2].x);
-			vw1.y = D3DVAL(src_v[(fan_cnt + i) - 2].y);
-			vw1.z = D3DVAL(src_v[(fan_cnt + i) - 2].z);
-
-			vw2.x = D3DVAL(src_v[(fan_cnt + i) - 1].x);
-			vw2.y = D3DVAL(src_v[(fan_cnt + i) - 1].y);
-			vw2.z = D3DVAL(src_v[(fan_cnt + i) - 1].z);
-
-			vw3.x = D3DVAL(src_v[(fan_cnt + i)].x);
-			vw3.y = D3DVAL(src_v[(fan_cnt + i)].y);
-			vw3.z = D3DVAL(src_v[(fan_cnt + i)].z);
-
-			// calculate the NORMAL
-			XMVECTOR   vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-			XMVECTOR   vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
-
-			XMVECTOR  vCross, final;
-			vCross = XMVector3Cross(vDiff, vDiff2);
-			final = XMVector3Normalize(vCross);
-
-			XMFLOAT3 final2;
-			XMStoreFloat3(&final2, final);
-
-			float workx = (-final2.x);
-			float worky = (-final2.y);
-			float workz = (-final2.z);
-
-			src_v[(fan_cnt + i) - 2].nx = workx;
-			src_v[(fan_cnt + i) - 2].ny = worky;
-			src_v[(fan_cnt + i) - 2].nz = workz;
-
-			src_v[(fan_cnt + i) - 1].nx = workx;
-			src_v[(fan_cnt + i) - 1].ny = worky;
-			src_v[(fan_cnt + i) - 1].nz = workz;
-
-			src_v[(fan_cnt + i)].nx = workx;
-			src_v[(fan_cnt + i)].ny = worky;
-			src_v[(fan_cnt + i)].nz = workz;
-
-			CalculateTangentBinormal(src_v[(fan_cnt + i) - 2], src_v[(fan_cnt + i) - 1], src_v[(fan_cnt + i)]);
-		}
-		else {
-			normal++;
-		}
-	}
-	cnt = fan_cnt + counter;
-
+            CalculateTangentBinormal(src_v[(fan_cnt + i) - 2], src_v[(fan_cnt + i) - 1], src_v[(fan_cnt + i)]);
+        } else {
+            normal++;
+        }
+    }
+    cnt = fan_cnt + counter;
 }
 
 void ConvertTraingleStrip(int fan_cnt) {
+    int counter = 0;
+    int v = 0;
 
-	int counter = 0;
-	int v = 0;
+    for (int i = fan_cnt; i < cnt; i++) {
+        if (counter < 3) {
+            temp_v[counter] = src_v[i];
+            counter++;
+        } else {
+            if (v == 0) {
+                temp_v[counter] = src_v[i];
+                counter++;
+                temp_v[counter] = src_v[i - 1];
+                counter++;
+                temp_v[counter] = src_v[i - 2];
+                counter++;
+                v = 1;
+            } else {
+                temp_v[counter] = src_v[i - 2];
+                counter++;
+                temp_v[counter] = src_v[i - 1];
+                counter++;
+                temp_v[counter] = src_v[i];
+                counter++;
+                v = 0;
+            }
+        }
+    }
 
-	for (int i = fan_cnt; i < cnt; i++) {
+    for (int i = 0; i < counter; i++) {
+        src_v[fan_cnt + i] = temp_v[i];
+    }
 
-		if (counter < 3) {
-			temp_v[counter].x = src_v[i].x;
-			temp_v[counter].y = src_v[i].y;
-			temp_v[counter].z = src_v[i].z;
-			temp_v[counter].nx = src_v[i].nx;
-			temp_v[counter].ny = src_v[i].ny;
-			temp_v[counter].nz = src_v[i].nz;
-			temp_v[counter].tu = src_v[i].tu;
-			temp_v[counter].tv = src_v[i].tv;
+    for (int i = 0; i < counter; i += 3) {
+        XMFLOAT3 vw1 = { src_v[fan_cnt + i].x, src_v[fan_cnt + i].y, src_v[fan_cnt + i].z };
+        XMFLOAT3 vw2 = { src_v[fan_cnt + i + 1].x, src_v[fan_cnt + i + 1].y, src_v[fan_cnt + i + 1].z };
+        XMFLOAT3 vw3 = { src_v[fan_cnt + i + 2].x, src_v[fan_cnt + i + 2].y, src_v[fan_cnt + i + 2].z };
 
-			counter++;
-		}
-		else {
-			if (v == 0) {
-				temp_v[counter].x = src_v[i].x;
-				temp_v[counter].y = src_v[i].y;
-				temp_v[counter].z = src_v[i].z;
-				temp_v[counter].nx = src_v[i].nx;
-				temp_v[counter].ny = src_v[i].ny;
-				temp_v[counter].nz = src_v[i].nz;
-				temp_v[counter].tu = src_v[i].tu;
-				temp_v[counter].tv = src_v[i].tv;
-				counter++;
+        // calculate the NORMAL
+        XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+        XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+        XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
+        XMVECTOR final = XMVector3Normalize(vCross);
 
-				temp_v[counter].x = src_v[i - 1].x;
-				temp_v[counter].y = src_v[i - 1].y;
-				temp_v[counter].z = src_v[i - 1].z;
-				temp_v[counter].nx = src_v[i - 1].nx;
-				temp_v[counter].ny = src_v[i - 1].ny;
-				temp_v[counter].nz = src_v[i - 1].nz;
-				temp_v[counter].tu = src_v[i - 1].tu;
-				temp_v[counter].tv = src_v[i - 1].tv;
-				counter++;
+        XMFLOAT3 final2;
+        XMStoreFloat3(&final2, final);
 
-				temp_v[counter].x = src_v[i - 2].x;
-				temp_v[counter].y = src_v[i - 2].y;
-				temp_v[counter].z = src_v[i - 2].z;
-				temp_v[counter].nx = src_v[i - 2].nx;
-				temp_v[counter].ny = src_v[i - 2].ny;
-				temp_v[counter].nz = src_v[i - 2].nz;
-				temp_v[counter].tu = src_v[i - 2].tu;
-				temp_v[counter].tv = src_v[i - 2].tv;
-				counter++;
+        float workx = -final2.x;
+        float worky = -final2.y;
+        float workz = -final2.z;
 
-				v = 1;
-			}
-			else {
+        src_v[fan_cnt + i].nx = workx;
+        src_v[fan_cnt + i].ny = worky;
+        src_v[fan_cnt + i].nz = workz;
 
-				temp_v[counter].x = src_v[i - 2].x;
-				temp_v[counter].y = src_v[i - 2].y;
-				temp_v[counter].z = src_v[i - 2].z;
-				temp_v[counter].nx = src_v[i - 2].nx;
-				temp_v[counter].ny = src_v[i - 2].ny;
-				temp_v[counter].nz = src_v[i - 2].nz;
-				temp_v[counter].tu = src_v[i - 2].tu;
-				temp_v[counter].tv = src_v[i - 2].tv;
-				counter++;
+        src_v[fan_cnt + i + 1].nx = workx;
+        src_v[fan_cnt + i + 1].ny = worky;
+        src_v[fan_cnt + i + 1].nz = workz;
 
-				temp_v[counter].x = src_v[i - 1].x;
-				temp_v[counter].y = src_v[i - 1].y;
-				temp_v[counter].z = src_v[i - 1].z;
-				temp_v[counter].nx = src_v[i - 1].nx;
-				temp_v[counter].ny = src_v[i - 1].ny;
-				temp_v[counter].nz = src_v[i - 1].nz;
-				temp_v[counter].tu = src_v[i - 1].tu;
-				temp_v[counter].tv = src_v[i - 1].tv;
+        src_v[fan_cnt + i + 2].nx = workx;
+        src_v[fan_cnt + i + 2].ny = worky;
+        src_v[fan_cnt + i + 2].nz = workz;
 
-				counter++;
-				temp_v[counter].x = src_v[i].x;
-				temp_v[counter].y = src_v[i].y;
-				temp_v[counter].z = src_v[i].z;
-				temp_v[counter].nx = src_v[i].nx;
-				temp_v[counter].ny = src_v[i].ny;
-				temp_v[counter].nz = src_v[i].nz;
-				temp_v[counter].tu = src_v[i].tu;
-				temp_v[counter].tv = src_v[i].tv;
-				counter++;
+        CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
+    }
 
-				v = 0;
-			}
-		}
-	}
-
-	int normal = 0;
-
-	for (int i = 0; i < counter; i++) {
-		src_v[fan_cnt + i].x = temp_v[i].x;
-		src_v[fan_cnt + i].y = temp_v[i].y;
-		src_v[fan_cnt + i].z = temp_v[i].z;
-
-		src_v[fan_cnt + i].nx = temp_v[i].nx;
-		src_v[fan_cnt + i].ny = temp_v[i].ny;
-		src_v[fan_cnt + i].nz = temp_v[i].nz;
-
-		src_v[fan_cnt + i].tu = temp_v[i].tu;
-		src_v[fan_cnt + i].tv = temp_v[i].tv;
-
-		if (normal == 2) {
-
-			normal = 0;
-			XMFLOAT3 vw1, vw2, vw3;
-
-			vw1.x = D3DVAL(src_v[(fan_cnt + i) - 2].x);
-			vw1.y = D3DVAL(src_v[(fan_cnt + i) - 2].y);
-			vw1.z = D3DVAL(src_v[(fan_cnt + i) - 2].z);
-
-			vw2.x = D3DVAL(src_v[(fan_cnt + i) - 1].x);
-			vw2.y = D3DVAL(src_v[(fan_cnt + i) - 1].y);
-			vw2.z = D3DVAL(src_v[(fan_cnt + i) - 1].z);
-
-			vw3.x = D3DVAL(src_v[(fan_cnt + i)].x);
-			vw3.y = D3DVAL(src_v[(fan_cnt + i)].y);
-			vw3.z = D3DVAL(src_v[(fan_cnt + i)].z);
-
-			// calculate the NORMAL
-			XMVECTOR   vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-			XMVECTOR   vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
-
-			XMVECTOR  vCross, final;
-			vCross = XMVector3Cross(vDiff, vDiff2);
-			final = XMVector3Normalize(vCross);
-
-			XMFLOAT3 final2;
-			XMStoreFloat3(&final2, final);
-
-			float workx = (-final2.x);
-			float worky = (-final2.y);
-			float workz = (-final2.z);
-
-			src_v[(fan_cnt + i) - 2].nx = workx;
-			src_v[(fan_cnt + i) - 2].ny = worky;
-			src_v[(fan_cnt + i) - 2].nz = workz;
-
-			src_v[(fan_cnt + i) - 1].nx = workx;
-			src_v[(fan_cnt + i) - 1].ny = worky;
-			src_v[(fan_cnt + i) - 1].nz = workz;
-
-			src_v[(fan_cnt + i)].nx = workx;
-			src_v[(fan_cnt + i)].ny = worky;
-			src_v[(fan_cnt + i)].nz = workz;
-
-			CalculateTangentBinormal(src_v[(fan_cnt + i) - 2], src_v[(fan_cnt + i) - 1], src_v[(fan_cnt + i)]);
-		}
-		else {
-			normal++;
-		}
-	}
-	cnt = fan_cnt + counter;
+    cnt = fan_cnt + counter;
 }
 
 void ConvertQuad(int fan_cnt) {
+    int counter = 0;
+    int quad = 0;
 
-	int counter = 0;
-	int v = 0;
-	int quad = 0;
+    for (int i = fan_cnt; i < cnt; i++) {
+        if (quad >= 3) {
+            for (int j = 3; j >= 0; j--) {
+                temp_v[counter] = src_v[i - j];
+                counter++;
+            }
+            for (int j = 1; j <= 2; j++) {
+                temp_v[counter] = src_v[i - j];
+                counter++;
+            }
+            quad = 0;
+        } else {
+            quad++;
+        }
+    }
 
-	for (int i = fan_cnt; i < cnt; i++) {
+    for (int i = 0; i < counter; i++) {
+        src_v[fan_cnt + i] = temp_v[i];
+        src_collide[fan_cnt + i] = 0;
+    }
 
-		if (quad >= 3) {
+    for (int i = 0; i < counter; i += 3) {
+        XMFLOAT3 vw1 = { src_v[fan_cnt + i].x, src_v[fan_cnt + i].y, src_v[fan_cnt + i].z };
+        XMFLOAT3 vw2 = { src_v[fan_cnt + i + 1].x, src_v[fan_cnt + i + 1].y, src_v[fan_cnt + i + 1].z };
+        XMFLOAT3 vw3 = { src_v[fan_cnt + i + 2].x, src_v[fan_cnt + i + 2].y, src_v[fan_cnt + i + 2].z };
 
-			temp_v[counter].x = src_v[i - 3].x;
-			temp_v[counter].y = src_v[i - 3].y;
-			temp_v[counter].z = src_v[i - 3].z;
-			temp_v[counter].nx = src_v[i - 3].nx;
-			temp_v[counter].ny = src_v[i - 3].ny;
-			temp_v[counter].nz = src_v[i - 3].nz;
-			temp_v[counter].tu = src_v[i - 3].tu;
-			temp_v[counter].tv = src_v[i - 3].tv;
-			counter++;
+        XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+        XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+        XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
+        XMVECTOR final = XMVector3Normalize(vCross);
 
-			temp_v[counter].x = src_v[i - 2].x;
-			temp_v[counter].y = src_v[i - 2].y;
-			temp_v[counter].z = src_v[i - 2].z;
-			temp_v[counter].nx = src_v[i - 2].nx;
-			temp_v[counter].ny = src_v[i - 2].ny;
-			temp_v[counter].nz = src_v[i - 2].nz;
-			temp_v[counter].tu = src_v[i - 2].tu;
-			temp_v[counter].tv = src_v[i - 2].tv;
-			counter++;
+        XMFLOAT3 final2;
+        XMStoreFloat3(&final2, final);
 
-			temp_v[counter].x = src_v[i - 1].x;
-			temp_v[counter].y = src_v[i - 1].y;
-			temp_v[counter].z = src_v[i - 1].z;
-			temp_v[counter].nx = src_v[i - 1].nx;
-			temp_v[counter].ny = src_v[i - 1].ny;
-			temp_v[counter].nz = src_v[i - 1].nz;
-			temp_v[counter].tu = src_v[i - 1].tu;
-			temp_v[counter].tv = src_v[i - 1].tv;
-			counter++;
+        float workx = -final2.x;
+        float worky = -final2.y;
+        float workz = -final2.z;
 
-			//2nd
-			temp_v[counter].x = src_v[i].x;
-			temp_v[counter].y = src_v[i].y;
-			temp_v[counter].z = src_v[i].z;
-			temp_v[counter].nx = src_v[i].nx;
-			temp_v[counter].ny = src_v[i].ny;
-			temp_v[counter].nz = src_v[i].nz;
-			temp_v[counter].tu = src_v[i].tu;
-			temp_v[counter].tv = src_v[i].tv;
-			counter++;
+        for (int j = 0; j < 3; j++) {
+            src_v[fan_cnt + i + j].nx = workx;
+            src_v[fan_cnt + i + j].ny = worky;
+            src_v[fan_cnt + i + j].nz = workz;
+        }
 
-			temp_v[counter].x = src_v[i - 1].x;
-			temp_v[counter].y = src_v[i - 1].y;
-			temp_v[counter].z = src_v[i - 1].z;
-			temp_v[counter].nx = src_v[i - 1].nx;
-			temp_v[counter].ny = src_v[i - 1].ny;
-			temp_v[counter].nz = src_v[i - 1].nz;
-			temp_v[counter].tu = src_v[i - 1].tu;
-			temp_v[counter].tv = src_v[i - 1].tv;
-			counter++;
+        CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
+    }
 
-			temp_v[counter].x = src_v[i - 2].x;
-			temp_v[counter].y = src_v[i - 2].y;
-			temp_v[counter].z = src_v[i - 2].z;
-			temp_v[counter].nx = src_v[i - 2].nx;
-			temp_v[counter].ny = src_v[i - 2].ny;
-			temp_v[counter].nz = src_v[i - 2].nz;
-			temp_v[counter].tu = src_v[i - 2].tu;
-			temp_v[counter].tv = src_v[i - 2].tv;
-			counter++;
-
-			quad = 0;
-		}
-		else {
-			quad++;
-		}
-	}
-
-	int normal = 0;
-
-	for (int i = 0; i < counter; i++) {
-		src_v[fan_cnt + i].x = temp_v[i].x;
-		src_v[fan_cnt + i].y = temp_v[i].y;
-		src_v[fan_cnt + i].z = temp_v[i].z;
-
-		src_v[fan_cnt + i].nx = temp_v[i].nx;
-		src_v[fan_cnt + i].ny = temp_v[i].ny;
-		src_v[fan_cnt + i].nz = temp_v[i].nz;
-
-		src_v[fan_cnt + i].tu = temp_v[i].tu;
-		src_v[fan_cnt + i].tv = temp_v[i].tv;
-
-		//don't collide with visual box
-		src_collide[fan_cnt + i] = 0;
-
-		if (normal == 2) {
-
-			normal = 0;
-			XMFLOAT3 vw1, vw2, vw3;
-
-			vw1.x = D3DVAL(src_v[(fan_cnt + i) - 2].x);
-			vw1.y = D3DVAL(src_v[(fan_cnt + i) - 2].y);
-			vw1.z = D3DVAL(src_v[(fan_cnt + i) - 2].z);
-
-			vw2.x = D3DVAL(src_v[(fan_cnt + i) - 1].x);
-			vw2.y = D3DVAL(src_v[(fan_cnt + i) - 1].y);
-			vw2.z = D3DVAL(src_v[(fan_cnt + i) - 1].z);
-
-			vw3.x = D3DVAL(src_v[(fan_cnt + i)].x);
-			vw3.y = D3DVAL(src_v[(fan_cnt + i)].y);
-			vw3.z = D3DVAL(src_v[(fan_cnt + i)].z);
-
-			XMVECTOR   vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-			XMVECTOR   vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
-
-			XMVECTOR  vCross, final;
-			vCross = XMVector3Cross(vDiff, vDiff2);
-			final = XMVector3Normalize(vCross);
-
-			XMFLOAT3 final2;
-			XMStoreFloat3(&final2, final);
-
-			float workx = (-final2.x);
-			float worky = (-final2.y);
-			float workz = (-final2.z);
-
-			src_v[(fan_cnt + i) - 2].nx = workx;
-			src_v[(fan_cnt + i) - 2].ny = worky;
-			src_v[(fan_cnt + i) - 2].nz = workz;
-
-			src_v[(fan_cnt + i) - 1].nx = workx;
-			src_v[(fan_cnt + i) - 1].ny = worky;
-			src_v[(fan_cnt + i) - 1].nz = workz;
-
-			src_v[(fan_cnt + i)].nx = workx;
-			src_v[(fan_cnt + i)].ny = worky;
-			src_v[(fan_cnt + i)].nz = workz;
-
-			CalculateTangentBinormal(src_v[(fan_cnt + i) - 2], src_v[(fan_cnt + i) - 1], src_v[(fan_cnt + i)]);
-		}
-		else {
-			normal++;
-		}
-	}
-	cnt = fan_cnt + counter;
+    cnt = fan_cnt + counter;
 }
-
 int GetNextFrame(int monsterId);
 
 void DrawMonsters()
