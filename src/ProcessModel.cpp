@@ -1129,15 +1129,13 @@ void ConvertTraingleFan(int fan_cnt) {
 
     for (int i = fan_cnt; i < cnt; i++) {
         if (counter < 3) {
-            temp_v[counter] = src_v[i];
-            counter++;
+            temp_v[counter++] = src_v[i];
+
         } else {
-            temp_v[counter] = src_v[fan_cnt];
-            counter++;
-            temp_v[counter] = src_v[i - 1];
-            counter++;
-            temp_v[counter] = src_v[i];
-            counter++;
+            temp_v[counter++] = src_v[fan_cnt];
+            temp_v[counter++] = src_v[i - 1];
+            temp_v[counter++] = src_v[i];
+
         }
     }
 
@@ -1195,20 +1193,14 @@ void ConvertTraingleStrip(int fan_cnt) {
             counter++;
         } else {
             if (v == 0) {
-                temp_v[counter] = src_v[i];
-                counter++;
-                temp_v[counter] = src_v[i - 1];
-                counter++;
-                temp_v[counter] = src_v[i - 2];
-                counter++;
+                temp_v[counter++] = src_v[i];
+                temp_v[counter++] = src_v[i - 1];
+                temp_v[counter++] = src_v[i - 2];
                 v = 1;
             } else {
-                temp_v[counter] = src_v[i - 2];
-                counter++;
-                temp_v[counter] = src_v[i - 1];
-                counter++;
-                temp_v[counter] = src_v[i];
-                counter++;
+                temp_v[counter++] = src_v[i - 2];
+                temp_v[counter++] = src_v[i - 1];
+                temp_v[counter++] = src_v[i];
                 v = 0;
             }
         }
