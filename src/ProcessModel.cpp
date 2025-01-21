@@ -841,70 +841,62 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 int tracknormal[MAX_NUM_QUADS];
 
 void SmoothNormals(int start_cnt) {
+    // Smooth the vertex normals out so the models look less blocky.
+    XMVECTOR sum, sumtan, average;
+    XMFLOAT3 x1, xtan, final2, finaltan;
 
-	//Smooth the vertex normals out so the models look less blocky.
-	XMVECTOR sum, sumtan, average;
-	XMFLOAT3 x1, xtan, final2, finaltan;
+    int scount = 0;
 
-	int scount = 0;
+    // Initialize tracknormal array to 0
+    std::fill(tracknormal + start_cnt, tracknormal + cnt, 0);
 
-	for (int i = start_cnt; i < cnt; i++) {
-		tracknormal[i] = 0;
-	}
+    for (int i = start_cnt; i < cnt; i++) {
+        if (tracknormal[i] == 0) {
+            float x = src_v[i].x;
+            float y = src_v[i].y;
+            float z = src_v[i].z;
 
-	for (int i = start_cnt; i < cnt; i++) {
+            scount = 0;
 
-		if (tracknormal[i] == 0) {
-			float x = src_v[i].x;
-			float y = src_v[i].y;
-			float z = src_v[i].z;
+            for (int j = i; j < cnt; j++) {
+                if (tracknormal[j] == 0 && x == src_v[j].x && y == src_v[j].y && z == src_v[j].z) {
+                    // found shared vertex
+                    sharedv[scount++] = j;
+                }
+            }
 
-			scount = 0;
+            if (scount > 1) {
+                sum = XMVectorZero();
+                sumtan = XMVectorZero();
 
-			for (int j = i; j < cnt; j++) {
-				if (tracknormal[j] == 0 && x == src_v[j].x && y == src_v[j].y && z == src_v[j].z) {
-					//found shared vertex
-					sharedv[scount] = j;
-					scount++;
-				}
-			}
+                for (int k = 0; k < scount; k++) {
+                    x1 = { src_v[sharedv[k]].nx, src_v[sharedv[k]].ny, src_v[sharedv[k]].nz };
+                    sum = XMVectorAdd(sum, XMLoadFloat3(&x1));
 
-			if (scount > 1) {
-				sum = XMVectorZero();
-				sumtan = XMVectorZero();
+                    xtan = { src_v[sharedv[k]].nmx, src_v[sharedv[k]].nmy, src_v[sharedv[k]].nmz };
+                    sumtan = XMVectorAdd(sumtan, XMLoadFloat3(&xtan));
+                }
 
-				for (int k = 0; k < scount; k++) {
-					x1.x = src_v[sharedv[k]].nx;
-					x1.y = src_v[sharedv[k]].ny;
-					x1.z = src_v[sharedv[k]].nz;
-					sum = XMVectorAdd(sum, XMLoadFloat3(&x1));
+                average = XMVector3Normalize(sum);
+                XMStoreFloat3(&final2, average);
 
-					xtan.x = src_v[sharedv[k]].nmx;
-					xtan.y = src_v[sharedv[k]].nmy;
-					xtan.z = src_v[sharedv[k]].nmz;
-					sumtan = XMVectorAdd(sumtan, XMLoadFloat3(&xtan));
-				}
+                average = XMVector3Normalize(sumtan);
+                XMStoreFloat3(&finaltan, average);
 
-				average = XMVector3Normalize(sum);
-				XMStoreFloat3(&final2, average);
+                for (int k = 0; k < scount; k++) {
+                    src_v[sharedv[k]].nx = final2.x;
+                    src_v[sharedv[k]].ny = final2.y;
+                    src_v[sharedv[k]].nz = final2.z;
 
-				average = XMVector3Normalize(sumtan);
-				XMStoreFloat3(&finaltan, average);
+                    src_v[sharedv[k]].nmx = finaltan.x;
+                    src_v[sharedv[k]].nmy = finaltan.y;
+                    src_v[sharedv[k]].nmz = finaltan.z;
 
-				for (int k = 0; k < scount; k++) {
-					src_v[sharedv[k]].nx = final2.x;
-					src_v[sharedv[k]].ny = final2.y;
-					src_v[sharedv[k]].nz = final2.z;
-
-					src_v[sharedv[k]].nmx = finaltan.x;
-					src_v[sharedv[k]].nmy = finaltan.y;
-					src_v[sharedv[k]].nmz = finaltan.z;
-
-					tracknormal[sharedv[k]] = 1;
-				}
-			}
-		}
-	}
+                    tracknormal[sharedv[k]] = 1;
+                }
+            }
+        }
+    }
 }
 
 void ComputerWeightedAverages(int start_cnt);
