@@ -1151,21 +1151,17 @@ void ConvertTraingleFan(int fan_cnt) {
             XMFLOAT3 final2;
             XMStoreFloat3(&final2, final);
 
-            float workx = -final2.x;
-            float worky = -final2.y;
-            float workz = -final2.z;
+            src_v[(fan_cnt + i) - 2].nx = -final2.x;
+            src_v[(fan_cnt + i) - 2].ny = -final2.y;
+            src_v[(fan_cnt + i) - 2].nz = -final2.z;
 
-            src_v[(fan_cnt + i) - 2].nx = workx;
-            src_v[(fan_cnt + i) - 2].ny = worky;
-            src_v[(fan_cnt + i) - 2].nz = workz;
+            src_v[(fan_cnt + i) - 1].nx = -final2.x;
+            src_v[(fan_cnt + i) - 1].ny = -final2.y;
+            src_v[(fan_cnt + i) - 1].nz = -final2.z;
 
-            src_v[(fan_cnt + i) - 1].nx = workx;
-            src_v[(fan_cnt + i) - 1].ny = worky;
-            src_v[(fan_cnt + i) - 1].nz = workz;
-
-            src_v[(fan_cnt + i)].nx = workx;
-            src_v[(fan_cnt + i)].ny = worky;
-            src_v[(fan_cnt + i)].nz = workz;
+            src_v[(fan_cnt + i)].nx = -final2.x;
+            src_v[(fan_cnt + i)].ny = -final2.y;
+            src_v[(fan_cnt + i)].nz = -final2.z;
 
             CalculateTangentBinormal(src_v[(fan_cnt + i) - 2], src_v[(fan_cnt + i) - 1], src_v[(fan_cnt + i)]);
         } else {
@@ -1216,21 +1212,17 @@ void ConvertTraingleStrip(int fan_cnt) {
         XMFLOAT3 final2;
         XMStoreFloat3(&final2, final);
 
-        float workx = -final2.x;
-        float worky = -final2.y;
-        float workz = -final2.z;
+        src_v[fan_cnt + i].nx = -final2.x;
+        src_v[fan_cnt + i].ny = -final2.y;
+        src_v[fan_cnt + i].nz = -final2.z;
 
-        src_v[fan_cnt + i].nx = workx;
-        src_v[fan_cnt + i].ny = worky;
-        src_v[fan_cnt + i].nz = workz;
+        src_v[fan_cnt + i + 1].nx = -final2.x;
+        src_v[fan_cnt + i + 1].ny = -final2.y;
+        src_v[fan_cnt + i + 1].nz = -final2.z;
 
-        src_v[fan_cnt + i + 1].nx = workx;
-        src_v[fan_cnt + i + 1].ny = worky;
-        src_v[fan_cnt + i + 1].nz = workz;
-
-        src_v[fan_cnt + i + 2].nx = workx;
-        src_v[fan_cnt + i + 2].ny = worky;
-        src_v[fan_cnt + i + 2].nz = workz;
+        src_v[fan_cnt + i + 2].nx = -final2.x;
+        src_v[fan_cnt + i + 2].ny = -final2.y;
+        src_v[fan_cnt + i + 2].nz = -final2.z;
 
         CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
     }
@@ -1276,14 +1268,10 @@ void ConvertQuad(int fan_cnt) {
         XMFLOAT3 final2;
         XMStoreFloat3(&final2, final);
 
-        float workx = -final2.x;
-        float worky = -final2.y;
-        float workz = -final2.z;
-
         for (int j = 0; j < 3; j++) {
-            src_v[fan_cnt + i + j].nx = workx;
-            src_v[fan_cnt + i + j].ny = worky;
-            src_v[fan_cnt + i + j].nz = workz;
+            src_v[fan_cnt + i + j].nx = -final2.x;
+            src_v[fan_cnt + i + j].ny = -final2.y;
+            src_v[fan_cnt + i + j].nz = -final2.z;
         }
 
         CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
