@@ -251,7 +251,7 @@ vec4 ComputeLighting( Material mat,
 //#if (NUM_SPOT_LIGHTS > 0)
     for(i = 16; i < 26; ++i)
     {
-        result += ComputeSpotLight(gLights[i], mat, pos, normal, toEye);
+        result += shadowFactor[0] * ComputeSpotLight(gLights[i], mat, pos, normal, toEye);
     }
 //#endif 
 
