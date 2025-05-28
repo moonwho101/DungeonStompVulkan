@@ -1,3 +1,4 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include "VulkUtil.h"
 
 //check if object inside frustum in clip space

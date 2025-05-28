@@ -3,6 +3,8 @@
 #include <cassert>
 #include <cmath>
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #define NOMINMAX//don't want windows defining min,max
 //#include <windows.h>
 #define VK_USE_PLATFORM_WIN32_KHR

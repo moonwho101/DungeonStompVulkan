@@ -79,14 +79,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\VulkanSDK\1.3.250.1\Include;C:\VulkanSDK\1.3.250.1\Include\vma;C:\vulkanglm</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\VulkanSDK\1.3.250.1\Lib</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\VulkanSDK\1.4.313.1\Include;C:\VulkanSDK\1.4.313.1\Include\vma;C:\vulkanglm</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\VulkanSDK\1.4.313.1\Lib</LibraryPath>
     <OutDir>..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;C:\VulkanSDK\1.3.250.1\Include;C:\VulkanSDK\1.3.250.1\Include\vma;C:\vulkanglm</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\VulkanSDK\1.3.250.1\Lib</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;C:\VulkanSDK\1.4.313.1\Include;C:\VulkanSDK\1.4.313.1\Include\vma;C:\vulkanglm</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\VulkanSDK\1.4.313.1\Lib</LibraryPath>
     <OutDir>..\bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -123,12 +123,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\vma\include;D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\stb;D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\spirv-reflect\include;D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\glm;C:\VulkanSDK\1.2.182.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories></AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.2.182.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories></AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -140,14 +140,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\vma\include;D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\stb;D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\spirv-reflect\include;D:\APPS\CPP\Graf\Vulkan\IntroD3D-redo\ThirdParty\glm;C:\VulkanSDK\1.2.182.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories></AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\VulkanSDK\1.2.182.0\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories></AdditionalLibraryDirectories>
       <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
