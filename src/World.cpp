@@ -935,6 +935,7 @@ void display_message(float x, float y, char* text, int r, int g, int b, float fo
 	//TODO:Add text support.
 	return;
 }
+void SmoothNormalsNoHash(int start_cnt);
 
 void DrawIndexedItems(int fakel, int vert_index)
 {
@@ -1033,7 +1034,7 @@ void DrawIndexedItems(int fakel, int vert_index)
 
 			cnt++;
 		}
-		SmoothNormals(start_cnt);
+		SmoothNormalsNoHash(start_cnt);
 	}
 }
 
