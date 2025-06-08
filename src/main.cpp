@@ -2601,7 +2601,7 @@ void DungeonStompApp::ProcessLights11()
 		LightContainer[i + 16].FalloffStart = 600.0f;
 		LightContainer[i + 16].Direction = { oblist[q].light_source->direction_x, oblist[q].light_source->direction_y, oblist[q].light_source->direction_z };
 		LightContainer[i + 16].FalloffEnd = 650.0f;
-		LightContainer[i + 16].SpotPower = 91.9f;
+		LightContainer[i + 16].SpotPower = 1.9f;
 	}
 }
 
