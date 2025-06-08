@@ -166,7 +166,17 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-vec3 ComputePBRLight(Light L, Material mat, vec3 pos, vec3 N, vec3 V, vec3 shadowFactor)
+// Torch flicker: returns a multiplier in [0.8, 1.2] based on time and light index
+float TorchFlicker(int lightIdx, float time)
+{
+    // Use a combination of sines for pseudo-random flicker
+    float base = 0.8 + 0.2 * sin(time * 7.0 + float(lightIdx) * 3.1);
+    base += 0.1 * sin(time * 13.0 + float(lightIdx) * 1.7);
+    base += 0.05 * sin(time * 23.0 + float(lightIdx) * 2.3);
+    return clamp(base, 0.8, 1.2);
+}
+
+vec3 ComputePBRLight(Light L, Material mat, vec3 pos, vec3 N, vec3 V, vec3 shadowFactor, int lightIdx)
 {
     vec3 Lo = vec3(0.0);
     vec3 F0 = mix(vec3(0.04), mat.FresnelR0, mat.Metal);
@@ -185,6 +195,9 @@ vec3 ComputePBRLight(Light L, Material mat, vec3 pos, vec3 N, vec3 V, vec3 shado
         if(d > L.FalloffEnd) return vec3(0.0);
         Lvec /= d;
         attenuation = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd);
+
+        // Flicker for point lights (torch effect)
+        attenuation *= TorchFlicker(lightIdx, TotalTime);
     }
     // Spot
     else {
@@ -263,15 +276,15 @@ void main(){
 
     // Directional lights
     for(int i=0; i<NUM_DIR_LIGHTS; ++i)
-        color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor);
+        color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor, i);
 
-    // Point lights
+    // Point lights (torch flicker)
     for(int i=NUM_DIR_LIGHTS; i<NUM_DIR_LIGHTS+NUM_POINT_LIGHTS; ++i)
-        color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor);
+        color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor, i);
 
     // Spot lights
     for(int i=NUM_DIR_LIGHTS+NUM_POINT_LIGHTS; i<NUM_DIR_LIGHTS+NUM_POINT_LIGHTS+NUM_SPOT_LIGHTS; ++i)
-        color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor);
+        color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor, i);
 
     // Modern PBR: No IBL, energy conservation, and clear kS/kD split
     // kS is the Fresnel reflectance, kD is the diffuse component

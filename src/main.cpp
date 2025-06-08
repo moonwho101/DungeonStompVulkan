@@ -1746,7 +1746,7 @@ void DungeonStompApp::UpdateMainPassCB(const GameTimer& gt) {
 	mMainPassCB.FarZ = 1000.0f;
 	mMainPassCB.TotalTime = gt.TotalTime();
 	mMainPassCB.DeltaTime = gt.DeltaTime();
-	mMainPassCB.AmbientLight = { 0.25f, 0.25f, 0.35f, 1.0f };
+	mMainPassCB.AmbientLight = { 0.65f, 0.65f, 0.65f, 1.0f };
 	mMainPassCB.Lights[0].Direction = mRotatedLightDirections[0];
 	mMainPassCB.Lights[0].Strength = { 0.9f, 0.8f, 0.7f };
 	mMainPassCB.Lights[1].Direction = mRotatedLightDirections[1];
@@ -2532,20 +2532,20 @@ void DungeonStompApp::ProcessLights11()
 		LightContainer[spot].FalloffStart = 200.0f;
 		LightContainer[spot].Direction = { 0.0f, -1.0f, 0.0f };
 		LightContainer[spot].FalloffEnd = 300.0f;
-		LightContainer[spot].SpotPower = 10.0f;
+		LightContainer[spot].SpotPower = 0.0f;
 
 		if (strstr(your_gun[current_gun].gunname, "SUPERFLAME") != NULL) {
-			LightContainer[spot].Strength = glm::vec3{ 1.0f, 0.867f, 0.0f };
+			LightContainer[spot].Strength = glm::vec3{ 7.0f, 0.867f, 0.0f };
 		}
 		else if (strstr(your_gun[current_gun].gunname, "FLAME") != NULL) {
-			LightContainer[spot].Strength = glm::vec3{ 1.0f, 0.369f, 0.0f };
+			LightContainer[spot].Strength = glm::vec3{ 4.0f, 0.369f, 0.0f };
 		}
 		else if (strstr(your_gun[current_gun].gunname, "ICE") != NULL) {
 
-			LightContainer[spot].Strength = glm::vec3{ 0.0f, 0.796f, 1.0f };
+			LightContainer[spot].Strength = glm::vec3{ 0.0f, 0.796f, 9.0f };
 		}
 		else if (strstr(your_gun[current_gun].gunname, "LIGHTNINGSWORD") != NULL) {
-			LightContainer[spot].Strength = glm::vec3{ 9.0f, 1.0f, 1.0f };
+			LightContainer[spot].Strength = glm::vec3{ 5.0f, 5.0f, 5.0f };
 		}
 	}
 
