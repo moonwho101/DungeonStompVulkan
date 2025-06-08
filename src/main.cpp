@@ -1626,6 +1626,7 @@ void DungeonStompApp::UpdateMaterialsBuffer(const GameTimer& gt) {
 			matData.DiffuseAlbedo = mat->DiffuseAlbedo;
 			matData.FresnelR0 = mat->FresnelR0;
 			matData.Roughness = mat->Roughness;
+			matData.Metal = mat->Metal;
 			matData.MatTransform = matTransform;
 			matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
 			matData.NormalMapIndex = mat->NormalSrvHeapIndex;

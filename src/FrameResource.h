@@ -45,8 +45,8 @@ struct MaterialData {
 	glm::mat4 MatTransform = glm::mat4(1.0f);
 	uint32_t DiffuseMapIndex = 0;
 	uint32_t NormalMapIndex = 0;
-	uint32_t MaterialPad1;
-	uint32_t MaterialPad2;
+	float Metal = 0.25f;
+	float pad;
 };
 
 struct Vertex {
