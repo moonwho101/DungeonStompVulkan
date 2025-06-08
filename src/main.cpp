@@ -2427,7 +2427,7 @@ void DungeonStompApp::ProcessLights11()
 		LightContainer[i].Direction = { 0.0f, -1.0f, 0.0f };
 		LightContainer[i].FalloffEnd = 120.0f;
 		LightContainer[i].Position = glm::vec3{ 0.0f,9000.0f,0.0f };
-		LightContainer[i].SpotPower = 90.0f;
+		LightContainer[i].SpotPower = 0.0f;
 	}
 
 	int dcount = 0;
@@ -2474,7 +2474,10 @@ void DungeonStompApp::ProcessLights11()
 		int angle = (int)oblist[q].rot_angle;
 		int ob_type = oblist[q].type;
 
-		LightContainer[i].Strength = { 1.0f, 1.0f, 1.0f };
+
+
+		LightContainer[i].SpotPower = 0.0f;
+		LightContainer[i].Strength = { 9.0f, 9.0f, 9.0f };
 		LightContainer[i].Position = glm::vec3{ oblist[q].x,oblist[q].y + 50.0f, oblist[q].z };
 	}
 
@@ -2542,7 +2545,7 @@ void DungeonStompApp::ProcessLights11()
 			LightContainer[spot].Strength = glm::vec3{ 0.0f, 0.796f, 1.0f };
 		}
 		else if (strstr(your_gun[current_gun].gunname, "LIGHTNINGSWORD") != NULL) {
-			LightContainer[spot].Strength = glm::vec3{ 1.0f, 1.0f, 1.0f };
+			LightContainer[spot].Strength = glm::vec3{ 9.0f, 1.0f, 1.0f };
 		}
 	}
 
@@ -2598,7 +2601,7 @@ void DungeonStompApp::ProcessLights11()
 		LightContainer[i + 16].FalloffStart = 600.0f;
 		LightContainer[i + 16].Direction = { oblist[q].light_source->direction_x, oblist[q].light_source->direction_y, oblist[q].light_source->direction_z };
 		LightContainer[i + 16].FalloffEnd = 650.0f;
-		LightContainer[i + 16].SpotPower = 1.9f;
+		LightContainer[i + 16].SpotPower = 91.9f;
 	}
 }
 

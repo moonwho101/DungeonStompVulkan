@@ -273,15 +273,16 @@ void main(){
     for(int i=NUM_DIR_LIGHTS+NUM_POINT_LIGHTS; i<NUM_DIR_LIGHTS+NUM_POINT_LIGHTS+NUM_SPOT_LIGHTS; ++i)
         color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor);
 
-    // IBL (simple reflection, not full PBR IBL)
-    vec3 R = reflect(-V, N);
-    vec3 F0 = mix(vec3(0.04), fresnelR0, metal);
-    vec3 F = FresnelSchlick(max(dot(N, V), 0.0), F0);
-    vec3 envColor = texture(samplerCube(cubeMap,samp), R).rgb;
-    color += F * envColor * 0.2; // 0.2 = simple IBL strength
+    // Modern PBR: No IBL, energy conservation, and clear kS/kD split
+    // kS is the Fresnel reflectance, kD is the diffuse component
+    // Already handled in ComputePBRLight
 
-    // Add ambient
+    // Add ambient (diffuse only, no IBL)
     color += ambient.rgb * (1.0 - metal);
+
+    // Optional: If you have an ambient occlusion map, multiply here
+    // float ao = 1.0; // Placeholder for ambient occlusion
+    // color = mix(color, color * ao, 1.0);
 
     // Fog
     float fogAmount = clamp((distToEye - gFogStart) / gFogRange, 0.0, 1.0);
