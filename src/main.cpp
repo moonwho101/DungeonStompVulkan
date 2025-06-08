@@ -445,6 +445,7 @@ void DungeonStompApp::BuildMaterials()
 	tile0->DiffuseAlbedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 	tile0->FresnelR0 = glm::vec3(0.2f, 0.2f, 0.2f);
 	tile0->Roughness = 0.1f;
+	tile0->Metal = 0.3f;
 
 	auto mirror0 = std::make_unique<Material>();
 	mirror0->NumFramesDirty = gNumFrameResources;
@@ -455,6 +456,7 @@ void DungeonStompApp::BuildMaterials()
 	mirror0->DiffuseAlbedo = glm::vec4(0.0f, 0.0f, 0.1f, 1.0f);
 	mirror0->FresnelR0 = glm::vec3(0.98f, 0.97f, 0.95f);
 	mirror0->Roughness = 0.1f;
+	mirror0->Metal = 0.3f;
 
 	auto skullMat = std::make_unique<Material>();
 	skullMat->NumFramesDirty = gNumFrameResources;
@@ -465,6 +467,7 @@ void DungeonStompApp::BuildMaterials()
 	skullMat->DiffuseAlbedo = glm::vec4(0.3f, 0.3f, 0.3f, 1.0f);
 	skullMat->FresnelR0 = glm::vec3(0.6f, 0.6f, 0.6f);
 	skullMat->Roughness = 0.2f;
+	skullMat->Metal = 0.3f;
 
 	auto sky = std::make_unique<Material>();
 	sky->NumFramesDirty = gNumFrameResources;
@@ -474,6 +477,7 @@ void DungeonStompApp::BuildMaterials()
 	sky->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	sky->FresnelR0 = glm::vec3(0.1f, 0.1f, 0.1f);
 	sky->Roughness = 1.0f;
+	sky->Metal = 0.3f;
 
 	auto wall0 = std::make_unique<Material>();
 	wall0->NumFramesDirty = gNumFrameResources;
@@ -484,6 +488,7 @@ void DungeonStompApp::BuildMaterials()
 	wall0->DiffuseAlbedo = glm::vec4(0.9f, 0.9f, 0.9f, 1.0f);
 	wall0->FresnelR0 = glm::vec3(0.2f, 0.2f, 0.2f);
 	wall0->Roughness = 0.1f;
+	wall0->Metal = 0.3f;
 
 	auto default2 = std::make_unique<Material>();
 	default2->Name = "default";
@@ -492,6 +497,7 @@ void DungeonStompApp::BuildMaterials()
 	default2->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	default2->FresnelR0 = glm::vec3(0.05f, 0.05f, 0.05f);
 	default2->Roughness = 0.815f;
+	default2->Metal = 0.1f;
 
 	auto grass = std::make_unique<Material>();
 	grass->Name = "grass";
@@ -500,6 +506,7 @@ void DungeonStompApp::BuildMaterials()
 	grass->DiffuseAlbedo = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 	grass->FresnelR0 = glm::vec3(0.01f, 0.01f, 0.01f);
 	grass->Roughness = 0.925f;
+	grass->Metal = 0.1f;
 
 	auto water = std::make_unique<Material>();
 	water->Name = "water";
@@ -510,6 +517,7 @@ void DungeonStompApp::BuildMaterials()
 	//Water (0.02f, 0.02f, 0.02f);
 	water->FresnelR0 = glm::vec3(0.02f, 0.02f, 0.02f);
 	water->Roughness = 0.326f;
+	water->Metal = 0.2f;
 
 	auto brick = std::make_unique<Material>();
 	brick->Name = "brick";
@@ -519,6 +527,7 @@ void DungeonStompApp::BuildMaterials()
 	brick->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	brick->FresnelR0 = glm::vec3(0.02f, 0.02f, 0.02f);
 	brick->Roughness = 0.825f;
+	brick->Metal = 0.12f;
 
 	auto stone = std::make_unique<Material>();
 	stone->Name = "stone";
@@ -528,6 +537,7 @@ void DungeonStompApp::BuildMaterials()
 	stone->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	stone->FresnelR0 = glm::vec3(0.03f, 0.03f, 0.03f);
 	stone->Roughness = 0.743f;
+	stone->Metal = 0.22f;
 
 	auto tile = std::make_unique<Material>();
 	tile->Name = "tile";
@@ -537,6 +547,7 @@ void DungeonStompApp::BuildMaterials()
 	tile->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	tile->FresnelR0 = glm::vec3(0.02f, 0.02f, 0.02f);
 	tile->Roughness = 0.32f;
+	tile->Metal = 0.20f;
 
 	auto crate = std::make_unique<Material>();
 	crate->Name = "crate";
@@ -546,6 +557,7 @@ void DungeonStompApp::BuildMaterials()
 	crate->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	crate->FresnelR0 = glm::vec3(0.03f, 0.03f, 0.03f);
 	crate->Roughness = 0.796f;
+	crate->Metal = 0.160f;
 
 	auto ice = std::make_unique<Material>();
 	ice->Name = "ice";
@@ -555,6 +567,7 @@ void DungeonStompApp::BuildMaterials()
 	ice->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ice->FresnelR0 = glm::vec3(0.1f, 0.1f, 0.1f);
 	ice->Roughness = 0.415f;
+	ice->Metal = 0.40f;
 
 	auto bone = std::make_unique<Material>();
 	bone->Name = "bone";
@@ -564,6 +577,8 @@ void DungeonStompApp::BuildMaterials()
 	bone->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	bone->FresnelR0 = glm::vec3(0.09f, 0.09f, 0.09f);
 	bone->Roughness = 0.438f;
+	bone->Metal = 0.41f;
+
 
 	auto metal = std::make_unique<Material>();
 	metal->Name = "metal";
@@ -573,6 +588,7 @@ void DungeonStompApp::BuildMaterials()
 	metal->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	metal->FresnelR0 = glm::vec3(0.12f, 0.12f, 0.12f);
 	metal->Roughness = 0.514f;
+	metal->Metal = 0.5f;
 
 	auto glass = std::make_unique<Material>();
 	glass->Name = "glass";
@@ -583,6 +599,7 @@ void DungeonStompApp::BuildMaterials()
 	//Glass (0.08f, 0.08f, 0.08f);
 	glass->FresnelR0 = glm::vec3(0.08f, 0.08f, 0.08f);
 	glass->Roughness = 0.224f;
+	glass->Metal = 0.3f;
 
 	auto wood = std::make_unique<Material>();
 	wood->Name = "wood";
@@ -592,6 +609,7 @@ void DungeonStompApp::BuildMaterials()
 	wood->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	wood->FresnelR0 = glm::vec3(0.04f, 0.04f, 0.04f);
 	wood->Roughness = 0.838f;
+	wood->Metal = 0.17f;
 
 	auto flat = std::make_unique<Material>();
 	flat->Name = "flat";
@@ -601,6 +619,7 @@ void DungeonStompApp::BuildMaterials()
 	flat->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	flat->FresnelR0 = glm::vec3(0.01f, 0.01f, 0.01f);
 	flat->Roughness = 0.932f;
+	flat->Metal = 0.1f;
 
 	auto tilebrown = std::make_unique<Material>();
 	tilebrown->Name = "tilebrown";
@@ -610,6 +629,7 @@ void DungeonStompApp::BuildMaterials()
 	tilebrown->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	tilebrown->FresnelR0 = glm::vec3(0.02f, 0.02f, 0.02f);
 	tilebrown->Roughness = 0.324f;
+	tilebrown->Metal = 0.424f;
 
 	auto monster = std::make_unique<Material>();
 	monster->Name = "monster";
@@ -619,6 +639,8 @@ void DungeonStompApp::BuildMaterials()
 	monster->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	monster->FresnelR0 = glm::vec3(0.05f, 0.05f, 0.05f);
 	monster->Roughness = 0.833f;
+	monster->Metal = 0.143f;
+
 
 	auto monsterweapon = std::make_unique<Material>();
 	monsterweapon->Name = "monsterweapon";
@@ -628,6 +650,7 @@ void DungeonStompApp::BuildMaterials()
 	monsterweapon->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	monsterweapon->FresnelR0 = glm::vec3(0.06f, 0.06f, 0.06f);
 	monsterweapon->Roughness = 0.702f;
+	monsterweapon->Metal = 0.33f;
 
 	auto playerweapon = std::make_unique<Material>();
 	playerweapon->Name = "playerweapon";
@@ -637,6 +660,7 @@ void DungeonStompApp::BuildMaterials()
 	playerweapon->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	playerweapon->FresnelR0 = glm::vec3(0.07f, 0.07f, 0.07f);
 	playerweapon->Roughness = 0.742f;
+	playerweapon->Metal = 0.34f;
 
 	auto coin = std::make_unique<Material>();
 	coin->Name = "coin";
@@ -647,6 +671,7 @@ void DungeonStompApp::BuildMaterials()
 	//Gold(1.0f, 0.71f, 0.29f);
 	coin->FresnelR0 = glm::vec3(1.0f, 0.71f, 0.29f);
 	coin->Roughness = 0.314f;
+	coin->Metal = 0.31f;
 
 	auto torchholder = std::make_unique<Material>();
 	torchholder->Name = "torchholder";
@@ -655,6 +680,7 @@ void DungeonStompApp::BuildMaterials()
 	torchholder->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	torchholder->FresnelR0 = glm::vec3(0.05f, 0.05f, 0.05f);
 	torchholder->Roughness = 0.615f;
+	torchholder->Metal = 0.391f;
 
 	auto chestwood = std::make_unique<Material>();
 	chestwood->Name = "chestwood";
@@ -663,6 +689,7 @@ void DungeonStompApp::BuildMaterials()
 	chestwood->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	chestwood->FresnelR0 = glm::vec3(0.04f, 0.04f, 0.04f);
 	chestwood->Roughness = 0.938f;
+	chestwood->Metal = 0.256f;
 
 	auto chestmetal = std::make_unique<Material>();
 	chestmetal->Name = "chestmetal";
@@ -671,6 +698,7 @@ void DungeonStompApp::BuildMaterials()
 	chestmetal->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	chestmetal->FresnelR0 = glm::vec3(0.12f, 0.12f, 0.12f);
 	chestmetal->Roughness = 0.914f;
+	chestmetal->Metal = 0.426f;
 
 	auto stonemain = std::make_unique<Material>();
 	stonemain->Name = "stonemain";
@@ -680,6 +708,7 @@ void DungeonStompApp::BuildMaterials()
 	stonemain->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	stonemain->FresnelR0 = glm::vec3(0.03f, 0.03f, 0.03f);
 	stonemain->Roughness = 0.743f;
+	stonemain->Metal = 0.46f;
 
 	auto doorwood = std::make_unique<Material>();
 	doorwood->Name = "doorwood";
@@ -689,6 +718,7 @@ void DungeonStompApp::BuildMaterials()
 	doorwood->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	doorwood->FresnelR0 = glm::vec3(0.04f, 0.04f, 0.04f);
 	doorwood->Roughness = 0.87938f;
+	doorwood->Metal = 0.98f;
 
 	auto doormetal = std::make_unique<Material>();
 	doormetal->Name = "doormetal";
@@ -698,6 +728,7 @@ void DungeonStompApp::BuildMaterials()
 	doormetal->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	doormetal->FresnelR0 = glm::vec3(0.02f, 0.02f, 0.02f);
 	doormetal->Roughness = 0.7382f;
+	doormetal->Metal = 0.38f;
 
 	auto button = std::make_unique<Material>();
 	button->Name = "button";
@@ -707,6 +738,7 @@ void DungeonStompApp::BuildMaterials()
 	button->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	button->FresnelR0 = glm::vec3(0.06f, 0.06f, 0.06f);
 	button->Roughness = 0.124f;
+	button->Metal = 0.23f;
 
 	auto ceilingmain = std::make_unique<Material>();
 	ceilingmain->Name = "ceilingmain";
@@ -716,6 +748,7 @@ void DungeonStompApp::BuildMaterials()
 	ceilingmain->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ceilingmain->FresnelR0 = glm::vec3(0.031f, 0.031f, 0.031f);
 	ceilingmain->Roughness = 0.762f;
+	ceilingmain->Metal = 0.18f;
 
 	auto pillar = std::make_unique<Material>();
 	pillar->Name = "pillar";
@@ -725,6 +758,7 @@ void DungeonStompApp::BuildMaterials()
 	pillar->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	pillar->FresnelR0 = glm::vec3(0.022f, 0.022f, 0.022f);
 	pillar->Roughness = 0.725f;
+	pillar->Metal = 0.11f;
 
 	//new material - increment MatCBIndex 
 
