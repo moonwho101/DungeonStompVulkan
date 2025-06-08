@@ -434,6 +434,7 @@ void DungeonStompApp::BuildMaterials()
 	bricks0->DiffuseAlbedo = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	bricks0->FresnelR0 = glm::vec3(0.1f, 0.1f, 0.1f);
 	bricks0->Roughness = 0.3f;
+	bricks0->Metal = 0.3f;
 
 	auto tile0 = std::make_unique<Material>();
 	tile0->NumFramesDirty = gNumFrameResources;
@@ -1625,6 +1626,7 @@ void DungeonStompApp::UpdateMaterialsBuffer(const GameTimer& gt) {
 			matData.DiffuseAlbedo = mat->DiffuseAlbedo;
 			matData.FresnelR0 = mat->FresnelR0;
 			matData.Roughness = mat->Roughness;
+			matData.Metal = mat->Metal;
 			matData.MatTransform = matTransform;
 			matData.DiffuseMapIndex = mat->DiffuseSrvHeapIndex;
 			matData.NormalMapIndex = mat->NormalSrvHeapIndex;

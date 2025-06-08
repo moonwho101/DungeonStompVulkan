@@ -57,15 +57,16 @@ layout (set=1, binding=0) uniform ObjectCB{
 
 struct MaterialData
 {
-	vec4   DiffuseAlbedo;
-	vec3   FresnelR0;
-	float    Roughness;
-	mat4 MatTransform;
-	uint     DiffuseMapIndex;
-	uint     NormalMapIndex;
-	uint     MatPad1;
-	uint     MatPad2;
+    vec4   DiffuseAlbedo;    // 16 bytes
+    vec3   FresnelR0;        // 12 bytes
+    float  Roughness;        // 4 bytes (now FresnelR0 + Roughness = 16 bytes)
+    mat4   MatTransform;     // 64 bytes
+    uint   DiffuseMapIndex;  // 4 bytes
+    uint   NormalMapIndex;   // 4 bytes
+    float  Metal;            // 4 bytes
+    float  pad;              // 4 bytes (padding for 16-byte alignment)
 };
+
 
 layout (set=2, binding=0) readonly buffer MaterialBuffer{
 	MaterialData materials[];

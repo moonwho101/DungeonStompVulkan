@@ -211,6 +211,7 @@ struct Material {
 	glm::vec3 FresnelR0 = glm::vec3(1.0f);
 	float Roughness = 0.25f;
 	glm::mat4 MatTransform = glm::mat4(1.0f);
+	float Metal = 0.25f;
 };
 
 struct Texture : Vulkan::Texture {
