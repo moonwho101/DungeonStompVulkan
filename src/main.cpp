@@ -2493,20 +2493,20 @@ void DungeonStompApp::ProcessLights11()
 
 				LightContainer[11 + count].Position = glm::vec3{ your_missle[misslecount].x, your_missle[misslecount].y, your_missle[misslecount].z };
 				LightContainer[11 + count].Strength = glm::vec3{ 0.0f, 0.0f, 1.0f };
-				LightContainer[11 + count].FalloffStart = 200.0f;
+				LightContainer[11 + count].FalloffStart = 120.0f;
 				LightContainer[11 + count].Direction = { 0.0f, -1.0f, 0.0f };
-				LightContainer[11 + count].FalloffEnd = 300.0f;
-				LightContainer[11 + count].SpotPower = 10.0f;
+				LightContainer[11 + count].FalloffEnd = 170.0f;
+				LightContainer[11 + count].SpotPower = 0.0f;
 
 
 				if (your_missle[misslecount].model_id == 103) {
-					LightContainer[11 + count].Strength = glm::vec3{ 0.0f, 1.0f, 0.843f };
+					LightContainer[11 + count].Strength = glm::vec3{ 0.0f, 4.0f, 3.843f };
 				}
 				else if (your_missle[misslecount].model_id == 104) {
-					LightContainer[11 + count].Strength = glm::vec3{ 1.0f, 0.396f, 0.0f };
+					LightContainer[11 + count].Strength = glm::vec3{ 4.0f, 3.396f, 0.0f };
 				}
 				else if (your_missle[misslecount].model_id == 105) {
-					LightContainer[11 + count].Strength = glm::vec3{ 0.91f, 1.0f, 0.0f };
+					LightContainer[11 + count].Strength = glm::vec3{ 3.91f, 4.0f, 0.0f };
 
 				}
 				count++;
