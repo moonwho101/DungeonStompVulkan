@@ -181,7 +181,7 @@ struct Light {
 	float SpotPower = 64.0f;								//spot light only
 };
 
-#define MaxLights 31
+#define MaxLights 32
 
 struct MaterialConstants {
 	glm::vec4 DiffuseAlbedo = glm::vec4(1.0f);

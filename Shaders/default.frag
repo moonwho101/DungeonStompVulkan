@@ -81,7 +81,7 @@ layout (set=3,binding=1) uniform texture2D textureMap[6];
 layout (set=4,binding=0) uniform textureCube cubeMap;
 layout (set=5,binding=0) uniform sampler2D shadowMap;
 
-layout (constant_id=0) const int NUM_DIR_LIGHTS=0;
+layout (constant_id=0) const int NUM_DIR_LIGHTS=1;
 layout (constant_id=1) const int enableNormalMap=0;
 layout (constant_id=2) const int enableAlphaTest=0;
 layout (constant_id=3) const int NUM_POINT_LIGHTS=16;

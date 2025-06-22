@@ -1746,7 +1746,7 @@ void DungeonStompApp::UpdateMainPassCB(const GameTimer& gt) {
 	mMainPassCB.FarZ = 1000.0f;
 	mMainPassCB.TotalTime = gt.TotalTime();
 	mMainPassCB.DeltaTime = gt.DeltaTime();
-	mMainPassCB.AmbientLight = { 0.65f, 0.65f, 0.65f, 1.0f };
+	mMainPassCB.AmbientLight = { 0.55f, 0.55f, 0.55f, 1.0f };
 	mMainPassCB.Lights[0].Direction = mRotatedLightDirections[0];
 	mMainPassCB.Lights[0].Strength = { 0.9f, 0.8f, 0.7f };
 	mMainPassCB.Lights[1].Direction = mRotatedLightDirections[1];
@@ -1759,16 +1759,18 @@ void DungeonStompApp::UpdateMainPassCB(const GameTimer& gt) {
 	//mMainPassCB.Lights[0].Strength = { 1.0f, 1.0f, 0.9f };
 
 	for (int i = 0; i < MaxLights; i++) {
-		mMainPassCB.Lights[i].Direction = LightContainer[i].Direction;
-		mMainPassCB.Lights[i].Strength = LightContainer[i].Strength;
-		mMainPassCB.Lights[i].Position = LightContainer[i].Position;
-		mMainPassCB.Lights[i].FalloffEnd = LightContainer[i].FalloffEnd;
-		mMainPassCB.Lights[i].FalloffStart = LightContainer[i].FalloffStart;
-		mMainPassCB.Lights[i].SpotPower = LightContainer[i].SpotPower;
+		mMainPassCB.Lights[i + 1].Direction = LightContainer[i].Direction;
+		mMainPassCB.Lights[i + 1].Strength = LightContainer[i].Strength;
+		mMainPassCB.Lights[i + 1].Position = LightContainer[i].Position;
+		mMainPassCB.Lights[i + 1].FalloffEnd = LightContainer[i].FalloffEnd;
+		mMainPassCB.Lights[i + 1].FalloffStart = LightContainer[i].FalloffStart;
+		mMainPassCB.Lights[i + 1].SpotPower = LightContainer[i].SpotPower;
 	}
 
-
+	mMainPassCB.Lights[0].Strength = { 0.20f, 0.20f, 0.20f };
 	mMainPassCB.Lights[0].Direction = mRotatedLightDirections[0];
+	mMainPassCB.Lights[0].FalloffEnd = 0.0f;
+	mMainPassCB.Lights[0].SpotPower = 0.0f;
 
 
 	memcpy(pPassConstants, &mMainPassCB, sizeof(PassConstants));
