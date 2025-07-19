@@ -1195,10 +1195,10 @@ void ShaderProgramLoader::load(std::vector<Vulkan::ShaderModule>& shaders_) {
 			std::vector<uint32_t> sizes(module.input_variable_count);
 			std::vector<VkFormat> formats(module.input_variable_count);
 			for (uint32_t i = 0; i < module.input_variable_count; ++i) {
-				SpvReflectInterfaceVariable& inputVar = module.input_variables[i];
+				SpvReflectInterfaceVariable* inputVar = module.input_variables[i];
 				uint32_t size = 0;
 				VkFormat format;
-				switch (inputVar.format) {
+				switch (inputVar->format) {
 
 				case SPV_REFLECT_FORMAT_R32G32B32A32_SFLOAT:
 					format = VK_FORMAT_R32G32B32A32_SFLOAT;
@@ -1216,8 +1216,8 @@ void ShaderProgramLoader::load(std::vector<Vulkan::ShaderModule>& shaders_) {
 					assert(0);
 					break;
 				}
-				sizes[inputVar.location] = (uint32_t)size;
-				formats[inputVar.location] = format;
+				sizes[inputVar->location] = (uint32_t)size;
+				formats[inputVar->location] = format;
 			}
 
 			for (uint32_t i = 0; i < module.input_variable_count; i++) {
@@ -1307,8 +1307,8 @@ bool ShaderProgramLoader::load(std::vector<Vulkan::ShaderModule>& shaders_, VkVe
 		if (stage == VK_SHADER_STAGE_VERTEX_BIT) {
 			uint32_t count = 0;
 			for (uint32_t i = 0; i < module.input_variable_count; ++i) {
-				SpvReflectInterfaceVariable& inputVar = module.input_variables[i];
-				if (inputVar.built_in==-1)
+				SpvReflectInterfaceVariable* inputVar = module.input_variables[i];
+				if (inputVar->built_in==-1)
 					count++;
 			}
 			vertexAttributeDescriptions.resize(count);
@@ -1318,12 +1318,12 @@ bool ShaderProgramLoader::load(std::vector<Vulkan::ShaderModule>& shaders_, VkVe
 			std::vector<VkFormat> formats(count);
 			
 			for (uint32_t i = 0; i < module.input_variable_count; ++i) {
-				SpvReflectInterfaceVariable& inputVar = module.input_variables[i];
-				if (inputVar.built_in!=-1)
+				SpvReflectInterfaceVariable* inputVar = module.input_variables[i];
+				if (inputVar->built_in!=-1)
 					continue;
 				uint32_t size = 0;
 				VkFormat format;
-				switch (inputVar.format) {
+				switch (inputVar->format) {
 				case SPV_REFLECT_FORMAT_R32G32B32A32_SINT:
 					format = VK_FORMAT_R32G32B32A32_SINT;
 					size = sizeof(uint32_t) * 4;
@@ -1344,8 +1344,8 @@ bool ShaderProgramLoader::load(std::vector<Vulkan::ShaderModule>& shaders_, VkVe
 					assert(0);
 					break;
 				}
-				sizes[inputVar.location] = (uint32_t)size;
-				formats[inputVar.location] = format;
+				sizes[inputVar->location] = (uint32_t)size;
+				formats[inputVar->location] = format;
 				
 			}
 
