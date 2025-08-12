@@ -1,5 +1,10 @@
-C:\VulkanSDK\1.4.313.1\Bin\glslc.exe debug.frag -o debug.frag.spv
-C:\VulkanSDK\1.4.313.1\Bin\glslc.exe default.frag -o default.frag.spv
-C:\VulkanSDK\1.4.313.1\Bin\glslc.exe shadow.frag -o shadow.frag.spv
-C:\VulkanSDK\1.4.313.1\Bin\glslc.exe sky.frag -o sky.frag.spv
-
+glslc debug.frag -o debug.frag.spv
+glslc default.frag -o default.frag.spv
+glslc shadow.frag -o shadow.frag.spv
+glslc sky.frag -o sky.frag.spv
+glslc debug.vert -o debug.vert.spv
+glslc default.vert -o default.vert.spv
+glslc shadow.vert -o shadow.vert.spv
+glslc sky.vert -o sky.vert.spv
+glslc raycast.frag -o raycast.frag.spv
+glslc raycast.vert -o raycast.vert.spv

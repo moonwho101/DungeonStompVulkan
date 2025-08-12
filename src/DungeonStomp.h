@@ -100,6 +100,7 @@ class DungeonStompApp : public VulkApp
 	std::unique_ptr<VulkanPipeline> cubeMapPipeline;
 	std::unique_ptr<VulkanPipeline> shadowPipeline;
 	std::unique_ptr<VulkanPipeline> debugPipeline;
+	std::unique_ptr<VulkanPipeline> mRaycastPipeline;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
 	std::unordered_map < std::string, std::unique_ptr<Material>> mMaterials;
