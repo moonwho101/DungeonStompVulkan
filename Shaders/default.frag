@@ -302,19 +302,21 @@ void main(){
     // Add ambient (diffuse only, no IBL)
     color += ambient.rgb * (1.0 - metal);
 
-    // Improved rim lighting: Fresnel-based, roughness-aware, energy-conservative
-    float NdotV_main = clamp(dot(N, V), 0.0, 1.0);
-    float rimBase = 1.0 - NdotV_main;
-    float rimPow = mix(4.0, 2.0, roughness);        // sharper on smoother surfaces
-    float rim = pow(rimBase, rimPow);
-    rim *= (0.3 + 0.7 * (1.0 - roughness));         // stronger on smooth materials
 
-    vec3 F0rim = mix(vec3(0.04), fresnelR0, metal); // material F0
-    vec3 rimF = FresnelSchlick(NdotV_main, F0rim);  // grazing behavior
-    vec3 rimTint = mix(diffuseAlbedo.rgb, fresnelR0, metal);
-    vec3 rimColor = rimF * rimTint;
-
-    color += rim * rimColor * 0.5;                  // conservative scale
+    // --- Rim lighting moved here (view-dependent, roughness-aware) ---
+    {
+        vec3 albedo = diffuseAlbedo.rgb;
+        vec3 F0 = mix(vec3(0.04), albedo, metal);
+        float NdotV = max(dot(N, V), 0.0);
+        float rimIntensity = 0.09;
+        float rimExponent = mix(1.0, 8.0, 1.0 - roughness);
+        float rimTerm = pow(clamp(1.0 - NdotV, 0.0, 1.0), rimExponent);
+        float rimEnergy = clamp(rimTerm * rimIntensity, 0.0, 1.0);
+        vec3 rimF = FresnelSchlick(NdotV, F0);
+        vec3 rimSpecular = rimF * rimEnergy;
+        // Add rim as an additive specular-like term (keeps it small and view-dependent)
+        color += rimSpecular;
+    }
 
     // Fog
     float fogAmount = clamp((distToEye - gFogStart) / gFogRange, 0.0, 1.0);
