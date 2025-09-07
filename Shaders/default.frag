@@ -1,4 +1,17 @@
 #version 450
+/*
+Plan:
+- Do not change any layout locations, descriptor sets, or bindings.
+- Replace the previous simple rim lighting with a Fresnel-based, roughness-aware rim term.
+- Steps:
+  1) Compute NdotV = clamp(dot(N, V), 0..1).
+  2) Rim base = 1 - NdotV (edge intensity).
+  3) Use a roughness-dependent exponent to sharpen on smooth surfaces.
+  4) Scale rim intensity by smoothness (1 - roughness).
+  5) Build rim tint using material F0 for metals and albedo for dielectrics.
+  6) Use FresnelSchlick(NdotV, F0) for physically plausible grazing behavior.
+  7) Add with a conservative scale to avoid blowing out energy.
+*/
 
 layout(location=0) in vec3 inPosW;
 layout(location=1) in vec4 inShadowPosH;
@@ -286,22 +299,22 @@ void main(){
     for(int i=NUM_DIR_LIGHTS+NUM_POINT_LIGHTS; i<NUM_DIR_LIGHTS+NUM_POINT_LIGHTS+NUM_SPOT_LIGHTS; ++i)
         color += ComputePBRLight(gLights[i], mat, inPosW, N, V, shadowFactor, i);
 
-    // Modern PBR: No IBL, energy conservation, and clear kS/kD split
-    // kS is the Fresnel reflectance, kD is the diffuse component
-    // Already handled in ComputePBRLight
-
     // Add ambient (diffuse only, no IBL)
     color += ambient.rgb * (1.0 - metal);
 
-    // Cool effects: Rim lighting for edge highlights
-    float rim = 1.0 - clamp(dot(N, V), 0.0, 1.0);
-    rim = pow(rim, 3.0); // sharper rim
-    vec3 rimColor = vec3(0.4, 0.4, 0.4) * 0.5;
-    color += rim * rimColor * diffuseAlbedo.rgb;
+    // Improved rim lighting: Fresnel-based, roughness-aware, energy-conservative
+    float NdotV_main = clamp(dot(N, V), 0.0, 1.0);
+    float rimBase = 1.0 - NdotV_main;
+    float rimPow = mix(4.0, 2.0, roughness);        // sharper on smoother surfaces
+    float rim = pow(rimBase, rimPow);
+    rim *= (0.3 + 0.7 * (1.0 - roughness));         // stronger on smooth materials
 
-    // Optional: If you have an ambient occlusion map, multiply here
-    // float ao = 1.0; // Placeholder for ambient occlusion
-    // color = mix(color, color * ao, 1.0);
+    vec3 F0rim = mix(vec3(0.04), fresnelR0, metal); // material F0
+    vec3 rimF = FresnelSchlick(NdotV_main, F0rim);  // grazing behavior
+    vec3 rimTint = mix(diffuseAlbedo.rgb, fresnelR0, metal);
+    vec3 rimColor = rimF * rimTint;
+
+    color += rim * rimColor * 0.5;                  // conservative scale
 
     // Fog
     float fogAmount = clamp((distToEye - gFogStart) / gFogRange, 0.0, 1.0);
