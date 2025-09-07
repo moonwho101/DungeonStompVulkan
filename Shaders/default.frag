@@ -293,6 +293,12 @@ void main(){
     // Add ambient (diffuse only, no IBL)
     color += ambient.rgb * (1.0 - metal);
 
+    // Cool effects: Rim lighting for edge highlights
+    float rim = 1.0 - clamp(dot(N, V), 0.0, 1.0);
+    rim = pow(rim, 3.0); // sharper rim
+    vec3 rimColor = vec3(0.4, 0.4, 0.4) * 0.5;
+    color += rim * rimColor * diffuseAlbedo.rgb;
+
     // Optional: If you have an ambient occlusion map, multiply here
     // float ao = 1.0; // Placeholder for ambient occlusion
     // color = mix(color, color * ao, 1.0);
