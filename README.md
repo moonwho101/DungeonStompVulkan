@@ -14,6 +14,7 @@ To build, you'll need Vulkan, glm, and stbi image lib.  Compile using Microsoft 
 * Q/Z to cycle weapons/spells
 * Left mouse button to attack, right mouse button to move forward
 * Press F5 to Load game, F6 to Save game
+* Run DungeonStomp.exe from the bin directory to try the game.
 
 ## Debug Controls
 
