@@ -5,7 +5,7 @@ FrameResource::FrameResource(PassConstants* pc, ObjectConstants* oc, MaterialDat
 	pPCs = pc;
 	pOCs = oc;
 	pMats = md;
-	pWavesVB = pWvs;
+	pDungeonVB = pWvs;
 }
 
 FrameResource::~FrameResource() {

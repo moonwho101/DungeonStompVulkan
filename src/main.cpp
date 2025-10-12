@@ -82,7 +82,7 @@ void DungeonStompApp::asyncInit() {
 	LoadTextures();
 	BuildShapeGeometry();
 	BuildSkullGeometry();
-	BuildWavesGeometry();
+	BuildDungeonGeometry();
 	BuildMaterials();
 	BuildRenderItems();
 	BuildBuffers();
@@ -936,46 +936,46 @@ void DungeonStompApp::BuildRenderItems()
 		mAllRitems.push_back(std::move(rightSphereRitem));
 	}
 
-	auto wavesRitem = std::make_unique<RenderItem>();
-	wavesRitem->World = MathHelper::Identity4x4();
-	wavesRitem->TexTransform = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));// , XMMatrixScaling(5.0f, 5.0f, 1.0f));
-	wavesRitem->ObjCBIndex = objCBIndex++;
-	wavesRitem->Mat = mMaterials["wall0"].get();
-	wavesRitem->Geo = mGeometries["waterGeo"].get();
-	///wavesRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	wavesRitem->IndexCount = wavesRitem->Geo->DrawArgs["grid"].IndexCount;
-	wavesRitem->StartIndexLocation = wavesRitem->Geo->DrawArgs["grid"].StartIndexLocation;
-	wavesRitem->BaseVertexLocation = wavesRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
+	auto dungeonRitem = std::make_unique<RenderItem>();
+	dungeonRitem->World = MathHelper::Identity4x4();
+	dungeonRitem->TexTransform = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));// , XMMatrixScaling(5.0f, 5.0f, 1.0f));
+	dungeonRitem->ObjCBIndex = objCBIndex++;
+	dungeonRitem->Mat = mMaterials["wall0"].get();
+	dungeonRitem->Geo = mGeometries["waterGeo"].get();
+	///dungeonRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	dungeonRitem->IndexCount = dungeonRitem->Geo->DrawArgs["grid"].IndexCount;
+	dungeonRitem->StartIndexLocation = dungeonRitem->Geo->DrawArgs["grid"].StartIndexLocation;
+	dungeonRitem->BaseVertexLocation = dungeonRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
 
-	mDungeonRitem = wavesRitem.get();
+	mDungeonRitem = dungeonRitem.get();
 
-	mRitemLayer[(int)RenderLayer::Opaque].push_back(wavesRitem.get());
-	mAllRitems.push_back(std::move(wavesRitem));
+	mRitemLayer[(int)RenderLayer::Opaque].push_back(dungeonRitem.get());
+	mAllRitems.push_back(std::move(dungeonRitem));
 
 	for (int i = 0; i < number_of_tex_aliases; i++) {
 
-		auto wavesRitem = std::make_unique<RenderItem>();
-		wavesRitem->World = MathHelper::Identity4x4();
-		wavesRitem->TexTransform = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));// , XMMatrixScaling(5.0f, 5.0f, 1.0f));
-		wavesRitem->ObjCBIndex = objCBIndex++;
-		wavesRitem->TextureIndex = TexMap[i].texture;
-		wavesRitem->TextureNormalIndex = TexMap[i].normalmaptextureid;
-		wavesRitem->Mat = mMaterials[TexMap[i].material].get();
-		//wavesRitem->Mat = mMaterials["flat"].get();
-		wavesRitem->Geo = mGeometries["waterGeo"].get();
-		///wavesRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-		wavesRitem->IndexCount = wavesRitem->Geo->DrawArgs["grid"].IndexCount;
-		wavesRitem->StartIndexLocation = wavesRitem->Geo->DrawArgs["grid"].StartIndexLocation;
-		wavesRitem->BaseVertexLocation = wavesRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
+		auto dungeonRitem = std::make_unique<RenderItem>();
+		dungeonRitem->World = MathHelper::Identity4x4();
+		dungeonRitem->TexTransform = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));// , XMMatrixScaling(5.0f, 5.0f, 1.0f));
+		dungeonRitem->ObjCBIndex = objCBIndex++;
+		dungeonRitem->TextureIndex = TexMap[i].texture;
+		dungeonRitem->TextureNormalIndex = TexMap[i].normalmaptextureid;
+		dungeonRitem->Mat = mMaterials[TexMap[i].material].get();
+		//dungeonRitem->Mat = mMaterials["flat"].get();
+		dungeonRitem->Geo = mGeometries["waterGeo"].get();
+		///dungeonRitem->PrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		dungeonRitem->IndexCount = dungeonRitem->Geo->DrawArgs["grid"].IndexCount;
+		dungeonRitem->StartIndexLocation = dungeonRitem->Geo->DrawArgs["grid"].StartIndexLocation;
+		dungeonRitem->BaseVertexLocation = dungeonRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
 
-		mDungeonRitem = wavesRitem.get();
+		mDungeonRitem = dungeonRitem.get();
 
-		mRitemLayer[(int)RenderLayer::Opaque].push_back(wavesRitem.get());
-		mAllRitems.push_back(std::move(wavesRitem));
+		mRitemLayer[(int)RenderLayer::Opaque].push_back(dungeonRitem.get());
+		mAllRitems.push_back(std::move(dungeonRitem));
 	}
 }
 
-void DungeonStompApp::BuildWavesGeometry() {
+void DungeonStompApp::BuildDungeonGeometry() {
 	std::vector<uint32_t> indices(3 * mDungeon->TriangleCount());//3 indices per face
 	assert(mDungeon->VertexCount() < 0x0000FFFFF);
 
@@ -1032,7 +1032,7 @@ void DungeonStompApp::BuildWavesGeometry() {
 #endif
 	props.bufferUsage = VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 	props.size = ibByteSize;
-	Vulkan::initBuffer(mDevice, mMemoryProperties, props, WavesIndexBuffer);
+	Vulkan::initBuffer(mDevice, mMemoryProperties, props, DungeonIndexBuffer);
 
 
 
@@ -1051,7 +1051,7 @@ void DungeonStompApp::BuildWavesGeometry() {
 	//copy vertex data
 
 	memcpy(ptr, indices.data(), ibByteSize);
-	CopyBufferTo(mDevice, mGraphicsQueue, mCommandBuffer, stagingBuffer, WavesIndexBuffer, ibByteSize);
+	CopyBufferTo(mDevice, mGraphicsQueue, mCommandBuffer, stagingBuffer, DungeonIndexBuffer, ibByteSize);
 	unmapBuffer(mDevice, stagingBuffer);
 	cleanupBuffer(mDevice, stagingBuffer);
 
@@ -1068,7 +1068,7 @@ void DungeonStompApp::BuildWavesGeometry() {
 	//unmapBuffer(mDevice, stagingBuffer);
 	//cleanupBuffer(mDevice, stagingBuffer);
 
-	geo->indexBufferGPU = WavesIndexBuffer;
+	geo->indexBufferGPU = DungeonIndexBuffer;
 
 	geo->VertexBufferByteSize = vbByteSize;
 	geo->VertexByteStride = sizeof(Vertex);
@@ -1458,36 +1458,36 @@ void DungeonStompApp::Update(const GameTimer& gt) {
 		UpdateShadowTransform(gt);
 		UpdateMainPassCB(gt);
 		UpdateShadowPassCB(gt);
-		UpdateWaves(gt);
+		UpdateDungeon(gt);
 	}
 }
 
 extern int cutoff;
 
-void DungeonStompApp::UpdateWaves(const GameTimer& gt)
+void DungeonStompApp::UpdateDungeon(const GameTimer& gt)
 {
 	// Update the wave simulation.
 	mDungeon->Update(gt.DeltaTime());
 
-	Vertex* pWaves = mCurrFrameResource->pWavesVB;
+	Vertex* pDungeon = mCurrFrameResource->pDungeonVB;
 
 	// Update the dungeon vertex buffer with the new solution.
 	for (int j = 0; j < cutoff; j++)
 	{
-		pWaves[j].Pos.x = src_v[j].x;
-		pWaves[j].Pos.y = src_v[j].y;
-		pWaves[j].Pos.z = src_v[j].z;
+		pDungeon[j].Pos.x = src_v[j].x;
+		pDungeon[j].Pos.y = src_v[j].y;
+		pDungeon[j].Pos.z = src_v[j].z;
 
-		pWaves[j].Normal.x = src_v[j].nx;
-		pWaves[j].Normal.y = src_v[j].ny;
-		pWaves[j].Normal.z = src_v[j].nz;
+		pDungeon[j].Normal.x = src_v[j].nx;
+		pDungeon[j].Normal.y = src_v[j].ny;
+		pDungeon[j].Normal.z = src_v[j].nz;
 
-		pWaves[j].TexC.x = src_v[j].tu;
-		pWaves[j].TexC.y = src_v[j].tv;
+		pDungeon[j].TexC.x = src_v[j].tu;
+		pDungeon[j].TexC.y = src_v[j].tv;
 
-		pWaves[j].TangentU.x = src_v[j].nmx;
-		pWaves[j].TangentU.y = src_v[j].nmy;
-		pWaves[j].TangentU.z = src_v[j].nmz;
+		pDungeon[j].TangentU.x = src_v[j].nmx;
+		pDungeon[j].TangentU.y = src_v[j].nmy;
+		pDungeon[j].TangentU.z = src_v[j].nmz;
 	}
 
 	mDungeonRitem->Geo->vertexBufferGPU = WaveVertexBuffers[mCurrFrameResourceIndex];
