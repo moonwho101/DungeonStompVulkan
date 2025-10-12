@@ -30,7 +30,7 @@ DungeonStompApp::~DungeonStompApp() {
 
 	for (auto& pair : mGeometries) {
 		free(pair.second->indexBufferCPU);
-		if (pair.second->vertexBufferGPU.buffer != mWavesRitem->Geo->vertexBufferGPU.buffer) {
+		if (pair.second->vertexBufferGPU.buffer != mDungeonRitem->Geo->vertexBufferGPU.buffer) {
 			free(pair.second->vertexBufferCPU);
 			cleanupBuffer(mDevice, pair.second->vertexBufferGPU);
 		}
@@ -77,7 +77,7 @@ void DungeonStompApp::asyncInit() {
 
 	mShadowMap = std::make_unique<ShadowMap>(mDevice, mMemoryProperties, mBackQueue, mCommandBuffer, 2048, 2048);
 
-	mWaves = std::make_unique<Waves>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);
+	mDungeon = std::make_unique<Dungeon>(128, 128, 1.0f, 0.03f, 4.0f, 0.2f);
 
 	LoadTextures();
 	BuildShapeGeometry();
@@ -947,7 +947,7 @@ void DungeonStompApp::BuildRenderItems()
 	wavesRitem->StartIndexLocation = wavesRitem->Geo->DrawArgs["grid"].StartIndexLocation;
 	wavesRitem->BaseVertexLocation = wavesRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
 
-	mWavesRitem = wavesRitem.get();
+	mDungeonRitem = wavesRitem.get();
 
 	mRitemLayer[(int)RenderLayer::Opaque].push_back(wavesRitem.get());
 	mAllRitems.push_back(std::move(wavesRitem));
@@ -968,7 +968,7 @@ void DungeonStompApp::BuildRenderItems()
 		wavesRitem->StartIndexLocation = wavesRitem->Geo->DrawArgs["grid"].StartIndexLocation;
 		wavesRitem->BaseVertexLocation = wavesRitem->Geo->DrawArgs["grid"].BaseVertexLocation;
 
-		mWavesRitem = wavesRitem.get();
+		mDungeonRitem = wavesRitem.get();
 
 		mRitemLayer[(int)RenderLayer::Opaque].push_back(wavesRitem.get());
 		mAllRitems.push_back(std::move(wavesRitem));
@@ -976,12 +976,12 @@ void DungeonStompApp::BuildRenderItems()
 }
 
 void DungeonStompApp::BuildWavesGeometry() {
-	std::vector<uint32_t> indices(3 * mWaves->TriangleCount());//3 indices per face
-	assert(mWaves->VertexCount() < 0x0000FFFFF);
+	std::vector<uint32_t> indices(3 * mDungeon->TriangleCount());//3 indices per face
+	assert(mDungeon->VertexCount() < 0x0000FFFFF);
 
 	//Iterate over each quad.
-	int m = mWaves->RowCount();
-	int n = mWaves->ColumnCount();
+	int m = mDungeon->RowCount();
+	int n = mDungeon->ColumnCount();
 	int k = 0;
 
 	for (int i = 0; i < m - 1; ++i) {
@@ -997,7 +997,7 @@ void DungeonStompApp::BuildWavesGeometry() {
 		}
 	}
 
-	//uint32_t vbByteSize = mWaves->VertexCount() * sizeof(Vertex);
+	//uint32_t vbByteSize = mDungeon->VertexCount() * sizeof(Vertex);
 	uint32_t vbByteSize = MAX_NUM_QUADS * sizeof(Vertex);
 	uint32_t ibByteSize = (uint32_t)indices.size() * sizeof(uint32_t);
 
@@ -1467,7 +1467,7 @@ extern int cutoff;
 void DungeonStompApp::UpdateWaves(const GameTimer& gt)
 {
 	// Update the wave simulation.
-	mWaves->Update(gt.DeltaTime());
+	mDungeon->Update(gt.DeltaTime());
 
 	Vertex* pWaves = mCurrFrameResource->pWavesVB;
 
@@ -1490,7 +1490,7 @@ void DungeonStompApp::UpdateWaves(const GameTimer& gt)
 		pWaves[j].TangentU.z = src_v[j].nmz;
 	}
 
-	mWavesRitem->Geo->vertexBufferGPU = WaveVertexBuffers[mCurrFrameResourceIndex];
+	mDungeonRitem->Geo->vertexBufferGPU = WaveVertexBuffers[mCurrFrameResourceIndex];
 }
 
 bool isFullscreen = false;

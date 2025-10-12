@@ -6,7 +6,7 @@
 #include "../Common/Colors.h"
 #include "../Common/TextureLoader.h"
 #include "../Common/Camera.h"
-#include "Waves.h"
+#include "Dungeon.h"
 #include <memory>
 #include <fstream>
 #include <iostream>
@@ -106,7 +106,7 @@ class DungeonStompApp : public VulkApp
 	std::unordered_map<std::string, std::unique_ptr<Texture> > mTextures;
 	std::unordered_map<std::string, VkPipeline> mPSOs;
 
-	RenderItem* mWavesRitem{ nullptr };
+	RenderItem* mDungeonRitem{ nullptr };
 
 	bool mIsWireframe{ false };
 	bool mIsFlatShader{ false };
@@ -119,7 +119,7 @@ class DungeonStompApp : public VulkApp
 
 	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
 
-	std::unique_ptr<Waves> mWaves;
+	std::unique_ptr<Dungeon> mDungeon;
 
 	Vulkan::Buffer WavesIndexBuffer;
 	std::vector<Vulkan::Buffer> WaveVertexBuffers;
