@@ -1467,7 +1467,7 @@ extern int cutoff;
 void DungeonStompApp::UpdateDungeon(const GameTimer& gt)
 {
 	// Update the wave simulation.
-	mDungeon->Update(gt.DeltaTime());
+	//mDungeon->Update(gt.DeltaTime());
 
 	Vertex* pDungeon = mCurrFrameResource->pDungeonVB;
 
