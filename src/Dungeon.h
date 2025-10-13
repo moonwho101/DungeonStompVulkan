@@ -2,7 +2,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-class Waves {
+class Dungeon {
 	int		mNumRows{ 0 };
 	int		mNumCols{ 0 };
 
@@ -23,10 +23,10 @@ class Waves {
 	std::vector<glm::vec3>	mTangentX;
 
 public:
-	Waves(int m, int n, float dx, float dt, float speed, float damping);
-	Waves(const Waves& rhs) = delete;
-	Waves& operator=(const Waves& rhs) = delete;
-	~Waves();
+	Dungeon(int m, int n, float dx, float dt, float speed, float damping);
+	Dungeon(const Dungeon& rhs) = delete;
+	Dungeon& operator=(const Dungeon& rhs) = delete;
+	~Dungeon();
 
 	int RowCount()const;
 	int ColumnCount()const;

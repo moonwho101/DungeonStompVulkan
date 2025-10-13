@@ -6,7 +6,7 @@
 #include "../Common/Colors.h"
 #include "../Common/TextureLoader.h"
 #include "../Common/Camera.h"
-#include "Waves.h"
+#include "Dungeon.h"
 #include <memory>
 #include <fstream>
 #include <iostream>
@@ -29,7 +29,7 @@ struct RenderItem {
 
 	glm::mat4 TexTransform = glm::mat4(1.0f);
 
-	// Used for GPU waves render items.
+	// Used for GPU dungeon render items.
 	glm::vec2 DisplacementMapTexelSize = { 1.0f, 1.0f };
 	float GridSpatialStep = 1.0f;
 
@@ -106,7 +106,7 @@ class DungeonStompApp : public VulkApp
 	std::unordered_map<std::string, std::unique_ptr<Texture> > mTextures;
 	std::unordered_map<std::string, VkPipeline> mPSOs;
 
-	RenderItem* mWavesRitem{ nullptr };
+	RenderItem* mDungeonRitem{ nullptr };
 
 	bool mIsWireframe{ false };
 	bool mIsFlatShader{ false };
@@ -119,9 +119,9 @@ class DungeonStompApp : public VulkApp
 
 	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
 
-	std::unique_ptr<Waves> mWaves;
+	std::unique_ptr<Dungeon> mDungeon;
 
-	Vulkan::Buffer WavesIndexBuffer;
+	Vulkan::Buffer DungeonIndexBuffer;
 	std::vector<Vulkan::Buffer> WaveVertexBuffers;
 	std::vector<void*> WaveVertexPtrs;
 
@@ -174,13 +174,13 @@ class DungeonStompApp : public VulkApp
 	void UpdateMainPassCB(const GameTimer& gt);
 	void UpdateShadowPassCB(const GameTimer& gt);
 	void UpdateMaterialsBuffer(const GameTimer& gt);
-	void UpdateWaves(const GameTimer& gt);
+	void UpdateDungeon(const GameTimer& gt);
 
 	static void asyncInitStatic(DungeonStompApp* pThis);
 	void asyncInit();
 
 	void LoadTextures();
-	void BuildWavesGeometry();
+	void BuildDungeonGeometry();
 	void BuildBuffers();
 	void BuildDescriptors();
 	void BuildPSOs();

@@ -64,5 +64,5 @@ struct FrameResource {
 	PassConstants* pPCs{ nullptr };
 	ObjectConstants* pOCs{ nullptr };
 	MaterialData* pMats{ nullptr };
-	Vertex* pWavesVB{ nullptr };
+	Vertex* pDungeonVB{ nullptr };
 };
