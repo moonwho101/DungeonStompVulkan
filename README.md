@@ -35,7 +35,7 @@ Dungeon Stomp for DirectX12, is avaiable [Dungeon Stomp DirectX12](https://githu
 
 ## Compiling
 
-To build, you'll need Vulkan API.  Compile using Microsoft Visual Studio 2022 Community Edition. For best results compile in 'Release' mode.
+To build, you'll need Vulkan, glm, and stbi image lib.  Compile using Microsoft Visual Studio 2022 Community Edition. For best results compile in 'Release' mode.
 Happy Dungeon Stomping - Breeyark!
 
 ## Vulkan Examples
