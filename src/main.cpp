@@ -4,6 +4,44 @@ void ShutDownSound();
 CameraBob bobY;
 CameraBob bobX;
 
+bool isFullscreen = false;
+bool enableWindowKey = false;
+bool enableNormalmap = true;
+bool enableNormalmapKey = false;
+bool enableCameraBob = true;
+bool enableCameraBobKey = false;
+bool enableConsoleKey = false; // debounce for console toggle
+
+WINDOWPLACEMENT wpc{};// window placement information
+
+
+// Console window toggle helpers
+static inline void EnsureConsoleAllocatedAndShown() {
+	HWND hCon = GetConsoleWindow();
+	if (!hCon) {
+		AllocConsole();
+		FILE* fp;
+		freopen_s(&fp, "CONOUT$", "w", stdout);
+		freopen_s(&fp, "CONOUT$", "w", stderr);
+		freopen_s(&fp, "CONIN$", "r", stdin);
+		hCon = GetConsoleWindow();
+	}
+	if (hCon) {
+		ShowWindow(hCon, SW_SHOW);
+	}
+}
+
+static inline void ToggleConsoleWindow() {
+	HWND hCon = GetConsoleWindow();
+	if (!hCon) {
+		// No console yet – allocate and show it
+		EnsureConsoleAllocatedAndShown();
+		return;
+	}
+	BOOL visible = IsWindowVisible(hCon);
+	ShowWindow(hCon, visible ? SW_HIDE : SW_SHOW);
+}
+
 DungeonStompApp::DungeonStompApp(HINSTANCE hInstance) :VulkApp(hInstance) {
 	mAllowWireframe = true;
 	mClearValues[0].color = Colors::LightSteelBlue;
@@ -1390,6 +1428,18 @@ void DungeonStompApp::OnResize()
 	VulkApp::OnResize();
 
 	mCamera.SetLens(0.25f * MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
+
+#if defined(DEBUG) || defined(_DEBUG) 
+	{
+	}
+#else
+	// Maximize window and go fullscreen in release mode.
+	{
+		isFullscreen = true;
+		ToggleFullscreen(true);
+	}
+#endif
+
 }
 
 void DungeonStompApp::OnMouseMove(WPARAM btnState, int x, int y) {
@@ -1493,14 +1543,6 @@ void DungeonStompApp::UpdateDungeon(const GameTimer& gt)
 	mDungeonRitem->Geo->vertexBufferGPU = WaveVertexBuffers[mCurrFrameResourceIndex];
 }
 
-bool isFullscreen = false;
-bool enableWindowKey = false;
-bool enableNormalmap = true;
-bool enableNormalmapKey = false;
-bool enableCameraBob = true;
-bool enableCameraBobKey = false;
-
-WINDOWPLACEMENT wpc{};// window placement information
 
 void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 {
@@ -1572,6 +1614,17 @@ void DungeonStompApp::OnKeyboardInput(const GameTimer& gt)
 	}
 	else {
 		enableCameraBobKey = 0;
+	}
+
+	// Toggle console window visibility with 'C'
+	if (GetAsyncKeyState('C') && !enableConsoleKey) {
+		ToggleConsoleWindow();
+	}
+	if (GetAsyncKeyState('C')) {
+		enableConsoleKey = 1;
+	}
+	else {
+		enableConsoleKey = 0;
 	}
 
 
@@ -2135,14 +2188,14 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 	}
 }
 
-int main() {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
 	try
 	{
-		DungeonStompApp theApp(GetModuleHandle(NULL));
+		DungeonStompApp theApp(hInstance);
 		if (!theApp.Initialize())
 			return 0;
 

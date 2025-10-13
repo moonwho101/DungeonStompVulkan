@@ -18,6 +18,7 @@
 
 ## Debug Controls
 
+* C - Toggle VULKAN console debug window
 * G - Toggle gravity (Keypad +/- move up, move down)
 * I - Disable music
 * P - Random music
