@@ -14,7 +14,6 @@ bool enableConsoleKey = false; // debounce for console toggle
 
 WINDOWPLACEMENT wpc{};// window placement information
 
-
 // Console window toggle helpers
 static inline void EnsureConsoleAllocatedAndShown() {
 	HWND hCon = GetConsoleWindow();
@@ -57,6 +56,18 @@ DungeonStompApp::DungeonStompApp(HINSTANCE hInstance) :VulkApp(hInstance) {
 
 	float scale = 1415.0f;
 	mSceneBounds.Radius = sqrtf((10.0f * 10.0f) * scale + (15.0f * 15.0f) * scale);
+
+#if defined(DEBUG) || defined(_DEBUG) 
+	{
+		isFullscreen = false;
+	}
+#else
+	// Maximize window and go fullscreen in release mode.
+	{
+		isFullscreen = true;
+	}
+#endif
+
 }
 DungeonStompApp::~DungeonStompApp() {
 	vkDeviceWaitIdle(mDevice);
@@ -1435,8 +1446,7 @@ void DungeonStompApp::OnResize()
 #else
 	// Maximize window and go fullscreen in release mode.
 	{
-		isFullscreen = true;
-		ToggleFullscreen(true);
+		ToggleFullscreen(isFullscreen);
 	}
 #endif
 
