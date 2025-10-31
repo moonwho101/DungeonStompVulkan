@@ -4,60 +4,51 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 const float pi = 3.14159265358979323846264338327950288f;
-class MathHelper
-{
-public:
+class MathHelper {
+  public:
 	// Returns random float in [0, 1).
-	static float RandF()
-	{
+	static float RandF() {
 		return (float)(rand()) / (float)RAND_MAX;
 	}
 
 	// Returns random float in [a, b).
-	static float RandF(float a, float b)
-	{
+	static float RandF(float a, float b) {
 		return a + RandF() * (b - a);
 	}
 
-	static int Rand(int a, int b)
-	{
+	static int Rand(int a, int b) {
 		return a + rand() % ((b - a) + 1);
 	}
 
-	template<typename T>
-	static T Min(const T& a, const T& b)
-	{
+	template <typename T>
+	static T Min(const T &a, const T &b) {
 		return a < b ? a : b;
 	}
 
-	template<typename T>
-	static T Max(const T& a, const T& b)
-	{
+	template <typename T>
+	static T Max(const T &a, const T &b) {
 		return a > b ? a : b;
 	}
 
-	template<typename T>
-	static T Lerp(const T& a, const T& b, float t)
-	{
+	template <typename T>
+	static T Lerp(const T &a, const T &b, float t) {
 		return a + (b - a) * t;
 	}
 
-	template<typename T>
-	static T Clamp(const T& x, const T& low, const T& high)
-	{
+	template <typename T>
+	static T Clamp(const T &x, const T &low, const T &high) {
 		return x < low ? low : (x > high ? high : x);
 	}
 
 	// Returns the polar angle of the point (x,y) in [0, 2*PI).
 	static float AngleFromXY(float x, float y);
 
-	static glm::vec4 SphericalToCartesian(float radius, float theta, float phi)
-	{
+	static glm::vec4 SphericalToCartesian(float radius, float theta, float phi) {
 		return glm::vec4(
-			radius * sinf(phi) * cosf(theta),
-			radius * cosf(phi),
-			radius * sinf(phi) * sinf(theta),
-			1.0f);
+		    radius * sinf(phi) * cosf(theta),
+		    radius * cosf(phi),
+		    radius * sinf(phi) * sinf(theta),
+		    1.0f);
 	}
 
 	static glm::mat4 InverseTranspose(glm::mat4 m) {
@@ -70,15 +61,11 @@ public:
 		return glm::mat4(1.0f);
 	}
 
-
-
 	static glm::vec3 RandUnitVec3();
 	static glm::vec3 RandHemisphereUnitVec3(glm::vec3 n);
 
 	static const float Infinity;
 	static const float Pi;
-
-
 
 	static glm::vec4 splatX(glm::vec4 v) {
 		return glm::vec4(v.x);
@@ -108,7 +95,7 @@ public:
 		return glm::vec4((float)0x80000000);
 	}
 	/*static float getByIndex(glm::vec4 v, size_t i) {
-		return v[i];
+	    return v[i];
 	}*/
 	static float getX(glm::vec4 v) {
 		return v.x;
@@ -128,70 +115,65 @@ public:
 	}
 	static glm::mat4 reflect(glm::vec4 plane);
 
-
-	static glm::vec3 vectorMin(glm::vec3& a, glm::vec3& b);
-	static glm::vec3 vectorMax(glm::vec3& a, glm::vec3& b);
-
+	static glm::vec3 vectorMin(glm::vec3 &a, glm::vec3 &b);
+	static glm::vec3 vectorMax(glm::vec3 &a, glm::vec3 &b);
 
 	/*struct Plane {
-		glm::vec3 abc;
-		float d{ 0 };
-		Plane(glm::vec3& p0, glm::vec3& p1, glm::vec3& p2) {
-			glm::vec3 v1 = p1 - p0;
-			glm::vec3 v2 = p2 - p0;
-			abc = glm::normalize(glm::cross(v1, v2));
-			d = -glm::dot(p0, abc);
+	    glm::vec3 abc;
+	    float d{ 0 };
+	    Plane(glm::vec3& p0, glm::vec3& p1, glm::vec3& p2) {
+	        glm::vec3 v1 = p1 - p0;
+	        glm::vec3 v2 = p2 - p0;
+	        abc = glm::normalize(glm::cross(v1, v2));
+	        d = -glm::dot(p0, abc);
 
-		}
-		float Distance(glm::vec3& point) {
-			return glm::dot(point, abc);
-		}
+	    }
+	    float Distance(glm::vec3& point) {
+	        return glm::dot(point, abc);
+	    }
 	};
 
 	struct BoundingBox {
-		glm::vec3 points[8];
+	    glm::vec3 points[8];
 	};
 
 
 	struct Frustrum {
-		Plane planes[6];
-		glm::vec3 fnear[4];
-		glm::vec3 ffar[4];
-		enum {
-			COORD_BOTTOMLEFT=0,
-			COORD_BOTTOMRIGHT,
-			COORD_TOPLEFT,
-			COORD_TOPRIGHT
-		};
-		enum {
-			PLANE_LEFT=0,
-			PLANE_RIGHT,
-			PLANE_BOTTOM,
-			PLANE_TOP,
-			PLANE_NEAR,
-			PLANE_FAR
-		};
-		bool Intersects(glm::vec3& point) {
-			for (int i = 0; i < 6; i++) {
-				if (planes[i].Distance(point) > 0)
-					return false;
-			}
-			return true;
-		}
-		bool Intersects(BoundingBox& box) {
-			for (int p = 0; p < 6; p++) {
-				for (int b = 0; b < 8; b++) {
-					if (planes[p].Distance(box.points[b]) < 0) {
-						continue;
-						return false;
-					}
+	    Plane planes[6];
+	    glm::vec3 fnear[4];
+	    glm::vec3 ffar[4];
+	    enum {
+	        COORD_BOTTOMLEFT=0,
+	        COORD_BOTTOMRIGHT,
+	        COORD_TOPLEFT,
+	        COORD_TOPRIGHT
+	    };
+	    enum {
+	        PLANE_LEFT=0,
+	        PLANE_RIGHT,
+	        PLANE_BOTTOM,
+	        PLANE_TOP,
+	        PLANE_NEAR,
+	        PLANE_FAR
+	    };
+	    bool Intersects(glm::vec3& point) {
+	        for (int i = 0; i < 6; i++) {
+	            if (planes[i].Distance(point) > 0)
+	                return false;
+	        }
+	        return true;
+	    }
+	    bool Intersects(BoundingBox& box) {
+	        for (int p = 0; p < 6; p++) {
+	            for (int b = 0; b < 8; b++) {
+	                if (planes[p].Distance(box.points[b]) < 0) {
+	                    continue;
+	                    return false;
+	                }
 
-				}
-			}
-			return true;
-		}
+	            }
+	        }
+	        return true;
+	    }
 	};*/
 };
-
-
-

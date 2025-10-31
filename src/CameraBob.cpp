@@ -1,53 +1,47 @@
 #include "CameraBob.hpp"
 #include <cmath>
 
-
 void CameraBob::SinWave(float speed, float amplitude, float frequency) {
-    x = 0;
-    y = 0;
-    s = speed;
-    a = amplitude;
-    f = frequency;
+	x = 0;
+	y = 0;
+	s = speed;
+	a = amplitude;
+	f = frequency;
 }
 
 void CameraBob::update(float delta) {
-    x += s * delta;
-    y = (float)(a * sin(x * f));
+	x += s * delta;
+	y = (float)(a * sin(x * f));
 }
 
 float CameraBob::getX() {
-    return x;
+	return x;
 }
 float CameraBob::getY() {
-    return y;
+	return y;
 }
 float CameraBob::getSpeed() {
-    return s;
+	return s;
 }
 float CameraBob::getAmplitude() {
-    return a;
+	return a;
 }
 float CameraBob::getFrequency() {
-    return f;
+	return f;
 }
 
 void CameraBob::setX(float x2) {
-    x = x2;
+	x = x2;
 }
 void CameraBob::setY(float y1) {
-    y = y1;
+	y = y1;
 }
 void CameraBob::setSpeed(float speed) {
-    s = speed;
+	s = speed;
 }
 void CameraBob::setAmplitude(float amplitude) {
-    a = amplitude;
+	a = amplitude;
 }
 void CameraBob::setFrequency(float frequency) {
-    f = frequency;
+	f = frequency;
 }
-
-
-
-
-

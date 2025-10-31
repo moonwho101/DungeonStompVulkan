@@ -3,7 +3,7 @@
 #include "GlobalSettings.hpp"
 #include <DirectXMath.h>
 
-//Collision
+// Collision
 extern CollisionPacket colPack2;
 CollisionPacket collisionPackage;
 int collisionRecursionDepth = 0;
@@ -15,18 +15,18 @@ int currentmonstercollisionid = -1;
 extern float collisiondist;
 extern BOOL foundcollision;
 
-extern CollisionPacket collisionPackage; //Stores all the parameters and returnvalues
-extern int collisionRecursionDepth;		 //Internal variable tracking the recursion depth
+extern CollisionPacket collisionPackage; // Stores all the parameters and returnvalues
+extern int collisionRecursionDepth;      // Internal variable tracking the recursion depth
 
-extern CollisionPacket collisionPackage; //Stores all the parameters and returnvalues
-extern int collisionRecursionDepth;		 //Internal variable tracking the recursion depth
+extern CollisionPacket collisionPackage; // Stores all the parameters and returnvalues
+extern int collisionRecursionDepth;      // Internal variable tracking the recursion depth
 
-float** triangle_pool; //Stores the pointers to the traingles used for collision detection
-int numtriangle;	   //Number of traingles in pool
+float **triangle_pool; // Stores the pointers to the traingles used for collision detection
+int numtriangle;       // Number of traingles in pool
 float unitsPerMeter;   // Set this to match application scale..
-VECTOR gravity;		   //Gravity
+VECTOR gravity;        // Gravity
 
-void checkTriangle(CollisionPacket* colPackage, VECTOR p1, VECTOR p2, VECTOR p3);
+void checkTriangle(CollisionPacket *colPackage, VECTOR p1, VECTOR p2, VECTOR p3);
 
 float calcy = 0;
 float lastmodely = 0;
@@ -38,7 +38,7 @@ float collisiondist = 4190.0f;
 
 float mxc[100], myc[100], mzc[100], mwc[100];
 
-CollisionTrace trace; //Output structure telling the application everything about the collision
+CollisionTrace trace; // Output structure telling the application everything about the collision
 
 extern XMFLOAT3 eRadius;
 
@@ -54,8 +54,7 @@ extern int src_collide[MAX_NUM_QUADS];
 extern int collideWithBoundingBox;
 extern int endc;
 
-struct TCollisionPacket
-{
+struct TCollisionPacket {
 	// data about player movement
 	XMFLOAT3 velocity;
 	XMFLOAT3 sourcePoint;
@@ -63,24 +62,23 @@ struct TCollisionPacket
 	XMFLOAT3 eRadius;
 	// data for collision response
 	BOOL foundCollision;
-	double nearestDistance;					   // nearest distance to hit
-	XMFLOAT3 nearestIntersectionPoint;		   // on sphere
+	double nearestDistance;                   // nearest distance to hit
+	XMFLOAT3 nearestIntersectionPoint;        // on sphere
 	XMFLOAT3 nearestPolygonIntersectionPoint; // on polygon
 };
 
-void checkCollision()
-{
-	VECTOR P1, P2, P3;	  //Temporary variables holding the triangle in R3
-	VECTOR eP1, eP2, eP3; //Temporary variables holding the triangle in eSpace
+void checkCollision() {
+	VECTOR P1, P2, P3;    // Temporary variables holding the triangle in R3
+	VECTOR eP1, eP2, eP3; // Temporary variables holding the triangle in eSpace
 
-	for (int i = 0; i < numtriangle; i++) //Iterate trough the entire triangle pool
+	for (int i = 0; i < numtriangle; i++) // Iterate trough the entire triangle pool
 	{
-		//I'm sorry for my hard coding, but fill the traingle with the data from the pool
-		P1.set(*triangle_pool[i * 9], *triangle_pool[i * 9 + 1], *triangle_pool[i * 9 + 2]);	 //First vertex
-		P2.set(*triangle_pool[i * 9 + 3], *triangle_pool[i * 9 + 4], *triangle_pool[i * 9 + 5]); //Second vertex
-		P3.set(*triangle_pool[i * 9 + 6], *triangle_pool[i * 9 + 7], *triangle_pool[i * 9 + 8]); //Third vertex
+		// I'm sorry for my hard coding, but fill the traingle with the data from the pool
+		P1.set(*triangle_pool[i * 9], *triangle_pool[i * 9 + 1], *triangle_pool[i * 9 + 2]);     // First vertex
+		P2.set(*triangle_pool[i * 9 + 3], *triangle_pool[i * 9 + 4], *triangle_pool[i * 9 + 5]); // Second vertex
+		P3.set(*triangle_pool[i * 9 + 6], *triangle_pool[i * 9 + 7], *triangle_pool[i * 9 + 8]); // Third vertex
 
-		//Transform to eSpace
+		// Transform to eSpace
 		eP1 = P1 / collisionPackage.eRadius;
 		eP2 = P2 / collisionPackage.eRadius;
 		eP3 = P3 / collisionPackage.eRadius;
@@ -89,10 +87,9 @@ void checkCollision()
 	}
 }
 
-XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
-{
+XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity) {
 
-	//SILENCERS
+	// SILENCERS
 	XMFLOAT3 final;
 
 	// All hard-coded distances in this function is
@@ -102,8 +99,7 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 	float veryCloseDistance = 0.005f * unitScale;
 
 	// do we need to worry?
-	if (collisionRecursionDepth > 15)
-	{
+	if (collisionRecursionDepth > 15) {
 		collisionRecursionDepth = 0;
 		return position;
 	}
@@ -135,8 +131,7 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 	// Application specific!!
 	ObjectCollision();
 	// If no collision we just move along the velocity
-	if (collisionPackage.foundCollision == false)
-	{
+	if (collisionPackage.foundCollision == false) {
 		final.x = pos.x + vel.x;
 		final.y = pos.y + vel.y;
 		final.z = pos.z + vel.z;
@@ -150,8 +145,8 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 	VECTOR newSourcePoint = pos;
 
 	VECTOR V = vel;
-	
-	//added by silencer ver 2.0 new untested unconfirmed
+
+	// added by silencer ver 2.0 new untested unconfirmed
 	if (collisionPackage.nearestDistance == 0.0f) {
 		final.x = pos.x;
 		final.y = pos.y;
@@ -169,13 +164,13 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 	eTest.y = slidePlaneNormal.y;
 	eTest.z = slidePlaneNormal.z;
 
-	//fixed by tele forgot to normalize slideplane
+	// fixed by tele forgot to normalize slideplane
 	slidePlaneNormal.normalize();
 
-	//silencer ver 1.0
-	//VECTOR displacementVector=slidePlaneNormal * veryCloseDistance;
+	// silencer ver 1.0
+	// VECTOR displacementVector=slidePlaneNormal * veryCloseDistance;
 
-	//silencer ver 2.0 - i think it fixed it can u believe it 2 years and these 5 lines did it.
+	// silencer ver 2.0 - i think it fixed it can u believe it 2 years and these 5 lines did it.
 	float factor;
 	V.SetLength(veryCloseDistance);
 	factor = veryCloseDistance / (V.x * slidePlaneNormal.x + V.y * slidePlaneNormal.y + V.z * slidePlaneNormal.z);
@@ -184,8 +179,7 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 
 	VECTOR displacementVector = V * veryCloseDistance * factor;
 
-	if ((V.x * slidePlaneNormal.x + V.y * slidePlaneNormal.y + V.z * slidePlaneNormal.z) != 0.0f)
-	{
+	if ((V.x * slidePlaneNormal.x + V.y * slidePlaneNormal.y + V.z * slidePlaneNormal.z) != 0.0f) {
 		newSourcePoint = newSourcePoint + displacementVector;
 		collisionPackage.intersectionPoint = collisionPackage.intersectionPoint + displacementVector;
 	}
@@ -204,8 +198,7 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 
 	// Recurse:
 	// dont recurse if the new velocity is very small
-	if (newVelocityVector.length() < veryCloseDistance)
-	{
+	if (newVelocityVector.length() < veryCloseDistance) {
 		final.x = newSourcePoint.x;
 		final.y = newSourcePoint.y;
 		final.z = newSourcePoint.z;
@@ -230,8 +223,7 @@ XMFLOAT3 collideWithWorld(XMFLOAT3 position, XMFLOAT3 velocity)
 	return collideWithWorld(newP, newV);
 }
 
-void ObjectCollision()
-{
+void ObjectCollision() {
 	float centroidx;
 	float centroidy;
 	float centroidz;
@@ -256,10 +248,8 @@ void ObjectCollision()
 
 	int test = endc / 3;
 
-	for (i = 0; i < endc; i++)
-	{
-		if (count == 0 && src_collide[i] == 1)
-		{
+	for (i = 0; i < endc; i++) {
+		if (count == 0 && src_collide[i] == 1) {
 			mxc[0] = src_v[i].x;
 			myc[0] = src_v[i].y;
 			mzc[0] = src_v[i].z;
@@ -276,17 +266,15 @@ void ObjectCollision()
 			centroidy = (myc[0] + myc[1] + myc[2]) * QVALUE;
 			centroidz = (mzc[0] + mzc[1] + mzc[2]) * QVALUE;
 			qdist = FastDistance(collisionPackage.realpos.x - centroidx,
-				collisionPackage.realpos.y - centroidy,
-				collisionPackage.realpos.z - centroidz);
+			                     collisionPackage.realpos.y - centroidy,
+			                     collisionPackage.realpos.z - centroidz);
 
-			if (qdist < collisiondist)
-			{
+			if (qdist < collisiondist) {
 				calculate_block_location();
 			}
 		}
 		count++;
-		if (count > vertnum - 1)
-		{
+		if (count > vertnum - 1) {
 			count = 0;
 			vertnum = 3;
 		}
@@ -298,15 +286,12 @@ void ObjectCollision()
 	count = 0;
 	vertnum = 4;
 
-	for (i = 0; i < countboundingbox; i++)
-	{
-		//Stop player missle from hitting bounding box.
+	for (i = 0; i < countboundingbox; i++) {
+		// Stop player missle from hitting bounding box.
 		if (collideWithBoundingBox == 0 && boundingbox[i].monster == 1) {
-			//player missles should not hit monster bounding box, but should hit 3ds bounding box.
-		}
-		else {
-			if (count == 0)
-			{
+			// player missles should not hit monster bounding box, but should hit 3ds bounding box.
+		} else {
+			if (count == 0) {
 				mxc[0] = boundingbox[i].x;
 				myc[0] = boundingbox[i].y;
 				mzc[0] = boundingbox[i].z;
@@ -324,14 +309,13 @@ void ObjectCollision()
 				centroidz = (mzc[0] + mzc[1] + mzc[2]) * QVALUE;
 
 				qdist = FastDistance(collisionPackage.realpos.x - centroidx,
-					collisionPackage.realpos.y - centroidy,
-					collisionPackage.realpos.z - centroidz);
+				                     collisionPackage.realpos.y - centroidy,
+				                     collisionPackage.realpos.z - centroidz);
 
 				if (qdist < collisiondist + 200.0f)
 					calculate_block_location();
 
-				if (vertnum == 4)
-				{
+				if (vertnum == 4) {
 					mxc[0] = boundingbox[i + 1].x;
 					myc[0] = boundingbox[i + 1].y;
 					mzc[0] = boundingbox[i + 1].z;
@@ -349,24 +333,22 @@ void ObjectCollision()
 
 					centroidz = (mzc[0] + mzc[1] + mzc[2]) * QVALUE;
 					qdist = FastDistance(collisionPackage.realpos.x - centroidx,
-						collisionPackage.realpos.y - centroidy,
-						collisionPackage.realpos.z - centroidz);
+					                     collisionPackage.realpos.y - centroidy,
+					                     collisionPackage.realpos.z - centroidz);
 
 					if (qdist < collisiondist + 200.0f)
 						calculate_block_location();
 				}
 			}
 			count++;
-			if (count > vertnum - 1)
-			{
+			if (count > vertnum - 1) {
 				count = 0;
 			}
 		}
 	}
 }
 
-void calculate_block_location()
-{
+void calculate_block_location() {
 	// plane data
 	D3DVECTOR p1, p2, p3;
 
@@ -384,7 +366,7 @@ void calculate_block_location()
 	p3.y = myc[2] / eRadius.y;
 	p3.z = mzc[2] / eRadius.z;
 
-	//check embedded
+	// check embedded
 	VECTOR pp1;
 	VECTOR pp2;
 	VECTOR pp3;
@@ -409,28 +391,24 @@ void calculate_block_location()
 	return;
 }
 
-float FastDistance(float fx, float fy, float fz)
-{
+float FastDistance(float fx, float fy, float fz) {
 	int temp;
 	int x, y, z;
 
 	x = (int)fabs(fx) * 1024;
 	y = (int)fabs(fy) * 1024;
 	z = (int)fabs(fz) * 1024;
-	if (y < x)
-	{
+	if (y < x) {
 		temp = x;
 		x = y;
 		y = temp;
 	}
-	if (z < y)
-	{
+	if (z < y) {
 		temp = y;
 		y = z;
 		z = temp;
 	}
-	if (y < x)
-	{
+	if (y < x) {
 		temp = x;
 		x = y;
 		y = temp;

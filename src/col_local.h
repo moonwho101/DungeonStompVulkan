@@ -2,33 +2,31 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-class VECTOR
-{
-public:
+class VECTOR {
+  public:
 	float x, y, z;
 
 	VECTOR();
 	VECTOR(float x, float y, float z);
 
 	void set(float x, float y, float z);
-	void get(float** floatvector);
+	void get(float **floatvector);
 
-	VECTOR operator+(VECTOR const& V1);
-	VECTOR operator-(VECTOR const& V1);
-	VECTOR operator*(float const& c);
-	VECTOR operator*(double const& c);
-	VECTOR operator/(float const& c);
+	VECTOR operator+(VECTOR const &V1);
+	VECTOR operator-(VECTOR const &V1);
+	VECTOR operator*(float const &c);
+	VECTOR operator*(double const &c);
+	VECTOR operator/(float const &c);
 	float length();
 	float squaredLength();
 	void SetLength(float c);
 	void normalize();
-	float dot(VECTOR const& V);
-	VECTOR cross(VECTOR const& V);
+	float dot(VECTOR const &V);
+	VECTOR cross(VECTOR const &V);
 };
 
-class PLANE
-{
-public:
+class PLANE {
+  public:
 	float equation[4];
 	VECTOR origin;
 	VECTOR normal;
@@ -40,8 +38,7 @@ public:
 	double signedDistanceTo(VECTOR point);
 };
 
-struct CollisionPacket
-{
+struct CollisionPacket {
 	VECTOR R3Position;
 	VECTOR R3Velocity;
 

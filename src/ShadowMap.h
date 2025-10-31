@@ -17,17 +17,34 @@ class ShadowMap : public VulkanObject {
 	std::unique_ptr<VulkanFramebuffer> frameBuffer;
 	std::unique_ptr<VulkanRenderPass> renderPass;
 	void BuildResource();
-public:
+
+  public:
 	ShadowMap(VkDevice device_, VkPhysicalDeviceMemoryProperties memoryProperties_, VkQueue queue_, VkCommandBuffer cmd_, uint32_t width, uint32_t height);
-	ShadowMap(const ShadowMap& rhs) = delete;
+	ShadowMap(const ShadowMap &rhs) = delete;
 	~ShadowMap();
-	ShadowMap& operator=(const ShadowMap& rhs) = delete;
-	VkViewport Viewport()const { return viewport; }
-	VkRect2D ScissorRect()const { return scissorRect; }
-	uint32_t Width()const { return width; }
-	uint32_t Height()const { return height; }
-	VkRenderPass getRenderPass()const { return renderPass->operator VkRenderPass(); }
-	VkFramebuffer getFramebuffer()const { return frameBuffer->operator VkFramebuffer(); }
-	VkImageView getRenderTargetView()const { return shadowMap->operator VkImageView(); }
-	VkSampler getRenderTargetSampler()const { return shadowMap->operator VkSampler(); }
+	ShadowMap &operator=(const ShadowMap &rhs) = delete;
+	VkViewport Viewport() const {
+		return viewport;
+	}
+	VkRect2D ScissorRect() const {
+		return scissorRect;
+	}
+	uint32_t Width() const {
+		return width;
+	}
+	uint32_t Height() const {
+		return height;
+	}
+	VkRenderPass getRenderPass() const {
+		return renderPass->operator VkRenderPass();
+	}
+	VkFramebuffer getFramebuffer() const {
+		return frameBuffer->operator VkFramebuffer();
+	}
+	VkImageView getRenderTargetView() const {
+		return shadowMap->operator VkImageView();
+	}
+	VkSampler getRenderTargetSampler() const {
+		return shadowMap->operator VkSampler();
+	}
 };

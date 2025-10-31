@@ -1,74 +1,60 @@
 #include "VulkApp.h"
 
 LRESULT CALLBACK
-MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
+MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	// Forward hwnd on because we can get messages (e.g., WM_CREATE)
 	// before CreateWindow returns, and thus before mhMainWnd is valid.
 	return VulkApp::GetApp()->MsgProc(hwnd, msg, wParam, lParam);
 }
 
-VulkApp* VulkApp::mApp = nullptr;
-VulkApp* VulkApp::GetApp()
-{
+VulkApp *VulkApp::mApp = nullptr;
+VulkApp *VulkApp::GetApp() {
 	return mApp;
 }
 
 VulkApp::VulkApp(HINSTANCE hInstance)
-	: mhAppInst(hInstance)
-{
+    : mhAppInst(hInstance) {
 	// Only one D3DApp can be constructed.
 	assert(mApp == nullptr);
 	mApp = this;
 }
 
-VulkApp::~VulkApp()
-{
+VulkApp::~VulkApp() {
 	cleanupVulkan();
 }
 
-HINSTANCE VulkApp::AppInst()const
-{
+HINSTANCE VulkApp::AppInst() const {
 	return mhAppInst;
 }
 
-HWND VulkApp::MainWnd()const
-{
+HWND VulkApp::MainWnd() const {
 	return mhMainWnd;
 }
 
-float VulkApp::AspectRatio()const
-{
+float VulkApp::AspectRatio() const {
 	return static_cast<float>(mClientWidth) / mClientHeight;
 }
 
-int VulkApp::Run()
-{
+int VulkApp::Run() {
 	MSG msg = { 0 };
 
 	mTimer.Reset();
 
-	while (msg.message != WM_QUIT)
-	{
+	while (msg.message != WM_QUIT) {
 		// If there are Window messages then process them.
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-		{
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 		// Otherwise, do animation/game stuff.
-		else
-		{
+		else {
 			mTimer.Tick();
 
-			if (!mAppPaused)
-			{
+			if (!mAppPaused) {
 				CalculateFrameStats();
 				Update(mTimer);
 				Draw(mTimer);
-			}
-			else
-			{
+			} else {
 				Sleep(100);
 			}
 		}
@@ -77,10 +63,7 @@ int VulkApp::Run()
 	return (int)msg.wParam;
 }
 
-
-
-bool VulkApp::Initialize()
-{
+bool VulkApp::Initialize() {
 
 	if (!InitMainWindow())
 		return false;
@@ -94,85 +77,66 @@ bool VulkApp::Initialize()
 	return true;
 }
 
-
-void VulkApp::OnResize()
-{
+void VulkApp::OnResize() {
 	vkDeviceWaitIdle(mDevice);
 	DestroySwapchain();
 	CreateSwapchain();
 }
 
-
-LRESULT VulkApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	switch (msg)
-	{
-		// WM_ACTIVATE is sent when the window is activated or deactivated.  
-		// We pause the game when the window is deactivated and unpause it 
-		// when it becomes active.  
+LRESULT VulkApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	switch (msg) {
+		// WM_ACTIVATE is sent when the window is activated or deactivated.
+		// We pause the game when the window is deactivated and unpause it
+		// when it becomes active.
 	case WM_ACTIVATE:
-		if (LOWORD(wParam) == WA_INACTIVE)
-		{
+		if (LOWORD(wParam) == WA_INACTIVE) {
 			mAppPaused = true;
 			mTimer.Stop();
-		}
-		else
-		{
+		} else {
 			mAppPaused = false;
 			mTimer.Start();
 		}
 		return 0;
 
-		// WM_SIZE is sent when the user resizes the window.  
+		// WM_SIZE is sent when the user resizes the window.
 	case WM_SIZE:
 		// Save the new client area dimensions.
 		mClientWidth = LOWORD(lParam);
 		mClientHeight = HIWORD(lParam);
-		if (mDevice != VK_NULL_HANDLE)
-		{
-			if (wParam == SIZE_MINIMIZED)
-			{
+		if (mDevice != VK_NULL_HANDLE) {
+			if (wParam == SIZE_MINIMIZED) {
 				mAppPaused = true;
 				mMinimized = true;
 				mMaximized = false;
-			}
-			else if (wParam == SIZE_MAXIMIZED)
-			{
+			} else if (wParam == SIZE_MAXIMIZED) {
 				mAppPaused = false;
 				mMinimized = false;
 				mMaximized = true;
 				OnResize();
-			}
-			else if (wParam == SIZE_RESTORED)
-			{
+			} else if (wParam == SIZE_RESTORED) {
 
 				// Restoring from minimized state?
-				if (mMinimized)
-				{
+				if (mMinimized) {
 					mAppPaused = false;
 					mMinimized = false;
 					OnResize();
 				}
 
 				// Restoring from maximized state?
-				else if (mMaximized)
-				{
+				else if (mMaximized) {
 					mAppPaused = false;
 					mMaximized = false;
 					OnResize();
-				}
-				else if (mResizing)
-				{
-					// If user is dragging the resize bars, we do not resize 
-					// the buffers here because as the user continuously 
+				} else if (mResizing) {
+					// If user is dragging the resize bars, we do not resize
+					// the buffers here because as the user continuously
 					// drags the resize bars, a stream of WM_SIZE messages are
 					// sent to the window, and it would be pointless (and slow)
 					// to resize for each WM_SIZE message received from dragging
-					// the resize bars.  So instead, we reset after the user is 
-					// done resizing the window and releases the resize bars, which 
+					// the resize bars.  So instead, we reset after the user is
+					// done resizing the window and releases the resize bars, which
 					// sends a WM_EXITSIZEMOVE message.
-				}
-				else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
+				} else // API call such as SetWindowPos or mSwapChain->SetFullscreenState.
 				{
 					OnResize();
 				}
@@ -201,16 +165,16 @@ LRESULT VulkApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return 0;
 
-		// The WM_MENUCHAR message is sent when a menu is active and the user presses 
-		// a key that does not correspond to any mnemonic or accelerator key. 
+		// The WM_MENUCHAR message is sent when a menu is active and the user presses
+		// a key that does not correspond to any mnemonic or accelerator key.
 	case WM_MENUCHAR:
 		// Don't beep when we alt-enter.
 		return MAKELRESULT(0, MNC_CLOSE);
 
 		// Catch this message so to prevent the window from becoming too small.
 	case WM_GETMINMAXINFO:
-		((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
-		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
+		((MINMAXINFO *)lParam)->ptMinTrackSize.x = 200;
+		((MINMAXINFO *)lParam)->ptMinTrackSize.y = 200;
 		return 0;
 
 	case WM_LBUTTONDOWN:
@@ -227,12 +191,10 @@ LRESULT VulkApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_KEYUP:
-		if (wParam == VK_ESCAPE)
-		{
+		if (wParam == VK_ESCAPE) {
 			PostQuitMessage(0);
-		}
-		else if ((int)wParam == VK_F2)
-			//Set4xMsaaState(!m4xMsaaState);
+		} else if ((int)wParam == VK_F2)
+			// Set4xMsaaState(!m4xMsaaState);
 
 			return 0;
 	}
@@ -240,9 +202,7 @@ LRESULT VulkApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-
-bool VulkApp::InitMainWindow()
-{
+bool VulkApp::InitMainWindow() {
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc = MainWndProc;
@@ -255,8 +215,7 @@ bool VulkApp::InitMainWindow()
 	wc.lpszMenuName = 0;
 	wc.lpszClassName = L"MainWnd";
 
-	if (!RegisterClass(&wc))
-	{
+	if (!RegisterClass(&wc)) {
 		MessageBox(0, L"RegisterClass Failed.", 0, 0);
 		return false;
 	}
@@ -268,9 +227,8 @@ bool VulkApp::InitMainWindow()
 	int height = R.bottom - R.top;
 
 	mhMainWnd = CreateWindow(L"MainWnd", mMainWndCaption.c_str(),
-		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mhAppInst, 0);
-	if (!mhMainWnd)
-	{
+	                         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, mhAppInst, 0);
+	if (!mhMainWnd) {
 		MessageBox(0, L"CreateWindow Failed.", 0, 0);
 		return false;
 	}
@@ -278,15 +236,12 @@ bool VulkApp::InitMainWindow()
 	ShowWindow(mhMainWnd, SW_SHOW);
 	UpdateWindow(mhMainWnd);
 
-
-
 	return true;
 }
 
-
 bool VulkApp::InitVulkan() {
-	std::vector<const char*> requiredExtensions{ "VK_KHR_surface",VK_KHR_WIN32_SURFACE_EXTENSION_NAME };
-	std::vector<const char*> requiredLayers{ "VK_LAYER_KHRONOS_validation" };
+	std::vector<const char *> requiredExtensions{ "VK_KHR_surface", VK_KHR_WIN32_SURFACE_EXTENSION_NAME };
+	std::vector<const char *> requiredLayers{ "VK_LAYER_KHRONOS_validation" };
 	mInstance = Vulkan::initInstance(requiredExtensions, requiredLayers);
 	mSurface = Vulkan::initSurface(mInstance, mhAppInst, mhMainWnd);
 	mPhysicalDevice = choosePhysicalDevice(mInstance, mSurface, mQueues);
@@ -304,7 +259,7 @@ bool VulkApp::InitVulkan() {
 	vkGetPhysicalDeviceSurfacePresentModesKHR(mPhysicalDevice, mSurface, &presentModeCount, mPresentModes.data());
 
 	mNumSamples = Vulkan::getMaxUsableSampleCount(mDeviceProperties);
-	std::vector<const char*> deviceExtensions{ "VK_KHR_swapchain" };
+	std::vector<const char *> deviceExtensions{ "VK_KHR_swapchain" };
 	VkPhysicalDeviceFeatures enabledFeatures{};
 	if (mDeviceFeatures.samplerAnisotropy)
 		enabledFeatures.samplerAnisotropy = VK_TRUE;
@@ -318,7 +273,7 @@ bool VulkApp::InitVulkan() {
 	}
 
 	uint32_t queueCount = 2;
-	mDevice = initDevice(mPhysicalDevice, deviceExtensions, mQueues, enabledFeatures,queueCount);
+	mDevice = initDevice(mPhysicalDevice, deviceExtensions, mQueues, enabledFeatures, queueCount);
 
 	mGraphicsQueue = Vulkan::getDeviceQueue(mDevice, mQueues.graphicsQueueFamily);
 	mPresentQueue = Vulkan::getDeviceQueue(mDevice, mQueues.presentQueueFamily);
@@ -326,13 +281,12 @@ bool VulkApp::InitVulkan() {
 
 	mBackQueue = Vulkan::getDeviceQueue(mDevice, mQueues.graphicsQueueFamily, 1);
 
-
 	mPresentMode = Vulkan::chooseSwapchainPresentMode(mPresentModes);
 	mSwapchainFormat = Vulkan::chooseSwapchainFormat(mSurfaceFormats);
 	vkGetPhysicalDeviceFormatProperties(mPhysicalDevice, mSwapchainFormat.format, &mFormatProperties);
 	uint32_t swapChainImageCount = Vulkan::getSwapchainImageCount(mSurfaceCaps);
-	//mPresentComplete = Vulkan::initSemaphore(mDevice);
-	//mRenderComplete = Vulkan::initSemaphore(mDevice);
+	// mPresentComplete = Vulkan::initSemaphore(mDevice);
+	// mRenderComplete = Vulkan::initSemaphore(mDevice);
 	mMaxFrames = swapChainImageCount;
 	for (uint32_t i = 0; i < swapChainImageCount; i++) {
 		VkSemaphore presentComplete = Vulkan::initSemaphore(mDevice);
@@ -381,20 +335,18 @@ bool VulkApp::InitVulkan() {
 	pvkCmdSetScissor = (PFN_vkCmdSetScissor)vkGetDeviceProcAddr(device, "vkCmdSetScissor");
 	mSubmitInfo.pWaitDstStageMask = &mSubmitPipelineStages;
 	mSubmitInfo.waitSemaphoreCount = 1;
-	//mSubmitInfo.pWaitSemaphores = &mPresentComplete;
+	// mSubmitInfo.pWaitSemaphores = &mPresentComplete;
 	mSubmitInfo.signalSemaphoreCount = 1;
-	//mSubmitInfo.pSignalSemaphores = &mRenderComplete;
+	// mSubmitInfo.pSignalSemaphores = &mRenderComplete;
 	mSubmitInfo.commandBufferCount = 1;
 	mRenderPassBeginInfo.clearValueCount = sizeof(mClearValues) / sizeof(mClearValues[0]);
 	mRenderPassBeginInfo.pClearValues = mClearValues;
 	mPresentInfo.swapchainCount = 1;
 	mPresentInfo.pImageIndices = &mIndex;
-	//mPresentInfo.pWaitSemaphores = &mRenderComplete;
+	// mPresentInfo.pWaitSemaphores = &mRenderComplete;
 	mPresentInfo.waitSemaphoreCount = 1;
 	return true;
 }
-
-
 
 void VulkApp::cleanupVulkan() {
 	vkDeviceWaitIdle(mDevice);
@@ -405,9 +357,9 @@ void VulkApp::cleanupVulkan() {
 	Vulkan::cleanupCommandBuffer(mDevice, mCommandPool, mCommandBuffer);
 	Vulkan::cleanupCommandPool(mDevice, mCommandPool);
 
-	//Vulkan::cleanupSemaphore(mDevice, mRenderComplete);
-	//Vulkan::cleanupSemaphore(mDevice, mPresentComplete);
-	for (uint32_t i = 0;i < mMaxFrames; i++) {
+	// Vulkan::cleanupSemaphore(mDevice, mRenderComplete);
+	// Vulkan::cleanupSemaphore(mDevice, mPresentComplete);
+	for (uint32_t i = 0; i < mMaxFrames; i++) {
 		Vulkan::cleanupSemaphore(mDevice, mPresentCompletes[i]);
 		Vulkan::cleanupSemaphore(mDevice, mRenderCompletes[i]);
 		Vulkan::cleanupFence(mDevice, mFences[i]);
@@ -420,7 +372,7 @@ void VulkApp::cleanupVulkan() {
 void VulkApp::CreateSwapchain() {
 	VkSwapchainKHR oldSwapchain = mSwapchain;
 
-	mSwapchain = Vulkan::initSwapchain(mDevice, mSurface, mClientWidth, mClientHeight, mSurfaceCaps, mPresentMode, mSwapchainFormat, mSwapchainExtent,UINT32_MAX, oldSwapchain);
+	mSwapchain = Vulkan::initSwapchain(mDevice, mSurface, mClientWidth, mClientHeight, mSurfaceCaps, mPresentMode, mSwapchainFormat, mSwapchainExtent, UINT32_MAX, oldSwapchain);
 	if (oldSwapchain != VK_NULL_HANDLE) {
 		Vulkan::cleanupSwapchain(mDevice, oldSwapchain);
 	}
@@ -450,10 +402,10 @@ void VulkApp::CreateSwapchain() {
 		props.aspect = VK_IMAGE_ASPECT_DEPTH_BIT;
 		Vulkan::initImage(mDevice, mMemoryProperties, props, mDepthImage);
 
-		//Vulkan::initDepthImage(mDevice, mDepthFormat, mFormatProperties, mMemoryProperties, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, mMSAA ? mNumSamples : VK_SAMPLE_COUNT_1_BIT, mClientWidth, mClientHeight, mDepthImage);
+		// Vulkan::initDepthImage(mDevice, mDepthFormat, mFormatProperties, mMemoryProperties, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, mMSAA ? mNumSamples : VK_SAMPLE_COUNT_1_BIT, mClientWidth, mClientHeight, mDepthImage);
 	}
 	props.aspect = VK_IMAGE_ASPECT_COLOR_BIT;
-	//setup render pass based on config
+	// setup render pass based on config
 	Vulkan::RenderPassProperties rpProps;
 	rpProps.colorFormat = mSwapchainFormat.format;
 	rpProps.sampleCount = mMSAA ? numSamples : VK_SAMPLE_COUNT_1_BIT;
@@ -468,7 +420,7 @@ void VulkApp::CreateSwapchain() {
 	fbProps.height = mClientHeight;
 	Vulkan::initFramebuffers(mDevice, mRenderPass, fbProps, mFramebuffers);
 	mRenderPassBeginInfo.renderPass = mRenderPass;
-	mRenderPassBeginInfo.renderArea = { 0,0,(uint32_t)mClientWidth,(uint32_t)mClientHeight };
+	mRenderPassBeginInfo.renderArea = { 0, 0, (uint32_t)mClientWidth, (uint32_t)mClientHeight };
 
 	mPresentInfo.pSwapchains = &mSwapchain;
 }
@@ -481,15 +433,14 @@ void VulkApp::DestroySwapchain() {
 		Vulkan::cleanupImage(mDevice, mDepthImage);
 	Vulkan::cleanupRenderPass(mDevice, mRenderPass);
 	Vulkan::cleanupSwapchainImageViews(mDevice, mSwapchainImageViews);
-	//cleanupSwapchain(mDevice, mSwapchain);
+	// cleanupSwapchain(mDevice, mSwapchain);
 }
 
 VkCommandBuffer VulkApp::BeginRender(bool startRenderPass) {
-	
-	
+
 	mSubmitInfo.pWaitSemaphores = &mPresentCompletes[mCurrFrame];
 	mSubmitInfo.pSignalSemaphores = &mRenderCompletes[mCurrFrame];
-	
+
 	mRenderPassBeginInfo.clearValueCount = sizeof(mClearValues) / sizeof(mClearValues[0]);
 	mRenderPassBeginInfo.pClearValues = mClearValues;
 	mPresentInfo.swapchainCount = 1;
@@ -498,15 +449,12 @@ VkCommandBuffer VulkApp::BeginRender(bool startRenderPass) {
 	VkResult res = pvkAcquireNextImage(mDevice, mSwapchain, UINT64_MAX, mPresentCompletes[mCurrFrame], nullptr, &mIndex);
 	assert(res == VK_SUCCESS);
 
-
 	VkCommandBuffer cmd = mCommandBuffers[mIndex];
-
 
 	pvkBeginCommandBuffer(cmd, &mBeginInfo);
 
-
 	mRenderPassBeginInfo.framebuffer = mFramebuffers[mIndex];
-	if(startRenderPass)
+	if (startRenderPass)
 		pvkCmdBeginRenderPass(cmd, &mRenderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 	return cmd;
@@ -514,7 +462,6 @@ VkCommandBuffer VulkApp::BeginRender(bool startRenderPass) {
 
 void VulkApp::EndRender(VkCommandBuffer cmd) {
 	pvkCmdEndRenderPass(cmd);
-
 
 	VkResult res = pvkEndCommandBuffer(cmd);
 	assert(res == VK_SUCCESS);
@@ -525,21 +472,20 @@ void VulkApp::EndRender(VkCommandBuffer cmd) {
 
 	res = pvkQueuePresent(mPresentQueue, &mPresentInfo);
 	assert(res == VK_SUCCESS);
-	//pvkQueueWaitIdle(mPresentQueue);
+	// pvkQueueWaitIdle(mPresentQueue);
 	mFrameCount++;
 }
 
-void VulkApp::Update(const GameTimer& gt) {
+void VulkApp::Update(const GameTimer &gt) {
 	mCurrFrame = (mCurrFrame + 1) % mMaxFrames;
 	mCurrFence = mFences[mCurrFrame];
 	vkWaitForFences(mDevice, 1, &mCurrFence, VK_TRUE, UINT64_MAX);
 	vkResetFences(mDevice, 1, &mCurrFence);
 }
 
-void VulkApp::CalculateFrameStats()
-{
-	// Code computes the average frames per second, and also the 
-	// average time it takes to render one frame.  These stats 
+void VulkApp::CalculateFrameStats() {
+	// Code computes the average frames per second, and also the
+	// average time it takes to render one frame.  These stats
 	// are appended to the window caption bar.
 
 	static int frameCnt = 0;
@@ -548,8 +494,7 @@ void VulkApp::CalculateFrameStats()
 	frameCnt++;
 
 	// Compute averages over one second period.
-	if ((mTimer.TotalTime() - timeElapsed) >= 1.0f)
-	{
+	if ((mTimer.TotalTime() - timeElapsed) >= 1.0f) {
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
 
@@ -557,8 +502,8 @@ void VulkApp::CalculateFrameStats()
 		std::wstring mspfStr = std::to_wstring(mspf);
 
 		std::wstring windowText = mMainWndCaption +
-			L"    fps: " + fpsStr +
-			L"   mspf: " + mspfStr;
+		                          L"    fps: " + fpsStr +
+		                          L"   mspf: " + mspfStr;
 
 		SetWindowText(mhMainWnd, windowText.c_str());
 

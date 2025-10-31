@@ -12,18 +12,18 @@ void Camera::SetPosition(float x, float y, float z) {
 	mViewDirty = true;
 }
 
-void Camera::SetPosition(const glm::vec3& v) {
+void Camera::SetPosition(const glm::vec3 &v) {
 	mPosition = v;
 	mViewDirty = true;
 }
 
-float Camera::GetFovX()const {
+float Camera::GetFovX() const {
 	float halfWidth = 0.5f * GetNearWindowWidth();
 	return 2.0f * atan(halfWidth / mNearZ);
 }
 
 void Camera::SetLens(float fovY, float aspect, float zn, float zf) {
-	//cache properties
+	// cache properties
 	mFovY = fovY;
 	mAspect = aspect;
 	mNearZ = zn;
@@ -32,9 +32,8 @@ void Camera::SetLens(float fovY, float aspect, float zn, float zf) {
 	mNearWindowHeight = 2.0f * mNearZ * tanf(0.5f * mFovY);
 	mFarWindowHeight = 2.0f * mFarZ * tanf(0.5f * mFovY);
 
-	mProj = glm::perspectiveLH_ZO(mFovY, mAspect, mNearZ, 1000000.0f);//check this, might not be correct
+	mProj = glm::perspectiveLH_ZO(mFovY, mAspect, mNearZ, 1000000.0f); // check this, might not be correct
 }
-
 
 void Camera::LookAt(glm::vec3 pos, glm::vec3 target, glm::vec3 worldUp) {
 	glm::vec3 L = glm::normalize(target - pos);
@@ -59,15 +58,15 @@ void Camera::Walk(float d) {
 }
 
 void Camera::Pitch(float angle) {
-	//Rotate up and look vector about the right vector
+	// Rotate up and look vector about the right vector
 	glm::mat4 R = glm::rotate(glm::mat4(1.0f), angle, mRight);
-	mUp = R * glm::vec4(mUp, 0.0f);//not points, vectors, so 4th element is 0.0f
+	mUp = R * glm::vec4(mUp, 0.0f); // not points, vectors, so 4th element is 0.0f
 	mLook = R * glm::vec4(mLook, 0.0f);
 	mViewDirty = true;
 }
 
 void Camera::RotateY(float angle) {
-	//Rotate the basic vectors about the world y-axis
+	// Rotate the basic vectors about the world y-axis
 	glm::mat4 R = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0, 1.0f, 0));
 
 	mRight = R * glm::vec4(mRight, 0.0f);
@@ -79,14 +78,14 @@ void Camera::RotateY(float angle) {
 
 void Camera::UpdateViewMatrix() {
 	if (mViewDirty) {
-		//keep camera's axes orthogonal to each other and of unit length
+		// keep camera's axes orthogonal to each other and of unit length
 		glm::vec3 L = glm::normalize(mLook);
 		glm::vec3 U = glm::normalize(glm::cross(L, mRight));
 
-		//U, L alrady ortho-normal, so no need to normalize cross product
+		// U, L alrady ortho-normal, so no need to normalize cross product
 		glm::vec3 R = glm::cross(U, L);
 
-		//Fill in the view matrix entries
+		// Fill in the view matrix entries
 		float x = -glm::dot(mPosition, R);
 		float y = -glm::dot(mPosition, U);
 		float z = -glm::dot(mPosition, L);
@@ -94,7 +93,7 @@ void Camera::UpdateViewMatrix() {
 		mRight = R;
 		mUp = U;
 		mLook = L;
-		//#define __TEST__
+		// #define __TEST__
 #ifdef __TEST__
 		glm::mat4 view = glm::lookAtLH(mPosition, mLook, mUp);
 		mView = view;
@@ -119,9 +118,7 @@ void Camera::UpdateViewMatrix() {
 		mView[2][3] = 0.0f;
 		mView[3][3] = 1.0f;
 
-
 #endif
 		mViewDirty = false;
-
 	}
 }

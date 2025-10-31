@@ -48,12 +48,11 @@ char mapnames[MAX_NUM_3DS_TEXTURES][MAX_NAME_LENGTH];
 int num_verts_in_object[MAX_NUM_3DS_OBJECTS];
 int num_faces_in_object[MAX_NUM_3DS_OBJECTS];
 
-FILE* logfile;
-FILE* fp_3dsmodel;
+FILE *logfile;
+FILE *fp_3dsmodel;
 
-BOOL Import3DS(char* filename, int pmodel_id, float scale)
-{
-	FILE* fp;
+BOOL Import3DS(char *filename, int pmodel_id, float scale) {
+	FILE *fp;
 
 	int done;
 	int i, j, cnt;
@@ -84,23 +83,20 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 	total_num_mcoords = 0;
 	num_materials = 0;
 
-	if (fopen_s(&fp, filename, "rb") != 0)
-	{
-		//MessageBox(hwnd, "3DS File error : Can't open", filename, MB_OK);
+	if (fopen_s(&fp, filename, "rb") != 0) {
+		// MessageBox(hwnd, "3DS File error : Can't open", filename, MB_OK);
 		return FALSE;
 	}
 	done = 0;
 
-	while (done == 0)
-	{
+	while (done == 0) {
 		process_data_flag = FALSE;
 		command_found_flag = FALSE;
 
 		fread(&command, sizeof(command), 1, fp);
 
 		// Test for end of file
-		if (feof(fp))
-		{
+		if (feof(fp)) {
 			done = 1;
 			break;
 		}
@@ -109,19 +105,17 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 		data_length = length - 6;
 
 		// Process 3DS file commands
-		switch (command)
-		{
+		switch (command) {
 		case TRIANGLE_MESH:
-			//PrintLogFile(logfile, "TRIANGLE_MESH");
+			// PrintLogFile(logfile, "TRIANGLE_MESH");
 			process_data_flag = TRUE;
 			break;
 
 		case TRIANGLE_VERTEXLIST:
 			if (ProcessVertexData(fp) == TRUE)
 				process_data_flag = TRUE;
-			else
-			{
-				//MessageBox(hwnd, "Error : Too many verts", NULL, MB_OK);
+			else {
+				// MessageBox(hwnd, "Error : Too many verts", NULL, MB_OK);
 				return FALSE;
 			}
 			break;
@@ -129,9 +123,8 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 		case TRIANGLE_FACELIST:
 			if (ProcessFaceData(fp) == TRUE)
 				process_data_flag = TRUE;
-			else
-			{
-				//MessageBox(hwnd, "Error : Too many faces", NULL, MB_OK);
+			else {
+				// MessageBox(hwnd, "Error : Too many faces", NULL, MB_OK);
 				return FALSE;
 			}
 			break;
@@ -147,7 +140,7 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 			break;
 
 		case EDIT_MATERIAL:
-			//PrintLogFile(logfile, "\nEDIT_MATERIAL");
+			// PrintLogFile(logfile, "\nEDIT_MATERIAL");
 			process_data_flag = TRUE;
 			break;
 
@@ -157,7 +150,7 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 			break;
 
 		case TEXTURE_MAP:
-			//PrintLogFile(logfile, "TEXTURE_MAP");
+			// PrintLogFile(logfile, "TEXTURE_MAP");
 			process_data_flag = TRUE;
 			break;
 
@@ -171,8 +164,7 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 			// read name and store
 			total_num_objects++;
 
-			for (i = 0; i < MAX_NAME_LENGTH; i++)
-			{
+			for (i = 0; i < MAX_NAME_LENGTH; i++) {
 				fread(&temp, 1, 1, fp);
 
 				if (total_num_objects >= MAX_NUM_3DS_OBJECTS)
@@ -181,12 +173,10 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 				object_names[total_num_objects][i] = temp;
 				data_length--;
 
-				if (temp == 0)
-				{
-					if (bEnable3dsLogfile)
-					{
+				if (temp == 0) {
+					if (bEnable3dsLogfile) {
 						fprintf(logfile, "\n\n%s %s\n", "NAMED_OBJECT ",
-							object_names[total_num_objects]);
+						        object_names[total_num_objects]);
 					}
 
 					break;
@@ -197,36 +187,36 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 			break;
 
 		case MAIN3DS:
-			//PrintLogFile(logfile, "MAIN3DS");
+			// PrintLogFile(logfile, "MAIN3DS");
 			process_data_flag = TRUE;
 			break;
 
 		case EDIT3DS:
-			//PrintLogFile(logfile, "EDIT3DS");
+			// PrintLogFile(logfile, "EDIT3DS");
 			process_data_flag = TRUE;
 			break;
 
 		case KEYFRAME:
-			//PrintLogFile(logfile, "\n\nKEYFRAME");
+			// PrintLogFile(logfile, "\n\nKEYFRAME");
 			process_data_flag = TRUE;
 			break;
 
 		case KEYFRAME_MESH_INFO:
-			//PrintLogFile(logfile, "\nKEYFRAME_MESH_INFO");
+			// PrintLogFile(logfile, "\nKEYFRAME_MESH_INFO");
 			kf_count++;
 			process_data_flag = TRUE;
 			break;
 
 		case KEYFRAME_START_AND_END:
-			//PrintLogFile(logfile, "KEYFRAME_START_AND_END");
+			// PrintLogFile(logfile, "KEYFRAME_START_AND_END");
 			fread(&kfstart, sizeof(unsigned long), 1, fp);
 			fread(&kfend, sizeof(unsigned long), 1, fp);
 			process_data_flag = TRUE;
 			break;
 
 		case KEYFRAME_HEADER:
-			//PrintLogFile(logfile, "KEYFRAME_HEADER");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "KEYFRAME_HEADER");
+			// process_data_flag = TRUE;
 			break;
 
 		case KFCURTIME:
@@ -257,38 +247,38 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 			break;
 
 		case FOV_TRACK_TAG:
-			//PrintLogFile(logfile, "PIVOT");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "PIVOT");
+			// process_data_flag = TRUE;
 			break;
 
 		case ROLL_TRACK_TAG:
-			//PrintLogFile(logfile, "PIVOT");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "PIVOT");
+			// process_data_flag = TRUE;
 			break;
 
 		case COL_TRACK_TAG:
-			//PrintLogFile(logfile, "PIVOT");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "PIVOT");
+			// process_data_flag = TRUE;
 			break;
 
 		case MORPH_TRACK_TAG:
-			//PrintLogFile(logfile, "PIVOT");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "PIVOT");
+			// process_data_flag = TRUE;
 			break;
 
 		case HOT_TRACK_TAG:
-			//PrintLogFile(logfile, "PIVOT");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "PIVOT");
+			// process_data_flag = TRUE;
 			break;
 
 		case FALL_TRACK_TAG:
-			//PrintLogFile(logfile, "PIVOT");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "PIVOT");
+			// process_data_flag = TRUE;
 			break;
 
 		case HIDE_TRACK_TAG:
-			//PrintLogFile(logfile, "PIVOT");
-			//process_data_flag = TRUE;
+			// PrintLogFile(logfile, "PIVOT");
+			// process_data_flag = TRUE;
 			break;
 
 		case NODE_HDR:
@@ -307,11 +297,11 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 			break;
 
 		case MESH_VERSION:
-			//PrintLogFile(logfile, "MESH_VERSION");
+			// PrintLogFile(logfile, "MESH_VERSION");
 			break;
 
 		case INT_PERCENTAGE:
-			//PrintLogFile(logfile, "INT_PERCENTAGE");
+			// PrintLogFile(logfile, "INT_PERCENTAGE");
 			break;
 
 		case MASTER_SCALE:
@@ -320,106 +310,102 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 			break;
 
 		case TRIANGLE_MAPPINGSTANDARD:
-			//PrintLogFile(logfile, "TRIANGLE_MAPPINGSTANDARD");
+			// PrintLogFile(logfile, "TRIANGLE_MAPPINGSTANDARD");
 			break;
 
 		case TRIANGLE_VERTEXOPTIONS:
-			//PrintLogFile(logfile, "TRIANGLE_VERTEXOPTIONS");
+			// PrintLogFile(logfile, "TRIANGLE_VERTEXOPTIONS");
 			break;
 
 		case TRIANGLE_SMOOTH:
-			//PrintLogFile(logfile, "TRIANGLE_SMOOTH");
+			// PrintLogFile(logfile, "TRIANGLE_SMOOTH");
 			ProcessTriSmoothData(fp);
 			process_data_flag = TRUE;
 			break;
 
 		case TRI_LOCAL:
-			//PrintLogFile(logfile, "TRI_LOCAL");
+			// PrintLogFile(logfile, "TRI_LOCAL");
 			ProcessTriLocalData(fp);
 			process_data_flag = TRUE;
 			break;
 
 			// Skipping these commands / chunks
 		case TRI_VISIBLE:
-			//PrintLogFile(logfile, "TRI_VISIBLE");
+			// PrintLogFile(logfile, "TRI_VISIBLE");
 			break;
 
 		case MATERIAL_AMBIENT:
-			//PrintLogFile(logfile, "MATERIAL_AMBIENT");
+			// PrintLogFile(logfile, "MATERIAL_AMBIENT");
 			break;
 
 		case MATERIAL_DIFFUSE:
-			//PrintLogFile(logfile, "MATERIAL_DIFFUSE");
+			// PrintLogFile(logfile, "MATERIAL_DIFFUSE");
 			break;
 
 		case MATERIAL_SPECULAR:
-			//PrintLogFile(logfile, "MATERIAL_SPECULAR");
+			// PrintLogFile(logfile, "MATERIAL_SPECULAR");
 			break;
 
 		case MATERIAL_SHININESS:
-			//PrintLogFile(logfile, "MATERIAL_SHININESS");
+			// PrintLogFile(logfile, "MATERIAL_SHININESS");
 			break;
 
 		case MATERIAL_SHIN_STRENGTH:
-			//PrintLogFile(logfile, "MATERIAL_SHIN_STRENGTH");
+			// PrintLogFile(logfile, "MATERIAL_SHIN_STRENGTH");
 			break;
 
 		case MAPPING_PARAMETERS:
-			//PrintLogFile(logfile, "MAPPING_PARAMETERS");
+			// PrintLogFile(logfile, "MAPPING_PARAMETERS");
 			break;
 
 		case BLUR_PERCENTAGE:
-			//PrintLogFile(logfile, "BLUR_PERCENTAGE");
+			// PrintLogFile(logfile, "BLUR_PERCENTAGE");
 			break;
 
 		case TRANS_PERCENT:
-			//PrintLogFile(logfile, "TRANS_PERCENT");
+			// PrintLogFile(logfile, "TRANS_PERCENT");
 			break;
 
 		case TRANS_FALLOFF_PERCENT:
-			//PrintLogFile(logfile, "TRANS_FALLOFF_PERCENT");
+			// PrintLogFile(logfile, "TRANS_FALLOFF_PERCENT");
 			break;
 
 		case REFLECTION_BLUR_PER:
-			//PrintLogFile(logfile, "REFLECTION_BLUR_PER");
+			// PrintLogFile(logfile, "REFLECTION_BLUR_PER");
 			break;
 
 		case RENDER_TYPE:
-			//PrintLogFile(logfile, "RENDER_TYPE");
+			// PrintLogFile(logfile, "RENDER_TYPE");
 			break;
 
 		case SELF_ILLUM:
-			//PrintLogFile(logfile, "SELF_ILLUM");
+			// PrintLogFile(logfile, "SELF_ILLUM");
 			break;
 
 		case WIRE_THICKNESS:
-			//PrintLogFile(logfile, "WIRE_THICKNESS");
+			// PrintLogFile(logfile, "WIRE_THICKNESS");
 			break;
 
 		case IN_TRANC:
-			//PrintLogFile(logfile, "IN_TRANC");
+			// PrintLogFile(logfile, "IN_TRANC");
 			break;
 
 		case SOFTEN:
-			//PrintLogFile(logfile, "SOFTEN");
+			// PrintLogFile(logfile, "SOFTEN");
 			break;
 
 			break;
 		} // end switch
 
-		if (process_data_flag == FALSE)
-		{
-			if (command_found_flag == FALSE)
-			{
-				if (bEnable3dsLogfile)
-				{
+		if (process_data_flag == FALSE) {
+			if (command_found_flag == FALSE) {
+				if (bEnable3dsLogfile) {
 					fprintf(logfile, "\n");
 					fprintf(logfile, "%s  %x\n", "UNKNOWN COMMAND ", command);
 				}
 			}
 			// command was unrecognised, so skip it's data
-			for (i = 0; i < data_length; i++)
-			{
+			for (i = 0; i < data_length; i++) {
 				fread(&temp, 1, 1, fp);
 			}
 			data_length = 0;
@@ -435,7 +421,7 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 	// allocate memory dynamically
 	num_frames = MAX_NUM_3DS_FRAMES;
 
-	pmdata[pmodel_id].w = new VERT * [num_frames];
+	pmdata[pmodel_id].w = new VERT *[num_frames];
 
 	for (i = 0; i < num_frames; i++)
 		pmdata[pmodel_id].w[i] = new VERT[total_num_verts];
@@ -459,26 +445,20 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 
 	strcpy_s(datfilename, filename);
 
-	for (i = 0; i < 1024; i++)
-	{
-		if (datfilename[i] == '.')
-		{
-			if (datfilename[i + 1] == '.')
-			{
+	for (i = 0; i < 1024; i++) {
+		if (datfilename[i] == '.') {
+			if (datfilename[i + 1] == '.') {
 				i++;
-			}
-			else
-			{
+			} else {
 				file_ex_start = i;
 				break;
 			}
 		}
 	}
 
-	if (file_ex_start == 0)
-	{
-		//MessageBox(hwnd, "datfilename error :", NULL, MB_OK);
-		//return FALSE;
+	if (file_ex_start == 0) {
+		// MessageBox(hwnd, "datfilename error :", NULL, MB_OK);
+		// return FALSE;
 	}
 
 	datfile_vert_cnt = 0;
@@ -486,13 +466,11 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 
 	int v, pos_keys, v_start, v_end;
 
-	for (i = 0; i < total_num_objects; i++)
-	{
+	for (i = 0; i < total_num_objects; i++) {
 		v_start = oblistitem[i].verts_start;
 		v_end = oblistitem[i].verts_end;
 
-		for (v = v_start; v <= v_end; v++)
-		{
+		for (v = v_start; v <= v_end; v++) {
 			fverts[v][0] -= oblistitem[i].pivot.x;
 			fverts[v][1] -= oblistitem[i].pivot.y;
 			fverts[v][2] -= oblistitem[i].pivot.z;
@@ -500,13 +478,11 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 	}
 
 	// copy verts into pmdata for all frames
-	for (frame_num = 0; frame_num < total_num_frames; frame_num++)
-	{
+	for (frame_num = 0; frame_num < total_num_frames; frame_num++) {
 
 		// fix this part swapped 0 1 2 to 0 2 1 see below
-		//should be  1 0 2
-		for (i = 0; i < total_num_verts; i++)
-		{
+		// should be  1 0 2
+		for (i = 0; i < total_num_verts; i++) {
 			pmdata[pmodel_id].w[frame_num][i].x = fverts[i][1];
 			pmdata[pmodel_id].w[frame_num][i].y = fverts[i][0];
 			pmdata[pmodel_id].w[frame_num][i].z = fverts[i][2];
@@ -519,24 +495,20 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 	if (bEnable3dsLogfile)
 		fprintf(logfile, "APPLYING POSITION TRACK DATA\n\n");
 
-	for (i = 0; i < total_num_objects; i++)
-	{
+	for (i = 0; i < total_num_objects; i++) {
 		v_start = oblistitem[i].verts_start;
 		v_end = oblistitem[i].verts_end;
 		pos_keys = oblistitem[i].poskeys;
 
-		for (j = 0; j < pos_keys; j++)
-		{
+		for (j = 0; j < pos_keys; j++) {
 			frame_num = oblistitem[i].pos_track[j].framenum;
 
-			if ((j < total_num_frames) && (frame_num < total_num_frames))
-			{
+			if ((j < total_num_frames) && (frame_num < total_num_frames)) {
 				pos_x = oblistitem[i].pos_track[j].pos_x - oblistitem[i].local_centre_x;
 				pos_y = oblistitem[i].pos_track[j].pos_y - oblistitem[i].local_centre_y;
 				pos_z = oblistitem[i].pos_track[j].pos_z - oblistitem[i].local_centre_z;
 
-				for (v = v_start; v <= v_end; v++)
-				{
+				for (v = v_start; v <= v_end; v++) {
 					pmdata[pmodel_id].w[frame_num][v].x += pos_x;
 					pmdata[pmodel_id].w[frame_num][v].y += pos_y;
 					pmdata[pmodel_id].w[frame_num][v].z += pos_z;
@@ -557,19 +529,16 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 	float axis_x, axis_y, axis_z, rot_angle;
 	float rot_angle_x, rot_angle_y, rot_angle_z;
 
-	for (i = 0; i < total_num_objects; i++)
-	{
+	for (i = 0; i < total_num_objects; i++) {
 		v_start = oblistitem[i].verts_start;
 		v_end = oblistitem[i].verts_end;
 		rot_keys = oblistitem[i].rotkeys;
 		rot_angle = 0;
 
-		for (j = 1; j < rot_keys; j++)
-		{
+		for (j = 1; j < rot_keys; j++) {
 			frame_num = oblistitem[i].rot_track[j].framenum;
 
-			if ((j < total_num_frames) && (frame_num < total_num_frames))
-			{
+			if ((j < total_num_frames) && (frame_num < total_num_frames)) {
 				axis_x = oblistitem[i].rot_track[j].axis_x;
 				axis_y = oblistitem[i].rot_track[j].axis_y;
 				axis_z = oblistitem[i].rot_track[j].axis_z;
@@ -580,16 +549,14 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 				rot_angle_y = rot_angle * axis_y;
 				rot_angle_z = rot_angle * axis_z;
 
-				if (bEnable3dsLogfile)
-				{
+				if (bEnable3dsLogfile) {
 					fprintf(logfile, "local xyz: %f %f %f\n",
-						oblistitem[i].local_centre_x,
-						oblistitem[i].local_centre_y,
-						oblistitem[i].local_centre_z);
+					        oblistitem[i].local_centre_x,
+					        oblistitem[i].local_centre_y,
+					        oblistitem[i].local_centre_z);
 				}
 
-				for (v = v_start; v <= v_end; v++)
-				{
+				for (v = v_start; v <= v_end; v++) {
 					x = pmdata[pmodel_id].w[frame_num][v].x - oblistitem[i].local_centre_x;
 					y = pmdata[pmodel_id].w[frame_num][v].y - oblistitem[i].local_centre_y;
 					z = pmdata[pmodel_id].w[frame_num][v].z - oblistitem[i].local_centre_z;
@@ -614,13 +581,12 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 					ty = y;
 					tz = z * (float)cos(rot_angle_y) + x * (float)sin(rot_angle_y);
 
-					if (bEnable3dsLogfile)
-					{
+					if (bEnable3dsLogfile) {
 						fprintf(logfile, "i: %d  frame: %d  v: %d  angle: %f  ", i, frame_num, v, rot_angle);
 						fprintf(logfile, "pxyz: %f %f %f  xyz: %f %f %f\n", x, y, z,
-							pmdata[pmodel_id].w[frame_num][v].x,
-							pmdata[pmodel_id].w[frame_num][v].y,
-							pmdata[pmodel_id].w[frame_num][v].z);
+						        pmdata[pmodel_id].w[frame_num][v].x,
+						        pmdata[pmodel_id].w[frame_num][v].y,
+						        pmdata[pmodel_id].w[frame_num][v].z);
 					}
 					pmdata[pmodel_id].w[frame_num][v].x = tx + oblistitem[i].local_centre_x;
 					pmdata[pmodel_id].w[frame_num][v].y = ty + oblistitem[i].local_centre_y;
@@ -636,10 +602,8 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 		fprintf(logfile, "\n\nAPPLYING SCALE TRACK DATA\n\n");
 
 	// Scale and rotate verts for all frames
-	for (frame_num = 0; frame_num < total_num_frames; frame_num++)
-	{
-		for (i = 0; i < total_num_verts; i++)
-		{
+	for (frame_num = 0; frame_num < total_num_frames; frame_num++) {
+		for (i = 0; i < total_num_verts; i++) {
 			x = scale * pmdata[pmodel_id].w[frame_num][i].x;
 			y = scale * pmdata[pmodel_id].w[frame_num][i].y;
 			z = scale * pmdata[pmodel_id].w[frame_num][i].z;
@@ -658,10 +622,8 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 
 	cnt = 0;
 
-	for (i = 0; i < total_num_faces; i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
+	for (i = 0; i < total_num_faces; i++) {
+		for (j = 0; j < 3; j++) {
 			pmdata[pmodel_id].f[cnt] = faces[i].v[j];
 
 			pmdata[pmodel_id].t[cnt].x = mcoords[cnt].x;
@@ -671,8 +633,7 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 		}
 	}
 
-	for (i = 0; i < total_num_objects; i++)
-	{
+	for (i = 0; i < total_num_objects; i++) {
 		pmdata[pmodel_id].poly_cmd[i] = D3DPT_TRIANGLELIST;
 		pmdata[pmodel_id].num_verts_per_object[i] = (int)num_verts_in_object[i];
 		pmdata[pmodel_id].num_faces_per_object[i] = (int)num_faces_in_object[i];
@@ -701,8 +662,7 @@ BOOL Import3DS(char* filename, int pmodel_id, float scale)
 
 // PROCESS TRIANGLE DATA ROUTINES
 
-BOOL ProcessVertexData(FILE* fp)
-{
+BOOL ProcessVertexData(FILE *fp) {
 	int i, j;
 	int temp_int;
 	float p, temp_float;
@@ -721,22 +681,19 @@ BOOL ProcessVertexData(FILE* fp)
 	if ((total_num_verts + num_vertices) >= MAX_NUM_3DS_VERTICES)
 		return FALSE;
 
-	for (i = 0; i < (int)num_vertices; i++)
-	{
-		for (j = 0; j < 3; j++)
-		{
+	for (i = 0; i < (int)num_vertices; i++) {
+		for (j = 0; j < 3; j++) {
 			fread(&p, sizeof(float), 1, fp);
 			temp_int = (int)(((p * (float)10000) + (float)0.5));
 			temp_float = (float)temp_int / (float)10000;
 			fverts[total_num_verts][j] = temp_float;
 		}
 
-		if (bEnable3dsLogfile)
-		{
+		if (bEnable3dsLogfile) {
 			fprintf(logfile, " %f %f %f\n",
-				fverts[total_num_verts][0],
-				fverts[total_num_verts][1],
-				fverts[total_num_verts][2]);
+			        fverts[total_num_verts][0],
+			        fverts[total_num_verts][1],
+			        fverts[total_num_verts][2]);
 		}
 
 		// set default mapping co-ordinates, in case none are defined in model
@@ -751,8 +708,7 @@ BOOL ProcessVertexData(FILE* fp)
 	return TRUE;
 }
 
-BOOL ProcessFaceData(FILE* fp)
-{
+BOOL ProcessFaceData(FILE *fp) {
 	int i, j, cnt = 0;
 	unsigned short num_faces, face_index, ftemp;
 
@@ -768,24 +724,18 @@ BOOL ProcessFaceData(FILE* fp)
 	if ((total_num_faces + num_faces) >= MAX_NUM_3DS_FACES)
 		return FALSE;
 
-	for (i = 0; i < (int)num_faces; i++)
-	{
-		for (j = 0; j < 4; j++)
-		{
+	for (i = 0; i < (int)num_faces; i++) {
+		for (j = 0; j < 4; j++) {
 			fread(&face_index, sizeof(face_index), 1, fp);
 
 			// note faces 1 to 3 are valid face indices, but the 4th one is NOT
-			if (j < 3)
-			{
+			if (j < 3) {
 				ftemp = (unsigned short)(face_index); // + last_num_verts);
 				faces[total_num_faces].v[j] = ftemp;
 				if (bEnable3dsLogfile)
 					fprintf(logfile, " %d", face_index);
-			}
-			else
-			{
-				if (bEnable3dsLogfile)
-				{
+			} else {
+				if (bEnable3dsLogfile) {
 					fprintf(logfile, "   flags: %d => ", face_index);
 
 					if ((face_index & 0x0001) == 0x0001)
@@ -813,15 +763,13 @@ BOOL ProcessFaceData(FILE* fp)
 	return TRUE;
 }
 
-void ProcessTriSmoothData(FILE* fp)
-{
+void ProcessTriSmoothData(FILE *fp) {
 	int i, num_faces;
 	BYTE a, b, c, d;
 
 	num_faces = num_faces_in_object[total_num_objects];
 
-	for (i = 0; i < num_faces; i++)
-	{
+	for (i = 0; i < num_faces; i++) {
 		fread(&a, sizeof(BYTE), 1, fp);
 		fread(&b, sizeof(BYTE), 1, fp);
 		fread(&c, sizeof(BYTE), 1, fp);
@@ -832,8 +780,7 @@ void ProcessTriSmoothData(FILE* fp)
 	}
 }
 
-void ProcessTriLocalData(FILE* fp)
-{
+void ProcessTriLocalData(FILE *fp) {
 	float x, y, z;
 	float local_centre_x, local_centre_y, local_centre_z;
 
@@ -862,10 +809,9 @@ void ProcessTriLocalData(FILE* fp)
 	fread(&local_centre_y, sizeof(float), 1, fp);
 	fread(&local_centre_z, sizeof(float), 1, fp);
 
-	if (bEnable3dsLogfile)
-	{
+	if (bEnable3dsLogfile) {
 		fprintf(logfile, " local_centre_x,y,z : %f %f %f\n",
-			local_centre_x, local_centre_y, local_centre_z);
+		        local_centre_x, local_centre_y, local_centre_z);
 	}
 
 	oblistitem[total_num_objects].local_centre_x = local_centre_x;
@@ -875,44 +821,37 @@ void ProcessTriLocalData(FILE* fp)
 
 // PROCESS TEXTURE, MATERIAL, AND MAPPING DATA ROUTINES
 
-void AddMapName(FILE* fp, int pmodel_id)
-{
+void AddMapName(FILE *fp, int pmodel_id) {
 	int i;
 	BOOL error = TRUE;
 	char map_name[256];
 
 	// read in map name from file
-	for (i = 0; i < 256; i++)
-	{
+	for (i = 0; i < 256; i++) {
 		fread(&map_name[i], sizeof(char), 1, fp);
 		if (map_name[i] == 0)
 			break;
 	}
 
 	// remove file extention from string
-	for (i = 0; i < 256; i++)
-	{
-		if (map_name[i] == '.')
-		{
+	for (i = 0; i < 256; i++) {
+		if (map_name[i] == '.') {
 			map_name[i] = 0;
 			break;
 		}
 	}
 
 	// lookup texture alias
-	for (i = 0; i < MAX_NUM_TEXTURES; i++)
-	{
-		if (_strcmpi(map_name, TexMap[i].tex_alias_name) == 0)
-		{
+	for (i = 0; i < MAX_NUM_TEXTURES; i++) {
+		if (_strcmpi(map_name, TexMap[i].tex_alias_name) == 0) {
 			pmdata[pmodel_id].texture_maps[num_maps] = i;
 			error = FALSE;
 			break;
 		}
 	}
 
-	if (error == TRUE)
-	{
-		//MessageBox(hwnd, "Error : AddMapName", map_name, MB_OK);
+	if (error == TRUE) {
+		// MessageBox(hwnd, "Error : AddMapName", map_name, MB_OK);
 		strcpy_s(mapnames[num_maps], "error");
 		return;
 	}
@@ -923,25 +862,21 @@ void AddMapName(FILE* fp, int pmodel_id)
 	num_maps++;
 }
 
-void AddMaterialName(FILE* fp)
-{
+void AddMaterialName(FILE *fp) {
 	int i;
 	BOOL error = TRUE;
 	char mat_name[256];
 
-	for (i = 0; i < 256; i++)
-	{
+	for (i = 0; i < 256; i++) {
 		fread(&mat_name[i], sizeof(char), 1, fp);
-		if (mat_name[i] == 0)
-		{
+		if (mat_name[i] == 0) {
 			error = FALSE;
 			break;
 		}
 	}
 
-	if (error == TRUE)
-	{
-		//MessageBox(hwnd, "Error : AddMaterialName", NULL, MB_OK);
+	if (error == TRUE) {
+		// MessageBox(hwnd, "Error : AddMaterialName", NULL, MB_OK);
 		strcpy_s(material_list[num_materials], "error");
 		return;
 	}
@@ -953,34 +888,29 @@ void AddMaterialName(FILE* fp)
 	num_materials++;
 }
 
-void ProcessMaterialData(FILE* fp, int pmodel_id)
-{
+void ProcessMaterialData(FILE *fp, int pmodel_id) {
 	int i;
 	short findex, current_texture;
 	unsigned short num_faces;
 	BOOL error = TRUE;
 	char mat_name[256];
 
-	for (i = 0; i < 256; i++)
-	{
+	for (i = 0; i < 256; i++) {
 		fread(&mat_name[i], sizeof(char), 1, fp);
 		if (mat_name[i] == 0)
 			break;
 	}
 
-	for (i = 0; i < MAX_NUM_3DS_TEXTURES; i++)
-	{
-		if (_strcmpi(mat_name, material_list[i]) == 0)
-		{
+	for (i = 0; i < MAX_NUM_3DS_TEXTURES; i++) {
+		if (_strcmpi(mat_name, material_list[i]) == 0) {
 			current_texture = pmdata[pmodel_id].texture_maps[i];
 			error = FALSE;
 			break;
 		}
 	}
 
-	if (error == TRUE)
-	{
-		//MessageBox(hwnd, "Error : ProcessMaterialData", NULL, MB_OK);
+	if (error == TRUE) {
+		// MessageBox(hwnd, "Error : ProcessMaterialData", NULL, MB_OK);
 		strcpy_s(material_list[num_materials], "error");
 		return;
 	}
@@ -990,8 +920,7 @@ void ProcessMaterialData(FILE* fp, int pmodel_id)
 	if (bEnable3dsLogfile)
 		fprintf(logfile, "TRIANGLE_MATERIAL %d\n", num_faces);
 
-	for (i = 0; i < num_faces; i++)
-	{
+	for (i = 0; i < num_faces; i++) {
 		fread(&findex, sizeof(short), 1, fp);
 		faces[last_num_faces + findex].tex = current_texture;
 		object_texture[total_num_objects] = current_texture;
@@ -999,8 +928,7 @@ void ProcessMaterialData(FILE* fp, int pmodel_id)
 	return;
 }
 
-void ProcessMappingData(FILE* fp)
-{
+void ProcessMappingData(FILE *fp) {
 	int i;
 	unsigned short num_mapping_coords;
 
@@ -1011,16 +939,14 @@ void ProcessMappingData(FILE* fp)
 	if (bEnable3dsLogfile)
 		fprintf(logfile, "%s %d\n", "TRIANGLE_MAPPINGCOORS ", num_mapping_coords);
 
-	for (i = 0; i < num_mapping_coords; i++)
-	{
+	for (i = 0; i < num_mapping_coords; i++) {
 		fread(&mcoords[total_num_mcoords].x, sizeof(float), 1, fp);
 		fread(&mcoords[total_num_mcoords].y, sizeof(float), 1, fp);
 
-		if (bEnable3dsLogfile)
-		{
+		if (bEnable3dsLogfile) {
 			fprintf(logfile, " %f %f\n",
-				mcoords[total_num_mcoords].x,
-				mcoords[total_num_mcoords].y);
+			        mcoords[total_num_mcoords].x,
+			        mcoords[total_num_mcoords].y);
 		}
 		total_num_mcoords++;
 	}
@@ -1029,8 +955,7 @@ void ProcessMappingData(FILE* fp)
 
 // KEYFRAME - PROCESS ANIMATION DATA ROUTINES
 
-void ProcessPivots(FILE* fp)
-{
+void ProcessPivots(FILE *fp) {
 	float x, y, z;
 
 	fread(&x, sizeof(float), 1, fp);
@@ -1045,8 +970,7 @@ void ProcessPivots(FILE* fp)
 		fprintf(logfile, "PIVOT: %f %f %f\n", x, y, z);
 }
 
-void ProcessRotationTrack(FILE* fp)
-{
+void ProcessRotationTrack(FILE *fp) {
 	int i;
 	short framenum;
 	long lunknown;
@@ -1068,8 +992,7 @@ void ProcessRotationTrack(FILE* fp)
 	if (bEnable3dsLogfile)
 		fprintf(logfile, "ROT_TRACK_TAG %d\n", oblistitem[kf_count].rotkeys);
 
-	for (i = 0; i < oblistitem[kf_count].rotkeys; i++)
-	{
+	for (i = 0; i < oblistitem[kf_count].rotkeys; i++) {
 		fread(&framenum, sizeof(short), 1, fp);
 		fread(&lunknown, sizeof(long), 1, fp);
 		fread(&rotation_rad, sizeof(float), 1, fp);
@@ -1077,14 +1000,12 @@ void ProcessRotationTrack(FILE* fp)
 		fread(&axis_y, sizeof(float), 1, fp);
 		fread(&axis_z, sizeof(float), 1, fp);
 
-		if (bEnable3dsLogfile)
-		{
+		if (bEnable3dsLogfile) {
 			fprintf(logfile, " framenum = %d  rot_angle/rads = %f  axis_x,y,z : %f %f %f\n",
-				framenum, rotation_rad, axis_x, axis_y, axis_z);
+			        framenum, rotation_rad, axis_x, axis_y, axis_z);
 		}
 
-		if (i < total_num_frames)
-		{
+		if (i < total_num_frames) {
 			oblistitem[kf_count].rot_track[i].framenum = framenum;
 			oblistitem[kf_count].rot_track[i].lunknown = lunknown;
 			oblistitem[kf_count].rot_track[i].rotation_rad = rotation_rad;
@@ -1095,8 +1016,7 @@ void ProcessRotationTrack(FILE* fp)
 	}
 }
 
-void ProcessPositionTrack(FILE* fp)
-{
+void ProcessPositionTrack(FILE *fp) {
 
 	int i;
 	short framenum;
@@ -1118,22 +1038,19 @@ void ProcessPositionTrack(FILE* fp)
 	if (bEnable3dsLogfile)
 		fprintf(logfile, "POS_TRACK_TAG %d\n", oblistitem[kf_count].poskeys);
 
-	for (i = 0; i < oblistitem[kf_count].poskeys; i++)
-	{
+	for (i = 0; i < oblistitem[kf_count].poskeys; i++) {
 		fread(&framenum, sizeof(short), 1, fp);
 		fread(&lunknown, sizeof(long), 1, fp);
 		fread(&pos_x, sizeof(float), 1, fp);
 		fread(&pos_y, sizeof(float), 1, fp);
 		fread(&pos_z, sizeof(float), 1, fp);
 
-		if (bEnable3dsLogfile)
-		{
+		if (bEnable3dsLogfile) {
 			fprintf(logfile, " framenum = %d   pos_x,y,z : %f %f %f\n",
-				framenum, pos_x, pos_y, pos_z);
+			        framenum, pos_x, pos_y, pos_z);
 		}
 
-		if (i < total_num_frames)
-		{
+		if (i < total_num_frames) {
 			oblistitem[kf_count].pos_track[i].framenum = framenum;
 			oblistitem[kf_count].pos_track[i].lunknown = lunknown;
 			oblistitem[kf_count].pos_track[i].pos_x = pos_x;
@@ -1143,8 +1060,7 @@ void ProcessPositionTrack(FILE* fp)
 	}
 }
 
-void ProcessScaleTrack(FILE* fp)
-{
+void ProcessScaleTrack(FILE *fp) {
 	int i;
 	short framenum;
 	long lunknown;
@@ -1165,8 +1081,7 @@ void ProcessScaleTrack(FILE* fp)
 	if (bEnable3dsLogfile)
 		fprintf(logfile, "SCL_TRACK_TAG %d\n", oblistitem[kf_count].sclkeys);
 
-	for (i = 0; i < oblistitem[kf_count].sclkeys; i++)
-	{
+	for (i = 0; i < oblistitem[kf_count].sclkeys; i++) {
 		fread(&framenum, sizeof(short), 1, fp);
 		fread(&lunknown, sizeof(long), 1, fp);
 
@@ -1174,16 +1089,14 @@ void ProcessScaleTrack(FILE* fp)
 		fread(&scale_y, sizeof(float), 1, fp);
 		fread(&scale_z, sizeof(float), 1, fp);
 
-		if (bEnable3dsLogfile)
-		{
+		if (bEnable3dsLogfile) {
 			fprintf(logfile, " framenum = %d   x,y,z : %f %f %f\n",
-				framenum, scale_x, scale_y, scale_z);
+			        framenum, scale_x, scale_y, scale_z);
 		}
 	}
 }
 
-void ProcessNodeId(FILE* fp)
-{
+void ProcessNodeId(FILE *fp) {
 	short node_id;
 
 	fread(&node_id, sizeof(short), 1, fp);
@@ -1191,16 +1104,14 @@ void ProcessNodeId(FILE* fp)
 		fprintf(logfile, "NODE_ID  %d\n", node_id);
 }
 
-void ProcessNodeHeader(FILE* fp)
-{
+void ProcessNodeHeader(FILE *fp) {
 	int i;
 	short flags1, flags2, heirarchy;
 	char node_name[256];
 
 	// read in node name from file
 
-	for (i = 0; i < 256; i++)
-	{
+	for (i = 0; i < 256; i++) {
 		fread(&node_name[i], sizeof(char), 1, fp);
 		if (node_name[i] == 0)
 			break;
@@ -1210,8 +1121,7 @@ void ProcessNodeHeader(FILE* fp)
 	fread(&flags2, sizeof(short), 1, fp);
 	fread(&heirarchy, sizeof(short), 1, fp);
 
-	if (bEnable3dsLogfile)
-	{
+	if (bEnable3dsLogfile) {
 		fprintf(logfile, "NODE_HDR %s\n", node_name);
 		fprintf(logfile, " flags1 %d\n", flags1);
 		fprintf(logfile, " flags2 %d\n", flags2);
@@ -1219,8 +1129,7 @@ void ProcessNodeHeader(FILE* fp)
 	}
 }
 
-void Process3DSVersion(FILE* fp)
-{
+void Process3DSVersion(FILE *fp) {
 	short version;
 
 	fread(&version, sizeof(short), 1, fp);
@@ -1229,8 +1138,7 @@ void Process3DSVersion(FILE* fp)
 	fread(&version, sizeof(short), 1, fp);
 }
 
-void ProcessMasterScale(FILE* fp)
-{
+void ProcessMasterScale(FILE *fp) {
 	float master_scale;
 
 	fread(&master_scale, sizeof(float), 1, fp);
@@ -1240,18 +1148,16 @@ void ProcessMasterScale(FILE* fp)
 
 // RELEASE AND DEBUG ROUTINES
 
-void ReleaseTempMemory()
-{
+void ReleaseTempMemory() {
 }
 
-void PrintLogFile(FILE* logfile, char* commmand)
-{
+void PrintLogFile(FILE *logfile, char *commmand) {
 
 	/*
 	if(bEnable3dsLogfile)
 	{
-		fprintf(logfile, commmand);
-		fprintf(logfile,"\n");
+	    fprintf(logfile, commmand);
+	    fprintf(logfile,"\n");
 	}
 	*/
 	command_found_flag = TRUE;
