@@ -1,7 +1,6 @@
 #include "FrameResource.h"
 
-
-FrameResource::FrameResource(PassConstants* pc, ObjectConstants* oc, MaterialData* md, Vertex* pWvs) {
+FrameResource::FrameResource(PassConstants *pc, ObjectConstants *oc, MaterialData *md, Vertex *pWvs) {
 	pPCs = pc;
 	pOCs = oc;
 	pMats = md;
@@ -9,5 +8,4 @@ FrameResource::FrameResource(PassConstants* pc, ObjectConstants* oc, MaterialDat
 }
 
 FrameResource::~FrameResource() {
-
 }

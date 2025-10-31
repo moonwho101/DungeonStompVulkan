@@ -22,9 +22,9 @@ const int gNumFrameResources = 3;
 
 struct RenderItem {
 	RenderItem() = default;
-	RenderItem(const RenderItem& rhs) = delete;
-	//World matrix of the shape that descripes the object's local space
-	//relative to the world space,
+	RenderItem(const RenderItem &rhs) = delete;
+	// World matrix of the shape that descripes the object's local space
+	// relative to the world space,
 	glm::mat4 World = glm::mat4(1.0f);
 
 	glm::mat4 TexTransform = glm::mat4(1.0f);
@@ -37,9 +37,8 @@ struct RenderItem {
 
 	uint32_t ObjCBIndex = -1;
 
-	Material* Mat{ nullptr };
-	MeshGeometry* Geo{ nullptr };
-
+	Material *Mat{ nullptr };
+	MeshGeometry *Geo{ nullptr };
 
 	uint32_t IndexCount{ 0 };
 	uint32_t StartIndexLocation{ 0 };
@@ -48,16 +47,14 @@ struct RenderItem {
 	uint32_t TextureNormalIndex{ 0 };
 };
 
-enum class RenderLayer : int
-{
+enum class RenderLayer : int {
 	Opaque = 0,
 	Debug,
 	Sky,
 	Count
 };
 
-enum class RenderDungeon : int
-{
+enum class RenderDungeon : int {
 	NormalMap = 0,
 	Flat,
 	Sky,
@@ -72,10 +69,9 @@ enum class ProgState : int {
 	Exit
 };
 
-class DungeonStompApp : public VulkApp
-{
+class DungeonStompApp : public VulkApp {
 	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
-	FrameResource* mCurrFrameResource = nullptr;
+	FrameResource *mCurrFrameResource = nullptr;
 	int mCurrFrameResourceIndex = 0;
 
 	std::unique_ptr<DescriptorSetLayoutCache> descriptorSetLayoutCache;
@@ -102,11 +98,11 @@ class DungeonStompApp : public VulkApp
 	std::unique_ptr<VulkanPipeline> debugPipeline;
 
 	std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
-	std::unordered_map < std::string, std::unique_ptr<Material>> mMaterials;
-	std::unordered_map<std::string, std::unique_ptr<Texture> > mTextures;
+	std::unordered_map<std::string, std::unique_ptr<Material>> mMaterials;
+	std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
 	std::unordered_map<std::string, VkPipeline> mPSOs;
 
-	RenderItem* mDungeonRitem{ nullptr };
+	RenderItem *mDungeonRitem{ nullptr };
 
 	bool mIsWireframe{ false };
 	bool mIsFlatShader{ false };
@@ -117,16 +113,16 @@ class DungeonStompApp : public VulkApp
 	// List of all the render items.
 	std::vector<std::unique_ptr<RenderItem>> mAllRitems;
 
-	std::vector<RenderItem*> mRitemLayer[(int)RenderLayer::Count];
+	std::vector<RenderItem *> mRitemLayer[(int)RenderLayer::Count];
 
 	std::unique_ptr<Dungeon> mDungeon;
 
 	Vulkan::Buffer DungeonIndexBuffer;
 	std::vector<Vulkan::Buffer> WaveVertexBuffers;
-	std::vector<void*> WaveVertexPtrs;
+	std::vector<void *> WaveVertexPtrs;
 
-	PassConstants mMainPassCB;  // index 0 of pass cbuffer.
-	PassConstants mShadowPassCB;// index 1 of pass cbuffer.
+	PassConstants mMainPassCB;   // index 0 of pass cbuffer.
+	PassConstants mShadowPassCB; // index 1 of pass cbuffer.
 
 	Light LightContainer[MaxLights];
 	Camera mCamera;
@@ -160,23 +156,23 @@ class DungeonStompApp : public VulkApp
 
 	POINT mLastMousePos;
 
-	virtual void OnResize()override;
-	virtual void Update(const GameTimer& gt)override;
-	virtual void Draw(const GameTimer& gt)override;
-	virtual void OnMouseDown(WPARAM btnState, int x, int y)override;
-	virtual void OnMouseUp(WPARAM btnState, int x, int y)override;
-	virtual void OnMouseMove(WPARAM btnState, int x, int y)override;
+	virtual void OnResize() override;
+	virtual void Update(const GameTimer &gt) override;
+	virtual void Draw(const GameTimer &gt) override;
+	virtual void OnMouseDown(WPARAM btnState, int x, int y) override;
+	virtual void OnMouseUp(WPARAM btnState, int x, int y) override;
+	virtual void OnMouseMove(WPARAM btnState, int x, int y) override;
 
-	void OnKeyboardInput(const GameTimer& gt);
+	void OnKeyboardInput(const GameTimer &gt);
 
-	void UpdateObjectCBs(const GameTimer& gt);
-	void UpdateShadowTransform(const GameTimer& gt);
-	void UpdateMainPassCB(const GameTimer& gt);
-	void UpdateShadowPassCB(const GameTimer& gt);
-	void UpdateMaterialsBuffer(const GameTimer& gt);
-	void UpdateDungeon(const GameTimer& gt);
+	void UpdateObjectCBs(const GameTimer &gt);
+	void UpdateShadowTransform(const GameTimer &gt);
+	void UpdateMainPassCB(const GameTimer &gt);
+	void UpdateShadowPassCB(const GameTimer &gt);
+	void UpdateMaterialsBuffer(const GameTimer &gt);
+	void UpdateDungeon(const GameTimer &gt);
 
-	static void asyncInitStatic(DungeonStompApp* pThis);
+	static void asyncInitStatic(DungeonStompApp *pThis);
 	void asyncInit();
 
 	void LoadTextures();
@@ -189,21 +185,20 @@ class DungeonStompApp : public VulkApp
 	void BuildRenderItems();
 	void BuildShapeGeometry();
 	void BuildSkullGeometry();
-	void DrawRenderItems(VkCommandBuffer, VkPipelineLayout layout, const std::vector<RenderItem*>& ritems, RenderDungeon item = RenderDungeon::NormalMap);
+	void DrawRenderItems(VkCommandBuffer, VkPipelineLayout layout, const std::vector<RenderItem *> &ritems, RenderDungeon item = RenderDungeon::NormalMap);
 
-	BOOL LoadRRTextures11(const char* filename);
+	BOOL LoadRRTextures11(const char *filename);
 	void SetTextureNormalMap();
 	void SetTextureNormalMapEmpty();
 	void ProcessLights11();
-	void  ToggleFullscreen(bool isFullscreen);
+	void ToggleFullscreen(bool isFullscreen);
 
-public:
-
+  public:
 	DungeonStompApp(HINSTANCE hInstance);
-	DungeonStompApp(const DungeonStompApp& rhs) = delete;
-	DungeonStompApp& operator=(const DungeonStompApp& rhs) = delete;
+	DungeonStompApp(const DungeonStompApp &rhs) = delete;
+	DungeonStompApp &operator=(const DungeonStompApp &rhs) = delete;
 	~DungeonStompApp();
 
-	virtual bool Initialize()override;
+	virtual bool Initialize() override;
 };
 #pragma once

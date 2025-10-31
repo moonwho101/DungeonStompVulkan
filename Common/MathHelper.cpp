@@ -3,13 +3,11 @@
 const float MathHelper::Infinity = FLT_MAX;
 const float MathHelper::Pi = 3.1415926535f;
 
-float MathHelper::AngleFromXY(float x, float y)
-{
+float MathHelper::AngleFromXY(float x, float y) {
 	float theta = 0.0f;
 
 	// Quadrant I or IV
-	if (x >= 0.0f)
-	{
+	if (x >= 0.0f) {
 		// If x = 0, then atanf(y/x) = +pi/2 if y > 0
 		//                atanf(y/x) = -pi/2 if y < 0
 		theta = atanf(y / x); // in [-pi/2, +pi/2]
@@ -25,18 +23,15 @@ float MathHelper::AngleFromXY(float x, float y)
 	return theta;
 }
 
-glm::vec3 MathHelper::RandUnitVec3()
-{
-
+glm::vec3 MathHelper::RandUnitVec3() {
 
 	// Keep trying until we get a point on/in the hemisphere.
-	while (true)
-	{
+	while (true) {
 		// Generate random point in the cube [-1,1]^3.
 		glm::vec4 v = glm::vec4(MathHelper::RandF(-1.0f, 1.0f), MathHelper::RandF(-1.0f, 1.0f), MathHelper::RandF(-1.0f, 1.0f), 0.0f);
 
-		// Ignore points outside the unit sphere in order to get an even distribution 
-		// over the unit sphere.  Otherwise points will clump more on the sphere near 
+		// Ignore points outside the unit sphere in order to get an even distribution
+		// over the unit sphere.  Otherwise points will clump more on the sphere near
 		// the corners of the cube.
 		float dot = glm::dot(v, v);
 		if (dot > 1.0f)
@@ -46,17 +41,15 @@ glm::vec3 MathHelper::RandUnitVec3()
 	}
 }
 
-glm::vec3 MathHelper::RandHemisphereUnitVec3(glm::vec3 n)
-{
+glm::vec3 MathHelper::RandHemisphereUnitVec3(glm::vec3 n) {
 
 	// Keep trying until we get a point on/in the hemisphere.
-	while (true)
-	{
+	while (true) {
 		// Generate random point in the cube [-1,1]^3.
 		glm::vec3 v = glm::vec3(MathHelper::RandF(-1.0f, 1.0f), MathHelper::RandF(-1.0f, 1.0f), MathHelper::RandF(-1.0f, 1.0f));
 
-		// Ignore points outside the unit sphere in order to get an even distribution 
-		// over the unit sphere.  Otherwise points will clump more on the sphere near 
+		// Ignore points outside the unit sphere in order to get an even distribution
+		// over the unit sphere.  Otherwise points will clump more on the sphere near
 		// the corners of the cube.
 		float dot = glm::dot(v, v);
 		if (dot > 1.0f)
@@ -70,7 +63,6 @@ glm::vec3 MathHelper::RandHemisphereUnitVec3(glm::vec3 n)
 
 		return glm::normalize(v);
 	}
-
 }
 
 glm::mat4 MathHelper::reflect(glm::vec4 plane) {
@@ -85,22 +77,22 @@ glm::mat4 MathHelper::reflect(glm::vec4 plane) {
 	return m;
 }
 
-glm::vec3 MathHelper::vectorMin(glm::vec3& a, glm::vec3& b) {
+glm::vec3 MathHelper::vectorMin(glm::vec3 &a, glm::vec3 &b) {
 	glm::vec3 res = {
 
-		{std::min(a.x,b.x)},
-		{std::min(a.y,b.y)},
-		{std::min(a.z,b.z)}
+		{ std::min(a.x, b.x) },
+		{ std::min(a.y, b.y) },
+		{ std::min(a.z, b.z) }
 	};
 	return res;
 }
 
-glm::vec3 MathHelper::vectorMax(glm::vec3& a, glm::vec3& b) {
+glm::vec3 MathHelper::vectorMax(glm::vec3 &a, glm::vec3 &b) {
 	glm::vec3 res = {
 
-		{std::max(a.x,b.x)},
-		{std::max(a.y,b.y)},
-		{std::max(a.z,b.z)}
+		{ std::max(a.x, b.x) },
+		{ std::max(a.y, b.y) },
+		{ std::max(a.z, b.z) }
 	};
 	return res;
 }

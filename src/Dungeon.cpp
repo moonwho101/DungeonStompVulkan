@@ -25,7 +25,7 @@ Dungeon::Dungeon(int m, int n, float dx, float dt, float speed, float damping) {
 	mNormals.resize(m * n);
 	mTangentX.resize(m * n);
 
-	//Generate grid vertices in system memory
+	// Generate grid vertices in system memory
 	float halfWidth = (n - 1) * dx * 0.5f;
 	float halfDepth = (m - 1) * dx * 0.5f;
 
@@ -40,101 +40,95 @@ Dungeon::Dungeon(int m, int n, float dx, float dt, float speed, float damping) {
 			mTangentX[i * n + j] = glm::vec3(1.0f, 0.0f, 0.0f);
 		}
 	}
-
 }
 
 Dungeon::~Dungeon() {
-
 }
 
-
-int Dungeon::RowCount()const {
+int Dungeon::RowCount() const {
 	return mNumRows;
 }
 
-int Dungeon::ColumnCount()const {
+int Dungeon::ColumnCount() const {
 	return mNumCols;
 }
 
-int Dungeon::VertexCount()const {
+int Dungeon::VertexCount() const {
 	return mVertexCount;
 }
 
-int Dungeon::TriangleCount()const {
+int Dungeon::TriangleCount() const {
 	return mTriangleCount;
 }
 
-float Dungeon::Width()const {
+float Dungeon::Width() const {
 	return mNumCols * mSpatialStep;
 }
 
-float Dungeon::Depth()const {
+float Dungeon::Depth() const {
 	return mNumRows * mSpatialStep;
 }
 
 void Dungeon::Update(float dt) {
 	static float t = 0;
 
-	//Accumulate time
+	// Accumulate time
 	t += dt;
 
 	if (t >= mTimeStep) {
 
-		//Only update interior points; we use zero boundary conditions.
+		// Only update interior points; we use zero boundary conditions.
 		concurrency::parallel_for(1, mNumRows - 1, [this](int i) {
 			for (int j = 1; j < mNumCols - 1; ++j) {
-				//After this update we will be discarding the old previous
-				//buffer, so overwrite that buffer with the new update.
-				//Note how we can do this inplace (read/write to same element)
-				//because we won't need prev_ij again and the assignment happens last.
+				// After this update we will be discarding the old previous
+				// buffer, so overwrite that buffer with the new update.
+				// Note how we can do this inplace (read/write to same element)
+				// because we won't need prev_ij again and the assignment happens last.
 
-				//Note j indexes x and i indexes z: h(x_j, z_i, t_k)
-				//Moreover, our +z axis goes "down"; this is just to
-				//keep consistent with our row indices going down.
+				// Note j indexes x and i indexes z: h(x_j, z_i, t_k)
+				// Moreover, our +z axis goes "down"; this is just to
+				// keep consistent with our row indices going down.
 				mPrevSolution[i * mNumCols + j].y =
-					mK1 * mPrevSolution[i * mNumCols + j].y +
-					mK2 * mCurrSolution[i * mNumCols + j].y +
-					mK3 * (mCurrSolution[(i + 1) * mNumCols + j].y +
-						mCurrSolution[(i - 1) * mNumCols + j].y +
-						mCurrSolution[i * mNumCols + j + 1].y +
-						mCurrSolution[i * mNumCols + j - 1].y);
+				    mK1 * mPrevSolution[i * mNumCols + j].y +
+				    mK2 * mCurrSolution[i * mNumCols + j].y +
+				    mK3 * (mCurrSolution[(i + 1) * mNumCols + j].y +
+				           mCurrSolution[(i - 1) * mNumCols + j].y +
+				           mCurrSolution[i * mNumCols + j + 1].y +
+				           mCurrSolution[i * mNumCols + j - 1].y);
 			}
-			});
+		});
 
-		//We just overwrote the prvious buffer with the new data, so
-		//this data needs to become the current solution and the old
-		//current solution becomes the new previous solution.
+		// We just overwrote the prvious buffer with the new data, so
+		// this data needs to become the current solution and the old
+		// current solution becomes the new previous solution.
 		std::swap(mPrevSolution, mCurrSolution);
 
-		t = 0.0f;//reset time
+		t = 0.0f; // reset time
 
 		//
-			// Compute normals using finite difference scheme.
-			//
+		// Compute normals using finite difference scheme.
+		//
 		concurrency::parallel_for(1, mNumRows - 1, [this](int i)
-			//for(int i = 1; i < mNumRows - 1; ++i)
-			{
-				for (int j = 1; j < mNumCols - 1; ++j)
-				{
-					float l = mCurrSolution[i * mNumCols + j - 1].y;
-					float r = mCurrSolution[i * mNumCols + j + 1].y;
-					float t = mCurrSolution[(i - 1) * mNumCols + j].y;
-					float b = mCurrSolution[(i + 1) * mNumCols + j].y;
-					mNormals[i * mNumCols + j].x = -r + l;
-					mNormals[i * mNumCols + j].y = 2.0f * mSpatialStep;
-					mNormals[i * mNumCols + j].z = b - t;
+		                          // for(int i = 1; i < mNumRows - 1; ++i)
+		                          {
+			                          for (int j = 1; j < mNumCols - 1; ++j) {
+				                          float l = mCurrSolution[i * mNumCols + j - 1].y;
+				                          float r = mCurrSolution[i * mNumCols + j + 1].y;
+				                          float t = mCurrSolution[(i - 1) * mNumCols + j].y;
+				                          float b = mCurrSolution[(i + 1) * mNumCols + j].y;
+				                          mNormals[i * mNumCols + j].x = -r + l;
+				                          mNormals[i * mNumCols + j].y = 2.0f * mSpatialStep;
+				                          mNormals[i * mNumCols + j].z = b - t;
 
-					glm::vec3 n = glm::normalize(mNormals[i * mNumCols + j]);
-					mNormals[i * mNumCols + j] = n;
+				                          glm::vec3 n = glm::normalize(mNormals[i * mNumCols + j]);
+				                          mNormals[i * mNumCols + j] = n;
 
-					mTangentX[i * mNumCols + j] = glm::vec3(2.0f * mSpatialStep, r - l, 0.0f);
-					glm::vec3 T = glm::normalize(mTangentX[i * mNumCols + j]);
-					mTangentX[i * mNumCols + j] = T;
-				}
-			});
+				                          mTangentX[i * mNumCols + j] = glm::vec3(2.0f * mSpatialStep, r - l, 0.0f);
+				                          glm::vec3 T = glm::normalize(mTangentX[i * mNumCols + j]);
+				                          mTangentX[i * mNumCols + j] = T;
+			                          }
+		                          });
 	}
-
-
 }
 
 void Dungeon::Disturb(int i, int j, float magnitude) {

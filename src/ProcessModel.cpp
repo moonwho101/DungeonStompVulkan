@@ -13,8 +13,8 @@ int itemlistcount = 0;
 void ConvertTraingleStrip(int fan_cnt);
 void ConvertTraingleFan(int fan_cnt);
 
-extern OBJECTLIST* oblist;
-extern OBJECTDATA* obdata;
+extern OBJECTLIST *oblist;
+extern OBJECTDATA *obdata;
 extern D3DVERTEX2 boundingbox[2000];
 int cnt_f = 0;
 float px[100], py[100], pz[100], pw[100];
@@ -26,29 +26,32 @@ int sharedv[1000];
 int track[60000];
 
 void SmoothNormals(int start_cnt);
-extern SWITCHMOD* switchmodify;
+extern SWITCHMOD *switchmodify;
 int countswitches = 0;
 
-int* verts_per_poly;
+int *verts_per_poly;
 int number_of_polys_per_frame;
-int* faces_per_poly;
-int* src_f;
+int *faces_per_poly;
+int *src_f;
 D3DVERTEX2 temp_v[120000]; // debug
 int tempvcounter = 0;
-D3DVERTEX2* src_v;
+D3DVERTEX2 *src_v;
 int drawthistri = 1;
 extern float culldist;
 
-D3DPRIMITIVETYPE* dp_commands;
+D3DPRIMITIVETYPE *dp_commands;
 
-BOOL* dp_command_index_mode;
+BOOL *dp_command_index_mode;
 
-#define USE_INDEXED_DP			0
-#define USE_NON_INDEXED_DP		1
+#define USE_INDEXED_DP 0
+#define USE_NON_INDEXED_DP 1
 
 float k = (float)0.017453292;
 
-struct CUSTOMVERTEX { FLOAT X, Y, Z; DWORD COLOR; };
+struct CUSTOMVERTEX {
+	FLOAT X, Y, Z;
+	DWORD COLOR;
+};
 
 float sin_table[361];
 float cos_table[361];
@@ -63,13 +66,13 @@ float rotatey = 0.0f;
 
 FLOAT fTimeKeysave = 0;
 
-PLAYER* item_list;
-PLAYER* player_list2;
-PLAYER* player_list;
+PLAYER *item_list;
+PLAYER *player_list2;
+PLAYER *player_list;
 
-int* texture_list_buffer;
+int *texture_list_buffer;
 int g_ob_vert_count = 0;
-extern TEXTUREMAPPING  TexMap[MAX_NUM_TEXTURES];
+extern TEXTUREMAPPING TexMap[MAX_NUM_TEXTURES];
 void DrawModel();
 int num_light_sources = 0;
 
@@ -77,64 +80,63 @@ extern float gametimerAnimation;
 
 void ConvertQuad(int fan_cnt);
 
-void CalculateTangentBinormal(D3DVERTEX2& vertex1, D3DVERTEX2& vertex2, D3DVERTEX2& vertex3)
-{
-    float vector1[3], vector2[3];
-    float tuVector[2], tvVector[2];
-    float den;
+void CalculateTangentBinormal(D3DVERTEX2 &vertex1, D3DVERTEX2 &vertex2, D3DVERTEX2 &vertex3) {
+	float vector1[3], vector2[3];
+	float tuVector[2], tvVector[2];
+	float den;
 
-    // Calculate the two vectors for this face.
-    vector1[0] = vertex2.x - vertex1.x;
-    vector1[1] = vertex2.y - vertex1.y;
-    vector1[2] = vertex2.z - vertex1.z;
+	// Calculate the two vectors for this face.
+	vector1[0] = vertex2.x - vertex1.x;
+	vector1[1] = vertex2.y - vertex1.y;
+	vector1[2] = vertex2.z - vertex1.z;
 
-    vector2[0] = vertex3.x - vertex1.x;
-    vector2[1] = vertex3.y - vertex1.y;
-    vector2[2] = vertex3.z - vertex1.z;
+	vector2[0] = vertex3.x - vertex1.x;
+	vector2[1] = vertex3.y - vertex1.y;
+	vector2[2] = vertex3.z - vertex1.z;
 
-    // Calculate the tu and tv texture space vectors.
-    tuVector[0] = vertex2.tu - vertex1.tu;
-    tvVector[0] = vertex2.tv - vertex1.tv;
+	// Calculate the tu and tv texture space vectors.
+	tuVector[0] = vertex2.tu - vertex1.tu;
+	tvVector[0] = vertex2.tv - vertex1.tv;
 
-    tuVector[1] = vertex3.tu - vertex1.tu;
-    tvVector[1] = vertex3.tv - vertex1.tv;
+	tuVector[1] = vertex3.tu - vertex1.tu;
+	tvVector[1] = vertex3.tv - vertex1.tv;
 
-    // Calculate the denominator of the tangent/binormal equation.
-    float result = (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
+	// Calculate the denominator of the tangent/binormal equation.
+	float result = (tuVector[0] * tvVector[1] - tuVector[1] * tvVector[0]);
 
-    if (result == 0.0f) {
-        vertex1.nmx = vertex1.nmy = vertex1.nmz = 0.0f;
-        vertex2.nmx = vertex2.nmy = vertex2.nmz = 0.0f;
-        vertex3.nmx = vertex3.nmy = vertex3.nmz = 0.0f;
-        return;
-    }
+	if (result == 0.0f) {
+		vertex1.nmx = vertex1.nmy = vertex1.nmz = 0.0f;
+		vertex2.nmx = vertex2.nmy = vertex2.nmz = 0.0f;
+		vertex3.nmx = vertex3.nmy = vertex3.nmz = 0.0f;
+		return;
+	}
 
-    den = 1.0f / result;
+	den = 1.0f / result;
 
-    // Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
-    float tangentX = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
-    float tangentY = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
-    float tangentZ = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
+	// Calculate the cross products and multiply by the coefficient to get the tangent and binormal.
+	float tangentX = (tvVector[1] * vector1[0] - tvVector[0] * vector2[0]) * den;
+	float tangentY = (tvVector[1] * vector1[1] - tvVector[0] * vector2[1]) * den;
+	float tangentZ = (tvVector[1] * vector1[2] - tvVector[0] * vector2[2]) * den;
 
-    float binormalX = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
-    float binormalY = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
-    float binormalZ = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
+	float binormalX = (tuVector[0] * vector2[0] - tuVector[1] * vector1[0]) * den;
+	float binormalY = (tuVector[0] * vector2[1] - tuVector[1] * vector1[1]) * den;
+	float binormalZ = (tuVector[0] * vector2[2] - tuVector[1] * vector1[2]) * den;
 
-    // Normalize the tangent
-    float length = 1.0f / sqrtf(tangentX * tangentX + tangentY * tangentY + tangentZ * tangentZ);
-    tangentX *= length;
-    tangentY *= length;
-    tangentZ *= length;
+	// Normalize the tangent
+	float length = 1.0f / sqrtf(tangentX * tangentX + tangentY * tangentY + tangentZ * tangentZ);
+	tangentX *= length;
+	tangentY *= length;
+	tangentZ *= length;
 
-    // Normalize the binormal
-    //length = 1.0f / sqrtf(binormalX * binormalX + binormalY * binormalY + binormalZ * binormalZ);
-    //binormalX *= length;
-    //binormalY *= length;
-    //binormalZ *= length;
+	// Normalize the binormal
+	// length = 1.0f / sqrtf(binormalX * binormalX + binormalY * binormalY + binormalZ * binormalZ);
+	// binormalX *= length;
+	// binormalY *= length;
+	// binormalZ *= length;
 
-    vertex1.nmx = vertex2.nmx = vertex3.nmx = tangentX;
-    vertex1.nmy = vertex2.nmy = vertex3.nmy = tangentY;
-    vertex1.nmz = vertex2.nmz = vertex3.nmz = tangentZ;
+	vertex1.nmx = vertex2.nmx = vertex3.nmx = tangentX;
+	vertex1.nmy = vertex2.nmy = vertex3.nmy = tangentY;
+	vertex1.nmz = vertex2.nmz = vertex3.nmz = tangentZ;
 }
 
 bool ObjectHasShadow(int object_id) {
@@ -149,8 +151,7 @@ bool ObjectHasShadow(int object_id) {
 	return false;
 }
 
-void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
-{
+void ObjectToD3DVertList(int ob_type, float angle, int oblist_index) {
 	int ob_vert_count = 0;
 	int poly;
 	float qdist = 0;
@@ -168,9 +169,9 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 	float zaveragedist;
 	int zaveragedistcount = 0;
 
-	float  wx = oblist[oblist_index].x;
-	float  wy = oblist[oblist_index].y;
-	float  wz = oblist[oblist_index].z;
+	float wx = oblist[oblist_index].x;
+	float wy = oblist[oblist_index].y;
+	float wz = oblist[oblist_index].z;
 
 	float cosine = (float)cos(angle * k);
 	float sine = (float)sin(angle * k);
@@ -180,8 +181,7 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 	int start_cnt = cnt;
 
-	for (w = 0; w < poly; w++)
-	{
+	for (w = 0; w < poly; w++) {
 		num_vert = obdata[ob_type].num_vert[w];
 
 		mx[0] = 0.0f;
@@ -204,26 +204,22 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 		fan_cnt = cnt;
 
-		if (strstr(oblist[oblist_index].name, "!") != NULL)
-		{
+		if (strstr(oblist[oblist_index].name, "!") != NULL) {
 			ObjectsToDraw[number_of_polys_per_frame].texture = oblist[oblist_index].monstertexture;
 			ctext = oblist[oblist_index].monstertexture;
 
 			ObjectsToDraw[number_of_polys_per_frame].objectId = ob_type;
-		}
-		else
-		{
+		} else {
 			ObjectsToDraw[number_of_polys_per_frame].texture = obdata[ob_type].tex[w];
 			ctext = obdata[ob_type].tex[w];
 
-			ObjectsToDraw[number_of_polys_per_frame].objectId = ob_type;// -99;
+			ObjectsToDraw[number_of_polys_per_frame].objectId = ob_type; // -99;
 		}
 
-		//The object casts a shadow
+		// The object casts a shadow
 		if (oblist[oblist_index].castshadow == 0) {
 			ObjectsToDraw[number_of_polys_per_frame].castshaddow = 0;
-		}
-		else {
+		} else {
 			ObjectsToDraw[number_of_polys_per_frame].castshaddow = 1;
 		}
 
@@ -233,8 +229,7 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 		cresult = CycleBitMap(ctext);
 
-		if (cresult != -1)
-		{
+		if (cresult != -1) {
 			oblist[oblist_index].monstertexture = cresult;
 
 			XMFLOAT3 normroadold;
@@ -267,19 +262,15 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 			fDot = convangle;
 
-			if (work2.z < work1.z)
-			{
-			}
-			else
-			{
+			if (work2.z < work1.z) {
+			} else {
 				fDot = 180.0f + (180.0f - fDot);
 			}
 			cosine = (float)cos(fDot * k);
 			sine = (float)sin(fDot * k);
 		}
 
-		for (vert_cnt = 0; vert_cnt < num_vert; vert_cnt++)
-		{
+		for (vert_cnt = 0; vert_cnt < num_vert; vert_cnt++) {
 			x = obdata[ob_type].v[ob_vert_count].x;
 			y = obdata[ob_type].v[ob_vert_count].y;
 			z = obdata[ob_type].v[ob_vert_count].z;
@@ -302,7 +293,7 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 		float centroidy = (my[0] + my[1] + my[2]) * QVALUE;
 		float centroidz = (mz[0] + mz[1] + mz[2]) * QVALUE;
 
-		//zaveragedist = zaveragedist / zaveragedistcount;
+		// zaveragedist = zaveragedist / zaveragedistcount;
 		verts_per_poly[number_of_polys_per_frame] = num_vert;
 
 		ObjectsToDraw[number_of_polys_per_frame].vertsperpoly = num_vert;
@@ -310,10 +301,8 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 		poly_command = obdata[ob_type].poly_cmd[w];
 
-		if (obdata[ob_type].use_texmap[w] == FALSE)
-		{
-			for (i = 0; i < verts_per_poly[number_of_polys_per_frame]; i++)
-			{
+		if (obdata[ob_type].use_texmap[w] == FALSE) {
+			for (i = 0; i < verts_per_poly[number_of_polys_per_frame]; i++) {
 				src_v[cnt].x = D3DVAL(mx[i]);
 				src_v[cnt].y = D3DVAL(my[i]);
 				src_v[cnt].z = D3DVAL(mz[i]);
@@ -325,9 +314,8 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 				else
 					src_collide[cnt] = 0;
 
-				if (i == 0)
-				{
-					XMFLOAT3  vw1, vw2, vw3;
+				if (i == 0) {
+					XMFLOAT3 vw1, vw2, vw3;
 
 					vw1.x = D3DVAL(mx[i]);
 					vw1.y = D3DVAL(my[i]);
@@ -342,10 +330,10 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 					vw3.z = D3DVAL(mz[i + 2]);
 
 					// calculate the NORMAL
-					XMVECTOR   vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-					XMVECTOR   vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+					XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+					XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
 
-					XMVECTOR  vCross, final;
+					XMVECTOR vCross, final;
 					vCross = XMVector3Cross(vDiff, vDiff2);
 					final = XMVector3Normalize(vCross);
 					XMFLOAT3 final2;
@@ -362,16 +350,12 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 				cnt++;
 
-				if (i == 2)
-				{
+				if (i == 2) {
 					CalculateTangentBinormal(src_v[cnt - 3], src_v[cnt - 2], src_v[cnt - 1]);
 				}
 			}
-		}
-		else
-		{
-			for (i = 0; i < verts_per_poly[number_of_polys_per_frame]; i++)
-			{
+		} else {
+			for (i = 0; i < verts_per_poly[number_of_polys_per_frame]; i++) {
 				src_v[cnt].x = D3DVAL(mx[i]);
 				src_v[cnt].y = D3DVAL(my[i]);
 				src_v[cnt].z = D3DVAL(mz[i]);
@@ -384,8 +368,7 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 				else
 					src_collide[cnt] = 0;
 
-				if (i == 0)
-				{
+				if (i == 0) {
 					XMFLOAT3 vw1, vw2, vw3;
 
 					vw1.x = D3DVAL(mx[i]);
@@ -402,8 +385,8 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 					// calculate the NORMAL
 					XMVECTOR vCross, final;
-					XMVECTOR   vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-					XMVECTOR   vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+					XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+					XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
 
 					vCross = XMVector3Cross(vDiff, vDiff2);
 					final = XMVector3Normalize(vCross);
@@ -421,17 +404,16 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 
 				cnt++;
 
-				if (i == 2)
-				{
+				if (i == 2) {
 					CalculateTangentBinormal(src_v[cnt - 3], src_v[cnt - 2], src_v[cnt - 1]);
 				}
 			}
 		}
 
 		qdist = FastDistance(
-			m_vEyePt.x - centroidx,
-			m_vEyePt.y - centroidy,
-			m_vEyePt.z - centroidz);
+		    m_vEyePt.x - centroidx,
+		    m_vEyePt.y - centroidy,
+		    m_vEyePt.z - centroidz);
 
 		ObjectsToDraw[number_of_polys_per_frame].vert_index = number_of_polys_per_frame;
 		ObjectsToDraw[number_of_polys_per_frame].dist = qdist;
@@ -460,7 +442,6 @@ void ObjectToD3DVertList(int ob_type, float angle, int oblist_index)
 	}
 }
 
-
 void DrawBoundingBox() {
 
 	ObjectsToDraw[number_of_polys_per_frame].srcstart = cnt;
@@ -473,7 +454,7 @@ void DrawBoundingBox() {
 	ObjectsToDraw[number_of_polys_per_frame].vertsperpoly = 3;
 	ObjectsToDraw[number_of_polys_per_frame].facesperpoly = 1;
 
-	texture_list_buffer[number_of_polys_per_frame] = 238;  //263
+	texture_list_buffer[number_of_polys_per_frame] = 238; // 263
 
 	int test = (countboundingbox / 4) * 6;
 	verts_per_poly[number_of_polys_per_frame] = test;
@@ -485,8 +466,7 @@ void DrawBoundingBox() {
 	int fan_cnt = cnt;
 	int uvcount = 0;
 
-	for (int i = 0; i < countboundingbox; i++)
-	{
+	for (int i = 0; i < countboundingbox; i++) {
 		src_v[cnt].x = boundingbox[i].x;
 		src_v[cnt].y = boundingbox[i].y;
 		src_v[cnt].z = boundingbox[i].z;
@@ -495,24 +475,20 @@ void DrawBoundingBox() {
 			src_v[cnt].tu = 0.0f;
 			src_v[cnt].tv = 0.0f;
 			uvcount++;
-		}
-		else if (uvcount == 1) {
+		} else if (uvcount == 1) {
 			src_v[cnt].tu = 0.0f;
 			src_v[cnt].tv = 1.0f;
 			uvcount++;
-		}
-		else if (uvcount == 2) {
+		} else if (uvcount == 2) {
 			src_v[cnt].tu = 1.0f;
 			src_v[cnt].tv = 0.0f;
 			uvcount++;
-		}
-		else if (uvcount == 3) {
+		} else if (uvcount == 3) {
 			src_v[cnt].tu = 1.0f;
 			src_v[cnt].tv = 1.0f;
 
 			uvcount = 0;
-		}
-		else {
+		} else {
 			uvcount++;
 		}
 		cnt++;
@@ -520,8 +496,7 @@ void DrawBoundingBox() {
 	ConvertQuad(fan_cnt);
 }
 
-void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture_alias, int tex_flag, float xt, float yt, float zt, int nextFrame)
-{
+void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture_alias, int tex_flag, float xt, float yt, float zt, int nextFrame) {
 	float qdist = 0;
 
 	int i, j;
@@ -555,18 +530,17 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 	float y_off = 0;
 	float z_off = 0;
 
-	float  wx = xt;
-	float  wy = yt;
-	float  wz = zt;
+	float wx = xt;
+	float wy = yt;
+	float wz = zt;
 
-	if (pmdata[pmodel_id].use_indexed_primitive == TRUE)
-	{
-		//3ds models
+	if (pmdata[pmodel_id].use_indexed_primitive == TRUE) {
+		// 3ds models
 		PlayerToD3DIndexedVertList(pmodel_id, 0, angle, texture_alias, tex_flag, wx, wy, wz);
 		return;
 	}
 
-	//md2 models
+	// md2 models
 	float cosine = (float)cos(angle * k);
 	float sine = (float)sin(angle * k);
 
@@ -582,8 +556,7 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 	int startFrame = pmdata[pmodel_id].sequence_start_frame[0];
 	int endFrame = pmdata[pmodel_id].sequence_stop_frame[0];
 
-	for (i = 0; i < num_poly; i++)
-	{
+	for (i = 0; i < num_poly; i++) {
 		p_command = pmdata[pmodel_id].poly_cmd[i];
 		num_verts_per_poly = pmdata[pmodel_id].num_vert[i];
 
@@ -599,8 +572,7 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 
 		fan_cnt = cnt;
 
-		for (j = 0; j < num_verts_per_poly; j++)
-		{
+		for (j = 0; j < num_verts_per_poly; j++) {
 			v_index = pmdata[pmodel_id].f[i_count];
 
 			tp = &pmdata[pmodel_id].w[curr_frame][v_index];
@@ -614,50 +586,39 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 					x = tp->x + gametimerAnimation * (tpNextFrame->x - tp->x);
 					z = tp->y + gametimerAnimation * (tpNextFrame->y - tp->y);
 					y = tp->z + gametimerAnimation * (tpNextFrame->z - tp->z);
-				}
-				else {
+				} else {
 					x = tp->x + x_off;
 					z = tp->y + y_off;
 					y = (tp->z + z_off);
-
 				}
 
-				if (weapondrop == 1)
-				{
+				if (weapondrop == 1) {
 					y = y - 40.0f;
 				}
-			}
-			else {
-				if (weapondrop == 1)
-				{
+			} else {
+				if (weapondrop == 1) {
 					x = tp->x + x_off;
 					z = tp->y + y_off;
 					y = (tp->z + z_off) - 40.0f;
-				}
-				else
-				{
+				} else {
 					x = tp->x + x_off;
 					z = tp->y + y_off;
 					y = (tp->z + z_off);
 				}
 			}
 
-			if (weapondrop == 0)
-			{
+			if (weapondrop == 0) {
 				rx = wx + (x * cosine - z * sine);
 				ry = wy + y;
 				rz = wz + (x * sine + z * cosine);
-			}
-			else
-			{
+			} else {
 				rx = wx + x * sinf(fDot2 * k) * sinf(angle * k);
 				ry = wy + y * cosf(fDot2 * k);
 				rz = wz + (z)*sinf(fDot2 * k) * cosf(angle * k);
 			}
 
-			if (weapondrop == 1)
-			{
-				//pitch
+			if (weapondrop == 1) {
+				// pitch
 				float newx, newy, newz;
 
 				newx = x;
@@ -682,9 +643,7 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 				rx = newx;
 				ry = (newy * cosf(0.0f * k) - newz * sinf(0.0f * k));
 				rz = (newy * sinf(0.0f * k) + newz * cosf(0.0f * k));
-			}
-			else
-			{
+			} else {
 				rx = (x * cosine - z * sine);
 				ry = y;
 				rz = (x * sine + z * cosine);
@@ -714,8 +673,7 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 			my[j] = D3DVAL(ry);
 			mz[j] = D3DVAL(rz);
 
-			if (counttri == 2 && firstcount == 0 || firstcount == 1)
-			{
+			if (counttri == 2 && firstcount == 0 || firstcount == 1) {
 				vw1.x = D3DVAL(mx[j - 2]);
 				vw1.y = D3DVAL(my[j - 2]);
 				vw1.z = D3DVAL(mz[j - 2]);
@@ -729,9 +687,9 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 				vw3.z = D3DVAL(mz[j]);
 
 				// calculate the NORMAL
-				XMVECTOR   vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-				XMVECTOR   vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
-				XMVECTOR  vCross, final;
+				XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+				XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+				XMVECTOR vCross, final;
 				vCross = XMVector3Cross(vDiff, vDiff2);
 				final = XMVector3Normalize(vCross);
 
@@ -742,8 +700,7 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 				worky = final2.y;
 				workz = final2.z;
 
-				if (firstcount == 1)
-				{
+				if (firstcount == 1) {
 					src_v[cnt - 2].nx = workx;
 					src_v[cnt - 2].ny = worky;
 					src_v[cnt - 2].nz = workz;
@@ -757,8 +714,7 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 					src_v[cnt].nz = workz;
 
 					CalculateTangentBinormal(src_v[cnt - 2], src_v[cnt - 1], src_v[cnt]);
-				}
-				else {
+				} else {
 					src_v[cnt - 2].nx = workx;
 					src_v[cnt - 2].ny = worky;
 					src_v[cnt - 2].nz = workz;
@@ -775,8 +731,7 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 				}
 				firstcount = 1;
 				counttri = 0;
-			}
-			else {
+			} else {
 				counttri++;
 			}
 			cnt++;
@@ -839,68 +794,67 @@ void PlayerToD3DVertList(int pmodel_id, int curr_frame, float angle, int texture
 	return;
 }
 
-
 int tracknormal[MAX_NUM_QUADS];
 
 void SmoothNormals(int start_cnt) {
-    // Smooth the vertex normals out so the models look less blocky.
+	// Smooth the vertex normals out so the models look less blocky.
 
-    // Use a hash map to group vertices by position for O(n) performance.
-    // This avoids the O(n^2) nested loop.
-    struct Vec3Key {
-        float x, y, z;
-        bool operator==(const Vec3Key& other) const {
-            // Use a small epsilon to account for floating point inaccuracies.
-            constexpr float eps = 1e-5f;
-            return fabs(x - other.x) < eps && fabs(y - other.y) < eps && fabs(z - other.z) < eps;
-        }
-    };
-    struct Vec3KeyHash {
-        std::size_t operator()(const Vec3Key& k) const {
-            // Simple hash combining
-            std::size_t hx = std::hash<int>()(static_cast<int>(k.x * 10000));
-            std::size_t hy = std::hash<int>()(static_cast<int>(k.y * 10000));
-            std::size_t hz = std::hash<int>()(static_cast<int>(k.z * 10000));
-            return hx ^ (hy << 1) ^ (hz << 2);
-        }
-    };
+	// Use a hash map to group vertices by position for O(n) performance.
+	// This avoids the O(n^2) nested loop.
+	struct Vec3Key {
+		float x, y, z;
+		bool operator==(const Vec3Key &other) const {
+			// Use a small epsilon to account for floating point inaccuracies.
+			constexpr float eps = 1e-5f;
+			return fabs(x - other.x) < eps && fabs(y - other.y) < eps && fabs(z - other.z) < eps;
+		}
+	};
+	struct Vec3KeyHash {
+		std::size_t operator()(const Vec3Key &k) const {
+			// Simple hash combining
+			std::size_t hx = std::hash<int>()(static_cast<int>(k.x * 10000));
+			std::size_t hy = std::hash<int>()(static_cast<int>(k.y * 10000));
+			std::size_t hz = std::hash<int>()(static_cast<int>(k.z * 10000));
+			return hx ^ (hy << 1) ^ (hz << 2);
+		}
+	};
 
-    // Map from vertex position to indices
-    std::unordered_map<Vec3Key, std::vector<int>, Vec3KeyHash> vertMap;
-    for (int i = start_cnt; i < cnt; ++i) {
-        Vec3Key key{ src_v[i].x, src_v[i].y, src_v[i].z };
-        vertMap[key].push_back(i);
-    }
+	// Map from vertex position to indices
+	std::unordered_map<Vec3Key, std::vector<int>, Vec3KeyHash> vertMap;
+	for (int i = start_cnt; i < cnt; ++i) {
+		Vec3Key key{ src_v[i].x, src_v[i].y, src_v[i].z };
+		vertMap[key].push_back(i);
+	}
 
-    for (const auto& pair : vertMap) {
-        const std::vector<int>& indices = pair.second;
-        if (indices.size() > 1) {
-            XMVECTOR sum = XMVectorZero();
-            XMVECTOR sumtan = XMVectorZero();
-            for (int idx : indices) {
-                XMFLOAT3 n{ src_v[idx].nx, src_v[idx].ny, src_v[idx].nz };
-                sum = XMVectorAdd(sum, XMLoadFloat3(&n));
-                XMFLOAT3 t{ src_v[idx].nmx, src_v[idx].nmy, src_v[idx].nmz };
-                sumtan = XMVectorAdd(sumtan, XMLoadFloat3(&t));
-            }
-            XMFLOAT3 final2, finaltan;
-            XMStoreFloat3(&final2, XMVector3Normalize(sum));
-            XMStoreFloat3(&finaltan, XMVector3Normalize(sumtan));
-            for (int idx : indices) {
-                src_v[idx].nx = final2.x;
-                src_v[idx].ny = final2.y;
-                src_v[idx].nz = final2.z;
-                src_v[idx].nmx = finaltan.x;
-                src_v[idx].nmy = finaltan.y;
-                src_v[idx].nmz = finaltan.z;
-            }
-        }
-    }
+	for (const auto &pair : vertMap) {
+		const std::vector<int> &indices = pair.second;
+		if (indices.size() > 1) {
+			XMVECTOR sum = XMVectorZero();
+			XMVECTOR sumtan = XMVectorZero();
+			for (int idx : indices) {
+				XMFLOAT3 n{ src_v[idx].nx, src_v[idx].ny, src_v[idx].nz };
+				sum = XMVectorAdd(sum, XMLoadFloat3(&n));
+				XMFLOAT3 t{ src_v[idx].nmx, src_v[idx].nmy, src_v[idx].nmz };
+				sumtan = XMVectorAdd(sumtan, XMLoadFloat3(&t));
+			}
+			XMFLOAT3 final2, finaltan;
+			XMStoreFloat3(&final2, XMVector3Normalize(sum));
+			XMStoreFloat3(&finaltan, XMVector3Normalize(sumtan));
+			for (int idx : indices) {
+				src_v[idx].nx = final2.x;
+				src_v[idx].ny = final2.y;
+				src_v[idx].nz = final2.z;
+				src_v[idx].nmx = finaltan.x;
+				src_v[idx].nmy = finaltan.y;
+				src_v[idx].nmz = finaltan.z;
+			}
+		}
+	}
 }
 
 void SmoothNormalsNoHash(int start_cnt) {
 
-	//Smooth the vertex normals out so the models look less blocky.
+	// Smooth the vertex normals out so the models look less blocky.
 
 	XMVECTOR sum, sumtan, average;
 	XMFLOAT3 x1, xtan, final2, finaltan;
@@ -920,12 +874,12 @@ void SmoothNormalsNoHash(int start_cnt) {
 
 			scount = 0;
 
-			//GitHub copilot fixed this! AI is the future.
-			//old code: for (int j = start_cnt; j < cnt; j++)
+			// GitHub copilot fixed this! AI is the future.
+			// old code: for (int j = start_cnt; j < cnt; j++)
 
 			for (int j = i; j < cnt; j++) {
 				if (tracknormal[j] == 0 && x == src_v[j].x && y == src_v[j].y && z == src_v[j].z) {
-					//found shared vertex
+					// found shared vertex
 					sharedv[scount] = j;
 					scount++;
 				}
@@ -945,7 +899,6 @@ void SmoothNormalsNoHash(int start_cnt) {
 					xtan.y = src_v[sharedv[k]].nmy;
 					xtan.z = src_v[sharedv[k]].nmz;
 					sumtan = sumtan + XMLoadFloat3(&xtan);
-
 				}
 
 				average = XMVector3Normalize(sum);
@@ -970,7 +923,6 @@ void SmoothNormalsNoHash(int start_cnt) {
 	}
 }
 
-
 void ComputerWeightedAverages(int start_cnt);
 
 void SmoothNormalsWeighted(int start_cnt) {
@@ -981,7 +933,7 @@ void SmoothNormalsWeighted(int start_cnt) {
 
 	ComputerWeightedAverages(start_cnt);
 
-	//Smooth the vertex normals out so the models look less blocky.
+	// Smooth the vertex normals out so the models look less blocky.
 	int scount = 0;
 
 	for (int i = start_cnt; i < cnt; i++) {
@@ -1031,7 +983,6 @@ void SmoothNormalsWeighted(int start_cnt) {
 					x1.z = finalweight.z;
 
 					sum = sum + XMLoadFloat3(&x1);
-
 
 					work = XMVectorSet(src_v[sharedv[k]].nmx, src_v[sharedv[k]].nmy, src_v[sharedv[k]].nmz, 0);
 					work = work * (weight * area);
@@ -1098,20 +1049,20 @@ void ComputerWeightedAverages(int start_cnt) {
 		vw3.z = src_v[i + 2].z;
 
 		// v1, v2, v3 are the vertices of face A
-		//if face B shares v1 {
+		// if face B shares v1 {
 		//	angle = angle_between_vectors(v1 - v2, v1 - v3)
 		//		n += (face B facet normal) * (face B surface area) * angle // multiply by angle
 		//}
-		//if face B shares v2 {
+		// if face B shares v2 {
 		//	angle = angle_between_vectors(v2 - v1, v2 - v3)
 		//		n += (face B facet normal) * (face B surface area) * angle // multiply by angle
 		//}
-		//if face B shares v3 {
+		// if face B shares v3 {
 		//	angle = angle_between_vectors(v3 - v1, v3 - v2)
 		//		n += (face B facet normal) * (face B surface area) * angle // multiply by angle
 		//}
 
-		//VW1
+		// VW1
 		P1 = XMLoadFloat3(&vw1);
 		P2 = XMLoadFloat3(&vw2);
 		vDiff = P1 - P2;
@@ -1133,14 +1084,14 @@ void ComputerWeightedAverages(int start_cnt) {
 		XMFLOAT3 finalCross;
 		XMStoreFloat3(&finalCross, vCross);
 
-		//Set the area of the triangle
+		// Set the area of the triangle
 		src_v[i].area = .5f * sqrtf(fabsf(powf(finalCross.x, 2.0f)) + fabsf(powf(finalCross.y, 2.0f)) + fabsf(powf(finalCross.z, 2.0f)));
 		src_v[i + 1].area = src_v[i].area;
 		src_v[i + 2].area = src_v[i].area;
 
 		src_v[i].weight = fabsf(fDot);
 
-		//VW2
+		// VW2
 		P1 = XMLoadFloat3(&vw2);
 		P2 = XMLoadFloat3(&vw1);
 		vDiff = P1 - P2;
@@ -1163,7 +1114,7 @@ void ComputerWeightedAverages(int start_cnt) {
 
 		src_v[i + 1].weight = fabsf(fDot);
 
-		//VW3
+		// VW3
 		P1 = XMLoadFloat3(&vw3);
 		P2 = XMLoadFloat3(&vw1);
 		vDiff = P1 - P2;
@@ -1187,200 +1138,192 @@ void ComputerWeightedAverages(int start_cnt) {
 	}
 }
 
-
 void ConvertTraingleFan(int fan_cnt) {
-    int counter = 0;
+	int counter = 0;
 
-    for (int i = fan_cnt; i < cnt; i++) {
-        if (counter < 3) {
-            temp_v[counter++] = src_v[i];
+	for (int i = fan_cnt; i < cnt; i++) {
+		if (counter < 3) {
+			temp_v[counter++] = src_v[i];
 
-        } else {
-            temp_v[counter++] = src_v[fan_cnt];
-            temp_v[counter++] = src_v[i - 1];
-            temp_v[counter++] = src_v[i];
+		} else {
+			temp_v[counter++] = src_v[fan_cnt];
+			temp_v[counter++] = src_v[i - 1];
+			temp_v[counter++] = src_v[i];
+		}
+	}
 
-        }
-    }
+	int normal = 0;
 
-    int normal = 0;
+	for (int i = 0; i < counter; i++) {
+		src_v[fan_cnt + i] = temp_v[i];
 
-    for (int i = 0; i < counter; i++) {
-        src_v[fan_cnt + i] = temp_v[i];
+		if (normal == 2) {
+			normal = 0;
+			XMFLOAT3 vw1 = { src_v[(fan_cnt + i) - 2].x, src_v[(fan_cnt + i) - 2].y, src_v[(fan_cnt + i) - 2].z };
+			XMFLOAT3 vw2 = { src_v[(fan_cnt + i) - 1].x, src_v[(fan_cnt + i) - 1].y, src_v[(fan_cnt + i) - 1].z };
+			XMFLOAT3 vw3 = { src_v[(fan_cnt + i)].x, src_v[(fan_cnt + i)].y, src_v[(fan_cnt + i)].z };
 
-        if (normal == 2) {
-            normal = 0;
-            XMFLOAT3 vw1 = { src_v[(fan_cnt + i) - 2].x, src_v[(fan_cnt + i) - 2].y, src_v[(fan_cnt + i) - 2].z };
-            XMFLOAT3 vw2 = { src_v[(fan_cnt + i) - 1].x, src_v[(fan_cnt + i) - 1].y, src_v[(fan_cnt + i) - 1].z };
-            XMFLOAT3 vw3 = { src_v[(fan_cnt + i)].x, src_v[(fan_cnt + i)].y, src_v[(fan_cnt + i)].z };
+			// calculate the NORMAL
+			XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+			XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+			XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
+			XMVECTOR final = XMVector3Normalize(vCross);
 
-            // calculate the NORMAL
-            XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-            XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
-            XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
-            XMVECTOR final = XMVector3Normalize(vCross);
+			XMFLOAT3 final2;
+			XMStoreFloat3(&final2, final);
 
-            XMFLOAT3 final2;
-            XMStoreFloat3(&final2, final);
+			src_v[(fan_cnt + i) - 2].nx = -final2.x;
+			src_v[(fan_cnt + i) - 2].ny = -final2.y;
+			src_v[(fan_cnt + i) - 2].nz = -final2.z;
 
-            src_v[(fan_cnt + i) - 2].nx = -final2.x;
-            src_v[(fan_cnt + i) - 2].ny = -final2.y;
-            src_v[(fan_cnt + i) - 2].nz = -final2.z;
+			src_v[(fan_cnt + i) - 1].nx = -final2.x;
+			src_v[(fan_cnt + i) - 1].ny = -final2.y;
+			src_v[(fan_cnt + i) - 1].nz = -final2.z;
 
-            src_v[(fan_cnt + i) - 1].nx = -final2.x;
-            src_v[(fan_cnt + i) - 1].ny = -final2.y;
-            src_v[(fan_cnt + i) - 1].nz = -final2.z;
+			src_v[(fan_cnt + i)].nx = -final2.x;
+			src_v[(fan_cnt + i)].ny = -final2.y;
+			src_v[(fan_cnt + i)].nz = -final2.z;
 
-            src_v[(fan_cnt + i)].nx = -final2.x;
-            src_v[(fan_cnt + i)].ny = -final2.y;
-            src_v[(fan_cnt + i)].nz = -final2.z;
-
-            CalculateTangentBinormal(src_v[(fan_cnt + i) - 2], src_v[(fan_cnt + i) - 1], src_v[(fan_cnt + i)]);
-        } else {
-            normal++;
-        }
-    }
-    cnt = fan_cnt + counter;
+			CalculateTangentBinormal(src_v[(fan_cnt + i) - 2], src_v[(fan_cnt + i) - 1], src_v[(fan_cnt + i)]);
+		} else {
+			normal++;
+		}
+	}
+	cnt = fan_cnt + counter;
 }
 
 void ConvertTraingleStrip(int fan_cnt) {
-    int counter = 0;
-    int v = 0;
+	int counter = 0;
+	int v = 0;
 
-    for (int i = fan_cnt; i < cnt; i++) {
-        if (counter < 3) {
-            temp_v[counter] = src_v[i];
-            counter++;
-        } else {
-            if (v == 0) {
-                temp_v[counter++] = src_v[i];
-                temp_v[counter++] = src_v[i - 1];
-                temp_v[counter++] = src_v[i - 2];
-                v = 1;
-            } else {
-                temp_v[counter++] = src_v[i - 2];
-                temp_v[counter++] = src_v[i - 1];
-                temp_v[counter++] = src_v[i];
-                v = 0;
-            }
-        }
-    }
+	for (int i = fan_cnt; i < cnt; i++) {
+		if (counter < 3) {
+			temp_v[counter] = src_v[i];
+			counter++;
+		} else {
+			if (v == 0) {
+				temp_v[counter++] = src_v[i];
+				temp_v[counter++] = src_v[i - 1];
+				temp_v[counter++] = src_v[i - 2];
+				v = 1;
+			} else {
+				temp_v[counter++] = src_v[i - 2];
+				temp_v[counter++] = src_v[i - 1];
+				temp_v[counter++] = src_v[i];
+				v = 0;
+			}
+		}
+	}
 
-    for (int i = 0; i < counter; i++) {
-        src_v[fan_cnt + i] = temp_v[i];
-    }
+	for (int i = 0; i < counter; i++) {
+		src_v[fan_cnt + i] = temp_v[i];
+	}
 
-    for (int i = 0; i < counter; i += 3) {
-        XMFLOAT3 vw1 = { src_v[fan_cnt + i].x, src_v[fan_cnt + i].y, src_v[fan_cnt + i].z };
-        XMFLOAT3 vw2 = { src_v[fan_cnt + i + 1].x, src_v[fan_cnt + i + 1].y, src_v[fan_cnt + i + 1].z };
-        XMFLOAT3 vw3 = { src_v[fan_cnt + i + 2].x, src_v[fan_cnt + i + 2].y, src_v[fan_cnt + i + 2].z };
+	for (int i = 0; i < counter; i += 3) {
+		XMFLOAT3 vw1 = { src_v[fan_cnt + i].x, src_v[fan_cnt + i].y, src_v[fan_cnt + i].z };
+		XMFLOAT3 vw2 = { src_v[fan_cnt + i + 1].x, src_v[fan_cnt + i + 1].y, src_v[fan_cnt + i + 1].z };
+		XMFLOAT3 vw3 = { src_v[fan_cnt + i + 2].x, src_v[fan_cnt + i + 2].y, src_v[fan_cnt + i + 2].z };
 
-        // calculate the NORMAL
-        XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-        XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
-        XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
-        XMVECTOR final = XMVector3Normalize(vCross);
+		// calculate the NORMAL
+		XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+		XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+		XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
+		XMVECTOR final = XMVector3Normalize(vCross);
 
-        XMFLOAT3 final2;
-        XMStoreFloat3(&final2, final);
+		XMFLOAT3 final2;
+		XMStoreFloat3(&final2, final);
 
-        src_v[fan_cnt + i].nx = -final2.x;
-        src_v[fan_cnt + i].ny = -final2.y;
-        src_v[fan_cnt + i].nz = -final2.z;
+		src_v[fan_cnt + i].nx = -final2.x;
+		src_v[fan_cnt + i].ny = -final2.y;
+		src_v[fan_cnt + i].nz = -final2.z;
 
-        src_v[fan_cnt + i + 1].nx = -final2.x;
-        src_v[fan_cnt + i + 1].ny = -final2.y;
-        src_v[fan_cnt + i + 1].nz = -final2.z;
+		src_v[fan_cnt + i + 1].nx = -final2.x;
+		src_v[fan_cnt + i + 1].ny = -final2.y;
+		src_v[fan_cnt + i + 1].nz = -final2.z;
 
-        src_v[fan_cnt + i + 2].nx = -final2.x;
-        src_v[fan_cnt + i + 2].ny = -final2.y;
-        src_v[fan_cnt + i + 2].nz = -final2.z;
+		src_v[fan_cnt + i + 2].nx = -final2.x;
+		src_v[fan_cnt + i + 2].ny = -final2.y;
+		src_v[fan_cnt + i + 2].nz = -final2.z;
 
-        CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
-    }
+		CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
+	}
 
-    cnt = fan_cnt + counter;
+	cnt = fan_cnt + counter;
 }
 
 void ConvertQuad(int fan_cnt) {
-    int counter = 0;
-    int quad = 0;
+	int counter = 0;
+	int quad = 0;
 
-    for (int i = fan_cnt; i < cnt; i++) {
-        if (quad >= 3) {
-            for (int j = 3; j >= 0; j--) {
-                temp_v[counter] = src_v[i - j];
-                counter++;
-            }
-            for (int j = 1; j <= 2; j++) {
-                temp_v[counter] = src_v[i - j];
-                counter++;
-            }
-            quad = 0;
-        } else {
-            quad++;
-        }
-    }
+	for (int i = fan_cnt; i < cnt; i++) {
+		if (quad >= 3) {
+			for (int j = 3; j >= 0; j--) {
+				temp_v[counter] = src_v[i - j];
+				counter++;
+			}
+			for (int j = 1; j <= 2; j++) {
+				temp_v[counter] = src_v[i - j];
+				counter++;
+			}
+			quad = 0;
+		} else {
+			quad++;
+		}
+	}
 
-    for (int i = 0; i < counter; i++) {
-        src_v[fan_cnt + i] = temp_v[i];
-        src_collide[fan_cnt + i] = 0;
-    }
+	for (int i = 0; i < counter; i++) {
+		src_v[fan_cnt + i] = temp_v[i];
+		src_collide[fan_cnt + i] = 0;
+	}
 
-    for (int i = 0; i < counter; i += 3) {
-        XMFLOAT3 vw1 = { src_v[fan_cnt + i].x, src_v[fan_cnt + i].y, src_v[fan_cnt + i].z };
-        XMFLOAT3 vw2 = { src_v[fan_cnt + i + 1].x, src_v[fan_cnt + i + 1].y, src_v[fan_cnt + i + 1].z };
-        XMFLOAT3 vw3 = { src_v[fan_cnt + i + 2].x, src_v[fan_cnt + i + 2].y, src_v[fan_cnt + i + 2].z };
+	for (int i = 0; i < counter; i += 3) {
+		XMFLOAT3 vw1 = { src_v[fan_cnt + i].x, src_v[fan_cnt + i].y, src_v[fan_cnt + i].z };
+		XMFLOAT3 vw2 = { src_v[fan_cnt + i + 1].x, src_v[fan_cnt + i + 1].y, src_v[fan_cnt + i + 1].z };
+		XMFLOAT3 vw3 = { src_v[fan_cnt + i + 2].x, src_v[fan_cnt + i + 2].y, src_v[fan_cnt + i + 2].z };
 
-        XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
-        XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
-        XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
-        XMVECTOR final = XMVector3Normalize(vCross);
+		XMVECTOR vDiff = XMLoadFloat3(&vw1) - XMLoadFloat3(&vw2);
+		XMVECTOR vDiff2 = XMLoadFloat3(&vw3) - XMLoadFloat3(&vw2);
+		XMVECTOR vCross = XMVector3Cross(vDiff, vDiff2);
+		XMVECTOR final = XMVector3Normalize(vCross);
 
-        XMFLOAT3 final2;
-        XMStoreFloat3(&final2, final);
+		XMFLOAT3 final2;
+		XMStoreFloat3(&final2, final);
 
-        for (int j = 0; j < 3; j++) {
-            src_v[fan_cnt + i + j].nx = -final2.x;
-            src_v[fan_cnt + i + j].ny = -final2.y;
-            src_v[fan_cnt + i + j].nz = -final2.z;
-        }
+		for (int j = 0; j < 3; j++) {
+			src_v[fan_cnt + i + j].nx = -final2.x;
+			src_v[fan_cnt + i + j].ny = -final2.y;
+			src_v[fan_cnt + i + j].nz = -final2.z;
+		}
 
-        CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
-    }
+		CalculateTangentBinormal(src_v[fan_cnt + i], src_v[fan_cnt + i + 1], src_v[fan_cnt + i + 2]);
+	}
 
-    cnt = fan_cnt + counter;
+	cnt = fan_cnt + counter;
 }
 int GetNextFrame(int monsterId);
 
-void DrawMonsters()
-{
+void DrawMonsters() {
 	int cullflag = 0;
 	int merchantfound = 0;
 	BOOL use_player_skins_flag = false;
 	int getgunid = 0;
 	int monsteron = 0;
-	for (int i = 0; i < num_monsters; i++)
-	{
+	for (int i = 0; i < num_monsters; i++) {
 		if (monster_list[i].bIsPlayerValid == TRUE && monster_list[i].bStopAnimating == FALSE ||
-			monster_list[i].bIsPlayerValid == FALSE && monster_list[i].bStopAnimating == FALSE ||
-			monster_list[i].bIsPlayerAlive == FALSE && monster_list[i].bStopAnimating == TRUE
+		    monster_list[i].bIsPlayerValid == FALSE && monster_list[i].bStopAnimating == FALSE ||
+		    monster_list[i].bIsPlayerAlive == FALSE && monster_list[i].bStopAnimating == TRUE
 
-			)
-		{
+		) {
 			cullflag = 0;
-			for (int cullloop = 0; cullloop < monstercount; cullloop++)
-			{
+			for (int cullloop = 0; cullloop < monstercount; cullloop++) {
 
-				if (monstercull[cullloop] == monster_list[i].monsterid)
-				{
+				if (monstercull[cullloop] == monster_list[i].monsterid) {
 					cullflag = 1;
 					break;
 				}
 			}
 
-			if (cullflag == 1)
-			{
+			if (cullflag == 1) {
 				float wx = monster_list[i].x;
 				float wy = monster_list[i].y;
 				float wz = monster_list[i].z;
@@ -1393,39 +1336,33 @@ void DrawMonsters()
 				work1.z = wz;
 
 				monsteron = CalculateView(m_vEyePt, work1, cullAngle, true);
-				if (monsteron)
-				{
+				if (monsteron) {
 
 					use_player_skins_flag = 0;
 
 					int nextFrame = GetNextFrame(i);
 
 					PlayerToD3DVertList(monster_list[i].model_id,
-						monster_list[i].current_frame, monster_list[i].rot_angle,
-						monster_list[i].skin_tex_id,
-						USE_PLAYERS_SKIN, monster_list[i].x, monster_list[i].y, monster_list[i].z, nextFrame);
+					                    monster_list[i].current_frame, monster_list[i].rot_angle,
+					                    monster_list[i].skin_tex_id,
+					                    USE_PLAYERS_SKIN, monster_list[i].x, monster_list[i].y, monster_list[i].z, nextFrame);
 
-					for (int q = 0; q < countmodellist; q++)
-					{
+					for (int q = 0; q < countmodellist; q++) {
 
-						if (strcmp(model_list[q].name, monster_list[i].rname) == 0)
-						{
+						if (strcmp(model_list[q].name, monster_list[i].rname) == 0) {
 							getgunid = q;
 							break;
 						}
 					}
 
-					if (strcmp(model_list[getgunid].monsterweapon, "NONE") != 0 && monster_list[i].bIsPlayerAlive == TRUE)
-					{
+					if (strcmp(model_list[getgunid].monsterweapon, "NONE") != 0 && monster_list[i].bIsPlayerAlive == TRUE) {
 
 						PlayerToD3DVertList(FindModelID(model_list[getgunid].monsterweapon),
-							monster_list[i].current_frame, monster_list[i].rot_angle,
-							FindGunTexture(model_list[getgunid].monsterweapon),
-							USE_PLAYERS_SKIN, monster_list[i].x, monster_list[i].y, monster_list[i].z, nextFrame);
+						                    monster_list[i].current_frame, monster_list[i].rot_angle,
+						                    FindGunTexture(model_list[getgunid].monsterweapon),
+						                    USE_PLAYERS_SKIN, monster_list[i].x, monster_list[i].y, monster_list[i].z, nextFrame);
 					}
-				}
-				else
-				{
+				} else {
 				}
 			}
 		}
@@ -1444,19 +1381,14 @@ int GetNextFrame(int monsterId) {
 	if (monster_list[monsterId].bStopAnimating)
 		return -1;
 
-	if (curr_frame >= stop_frame)
-	{
+	if (curr_frame >= stop_frame) {
 		nextFrame = pmdata[mod_id].sequence_start_frame[sequence];
 
-	}
-	else
-	{
+	} else {
 		nextFrame = curr_frame + 1;
-
 	}
 	return nextFrame;
 }
-
 
 int GetNextFramePlayer() {
 
@@ -1466,35 +1398,27 @@ int GetNextFramePlayer() {
 	int startframe = pmdata[mod_id].sequence_start_frame[player_list[trueplayernum].current_sequence];
 	int nextFrame = 0;
 
-	if (curr_frame >= stop_frame)
-	{
+	if (curr_frame >= stop_frame) {
 		int curr_seq = player_list[trueplayernum].current_sequence;
 		nextFrame = pmdata[mod_id].sequence_start_frame[curr_seq];
 		player_list[trueplayernum].animationdir = 1;
-	}
-	else
-	{
+	} else {
 		nextFrame = curr_frame + 1;
 	}
 	return nextFrame;
 }
 
-int FindModelID(const char* p)
-{
+int FindModelID(const char *p) {
 	int i = 0;
 
-	for (i = 0; i < countmodellist; i++)
-	{
-		if (strcmp(model_list[i].name, p) == 0)
-		{
+	for (i = 0; i < countmodellist; i++) {
+		if (strcmp(model_list[i].name, p) == 0) {
 			return model_list[i].model_id;
 		}
 	}
 
-	for (i = 0; i < num_your_guns; i++)
-	{
-		if (strcmp(your_gun[i].gunname, p) == 0)
-		{
+	for (i = 0; i < num_your_guns; i++) {
+		if (strcmp(your_gun[i].gunname, p) == 0) {
 			return your_gun[i].model_id;
 		}
 	}
@@ -1502,8 +1426,7 @@ int FindModelID(const char* p)
 	return 0;
 }
 
-void AddItem(float x, float y, float z, float rot_angle, float monsterid, float monstertexture, float monnum, char modelid[80], char modeltexture[80], int ability)
-{
+void AddItem(float x, float y, float z, float rot_angle, float monsterid, float monstertexture, float monnum, char modelid[80], char modeltexture[80], int ability) {
 	item_list[itemlistcount].bIsPlayerValid = TRUE;
 	item_list[itemlistcount].bIsPlayerAlive = TRUE;
 	item_list[itemlistcount].x = x;
@@ -1528,29 +1451,24 @@ void AddItem(float x, float y, float z, float rot_angle, float monsterid, float 
 	itemlistcount++;
 }
 
-void DrawItems(float fElapsedTime)
-{
+void DrawItems(float fElapsedTime) {
 	BOOL use_player_skins_flag = false;
 	int cullflag = 0;
 	int monsteron = 0;
 	float rotateSpeed = 100.0f * fElapsedTime;
 
-	for (int i = 0; i < itemlistcount; i++)
-	{
-		if (item_list[i].bIsPlayerValid == TRUE)
-		{
+	for (int i = 0; i < itemlistcount; i++) {
+		if (item_list[i].bIsPlayerValid == TRUE) {
 			float qdist = FastDistance(
-				m_vEyePt.x - item_list[i].x,
-				m_vEyePt.y - item_list[i].y,
-				m_vEyePt.z - item_list[i].z);
+			    m_vEyePt.x - item_list[i].x,
+			    m_vEyePt.y - item_list[i].y,
+			    m_vEyePt.z - item_list[i].z);
 
 			if (qdist < 1100.0f) {
 
 				cullflag = 0;
-				for (int cullloop = 0; cullloop < monstercount; cullloop++)
-				{
-					if (monstercull[cullloop] == item_list[i].monsterid)
-					{
+				for (int cullloop = 0; cullloop < monstercount; cullloop++) {
+					if (monstercull[cullloop] == item_list[i].monsterid) {
 						cullflag = 1;
 						break;
 					}
@@ -1559,8 +1477,7 @@ void DrawItems(float fElapsedTime)
 				if (item_list[i].monsterid == 9999 && item_list[i].bIsPlayerAlive == TRUE)
 					cullflag = 1;
 
-				if (cullflag == 1)
-				{
+				if (cullflag == 1) {
 					float wx = item_list[i].x;
 					float wy = item_list[i].y;
 					float wz = item_list[i].z;
@@ -1572,97 +1489,79 @@ void DrawItems(float fElapsedTime)
 
 					monsteron = CalculateView(m_vEyePt, work1, cullAngle, true);
 
-					if (monsteron)
-					{
+					if (monsteron) {
 						use_player_skins_flag = 1;
 						int mtexlookup;
 
-						if (strcmp(item_list[i].rname, "COIN") == 0)
-						{
+						if (strcmp(item_list[i].rname, "COIN") == 0) {
 							item_list[i].rot_angle = fixangle(item_list[i].rot_angle, rotateSpeed);
 							PlayerToD3DVertList(item_list[i].model_id,
-								item_list[i].current_frame, item_list[i].rot_angle,
-								1,
-								USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
-						}
-						else if (strcmp(item_list[i].rname, "diamond") == 0)
-						{
+							                    item_list[i].current_frame, item_list[i].rot_angle,
+							                    1,
+							                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+						} else if (strcmp(item_list[i].rname, "diamond") == 0) {
 							item_list[i].rot_angle = fixangle(item_list[i].rot_angle, rotateSpeed);
 							PlayerToD3DVertList(item_list[i].model_id,
-								item_list[i].current_frame, item_list[i].rot_angle,
-								1,
-								USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
-						}
-						else if (strcmp(item_list[i].rname, "SCROLL-MAGICMISSLE-") == 0 ||
-							strcmp(item_list[i].rname, "SCROLL-FIREBALL-") == 0 ||
-							strcmp(item_list[i].rname, "SCROLL-LIGHTNING-") == 0 ||
-							strcmp(item_list[i].rname, "SCROLL-HEALING-") == 0)
-						{
+							                    item_list[i].current_frame, item_list[i].rot_angle,
+							                    1,
+							                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+						} else if (strcmp(item_list[i].rname, "SCROLL-MAGICMISSLE-") == 0 ||
+						           strcmp(item_list[i].rname, "SCROLL-FIREBALL-") == 0 ||
+						           strcmp(item_list[i].rname, "SCROLL-LIGHTNING-") == 0 ||
+						           strcmp(item_list[i].rname, "SCROLL-HEALING-") == 0) {
 							if (item_list[i].monsterid == 9999)
 								item_list[i].rot_angle = fixangle(item_list[i].rot_angle, rotateSpeed);
 
 							PlayerToD3DVertList(item_list[i].model_id,
-								item_list[i].current_frame, item_list[i].rot_angle,
-								1,
-								USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
-						}
-						else if (strcmp(item_list[i].rname, "KEY2") == 0)
-						{
+							                    item_list[i].current_frame, item_list[i].rot_angle,
+							                    1,
+							                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+						} else if (strcmp(item_list[i].rname, "KEY2") == 0) {
 							item_list[i].rot_angle = fixangle(item_list[i].rot_angle, rotateSpeed);
 							PlayerToD3DVertList(item_list[i].model_id,
-								item_list[i].current_frame, item_list[i].rot_angle,
-								1,
-								USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
-						}
-						else if (strcmp(item_list[i].rname, "spellbook") == 0)
-						{
+							                    item_list[i].current_frame, item_list[i].rot_angle,
+							                    1,
+							                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+						} else if (strcmp(item_list[i].rname, "spellbook") == 0) {
 							item_list[i].rot_angle = fixangle(item_list[i].rot_angle, rotateSpeed);
 							PlayerToD3DVertList(item_list[i].model_id,
-								item_list[i].current_frame, item_list[i].rot_angle,
-								1,
-								USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
-						}
-						else if (strcmp(item_list[i].rname, "AXE") == 0 ||
-							strcmp(item_list[i].rname, "FLAMESWORD") == 0 ||
-							strcmp(item_list[i].rname, "BASTARDSWORD") == 0 ||
-							strcmp(item_list[i].rname, "BATTLEAXE") == 0 ||
-							strcmp(item_list[i].rname, "ICESWORD") == 0 ||
-							strcmp(item_list[i].rname, "MORNINGSTAR") == 0 ||
-							strcmp(item_list[i].rname, "SPIKEDFLAIL") == 0 ||
-							strcmp(item_list[i].rname, "SPLITSWORD") == 0 ||
-							strcmp(item_list[i].rname, "SUPERFLAMESWORD") == 0 ||
-							strcmp(item_list[i].rname, "LIGHTNINGSWORD") == 0)
-						{
+							                    item_list[i].current_frame, item_list[i].rot_angle,
+							                    1,
+							                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+						} else if (strcmp(item_list[i].rname, "AXE") == 0 ||
+						           strcmp(item_list[i].rname, "FLAMESWORD") == 0 ||
+						           strcmp(item_list[i].rname, "BASTARDSWORD") == 0 ||
+						           strcmp(item_list[i].rname, "BATTLEAXE") == 0 ||
+						           strcmp(item_list[i].rname, "ICESWORD") == 0 ||
+						           strcmp(item_list[i].rname, "MORNINGSTAR") == 0 ||
+						           strcmp(item_list[i].rname, "SPIKEDFLAIL") == 0 ||
+						           strcmp(item_list[i].rname, "SPLITSWORD") == 0 ||
+						           strcmp(item_list[i].rname, "SUPERFLAMESWORD") == 0 ||
+						           strcmp(item_list[i].rname, "LIGHTNINGSWORD") == 0) {
 
 							mtexlookup = FindGunTexture(item_list[i].rname);
 
 							PlayerToD3DVertList(item_list[i].model_id,
-								item_list[i].current_frame, item_list[i].rot_angle,
-								mtexlookup,
-								USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
-						}
-						else if (strcmp(item_list[i].rname, "POTION") == 0)
-						{
+							                    item_list[i].current_frame, item_list[i].rot_angle,
+							                    mtexlookup,
+							                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+						} else if (strcmp(item_list[i].rname, "POTION") == 0) {
 							item_list[i].rot_angle = fixangle(item_list[i].rot_angle, rotateSpeed);
 
 							PlayerToD3DVertList(item_list[i].model_id,
-								item_list[i].current_frame, item_list[i].rot_angle,
-								1,
-								USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
-						}
-						else
-						{
+							                    item_list[i].current_frame, item_list[i].rot_angle,
+							                    1,
+							                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+						} else {
 							int displayitem = 1;
-							if (strcmp(item_list[i].rname, "spiral") == 0)
-							{
+							if (strcmp(item_list[i].rname, "spiral") == 0) {
 								displayitem = 0;
 							}
-							if (displayitem == 1)
-							{
+							if (displayitem == 1) {
 								PlayerToD3DVertList(item_list[i].model_id,
-									item_list[i].current_frame, item_list[i].rot_angle,
-									1,
-									USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
+								                    item_list[i].current_frame, item_list[i].rot_angle,
+								                    1,
+								                    USE_DEFAULT_MODEL_TEX, item_list[i].x, item_list[i].y, item_list[i].z);
 							}
 						}
 					}
@@ -1672,8 +1571,7 @@ void DrawItems(float fElapsedTime)
 	}
 }
 
-void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int texture_alias, int tex_flag, float xt, float yt, float zt)
-{
+void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int texture_alias, int tex_flag, float xt, float yt, float zt) {
 
 	float qdist = 0;
 	int i, j;
@@ -1721,8 +1619,7 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 
 	int start_cnt = cnt;
 
-	for (i = 0; i < num_poly; i++)
-	{
+	for (i = 0; i < num_poly; i++) {
 		poly_command = pmdata[pmodel_id].poly_cmd[i];
 		num_verts_per_poly = pmdata[pmodel_id].num_verts_per_object[i];
 		num_faces_per_poly = pmdata[pmodel_id].num_faces_per_object[i];
@@ -1731,8 +1628,7 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 		ObjectsToDraw[number_of_polys_per_frame].srcstart = cnt;
 
 		int counttri = 0;
-		for (j = 0; j < num_verts_per_poly; j++)
-		{
+		for (j = 0; j < num_verts_per_poly; j++) {
 			x = pmdata[pmodel_id].w[curr_frame][i_count].x + x_off;
 			z = pmdata[pmodel_id].w[curr_frame][i_count].y + y_off;
 			y = pmdata[pmodel_id].w[curr_frame][i_count].z + z_off;
@@ -1741,8 +1637,7 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 			ry = wy + y;
 			rz = wz + (x * sine + z * cosine);
 
-			if (fDot2 != 0.0f)
-			{
+			if (fDot2 != 0.0f) {
 				float newx, newy, newz;
 
 				newx = x;
@@ -1767,9 +1662,7 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 				rx = newx;
 				ry = (newy * cosf(0.0f * k) - newz * sinf(0.0f * k));
 				rz = (newy * sinf(0.0f * k) + newz * cosf(0.0f * k));
-			}
-			else
-			{
+			} else {
 				rx = (x * cosine - z * sine);
 				ry = y;
 				rz = (x * sine + z * cosine);
@@ -1795,8 +1688,7 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 			my[j] = ry;
 			mz[j] = rz;
 
-			if (counttri == 2)
-			{
+			if (counttri == 2) {
 				vw1.x = D3DVAL(mx[j - 2]);
 				vw1.y = D3DVAL(my[j - 2]);
 				vw1.z = D3DVAL(mz[j - 2]);
@@ -1840,8 +1732,7 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 				CalculateTangentBinormal(src_v[cnt - 2], src_v[cnt - 1], src_v[cnt]);
 
 				counttri = 0;
-			}
-			else {
+			} else {
 				counttri++;
 			}
 
@@ -1850,8 +1741,7 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 		}
 		ObjectsToDraw[number_of_polys_per_frame].srcfstart = cnt_f;
 
-		for (j = 0; j < num_faces_per_poly * 3; j++)
-		{
+		for (j = 0; j < num_faces_per_poly * 3; j++) {
 			src_f[cnt_f] = pmdata[pmodel_id].f[face_i_count];
 			cnt_f++;
 			face_i_count++;
@@ -1862,9 +1752,9 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 		float centroidz = (mz[0] + mz[1] + mz[2]) * QVALUE;
 
 		qdist = FastDistance(
-			m_vEyePt.x - centroidx,
-			m_vEyePt.y - centroidy,
-			m_vEyePt.z - centroidz);
+		    m_vEyePt.x - centroidx,
+		    m_vEyePt.y - centroidy,
+		    m_vEyePt.z - centroidz);
 
 		ObjectsToDraw[number_of_polys_per_frame].vert_index = number_of_polys_per_frame;
 		ObjectsToDraw[number_of_polys_per_frame].texture = texture_alias;
@@ -1889,14 +1779,12 @@ void PlayerToD3DIndexedVertList(int pmodel_id, int curr_frame, float angle, int 
 			texture_list_buffer[number_of_polys_per_frame] = pmdata[pmodel_id].texture_list[i];
 
 		number_of_polys_per_frame++;
-
 	}
 
 	return;
 }
 
-void AddModel(float x, float y, float z, float rot_angle, float monsterid, float monstertexture, float monnum, char modelid[80], char modeltexture[80], int ability)
-{
+void AddModel(float x, float y, float z, float rot_angle, float monsterid, float monstertexture, float monnum, char modelid[80], char modeltexture[80], int ability) {
 	player_list2[num_players2].bIsPlayerValid = TRUE;
 
 	player_list2[num_players2].x = x;
@@ -1915,29 +1803,24 @@ void AddModel(float x, float y, float z, float rot_angle, float monsterid, float
 	strcpy_s(player_list2[num_players2].rname, modelid);
 	strcpy_s(player_list2[num_players2].texturename, modeltexture);
 
-	if (strstr(modelid, "switch") != NULL)
-	{
+	if (strstr(modelid, "switch") != NULL) {
 		switchmodify[countswitches].num = num_players2;
 		switchmodify[countswitches].objectid = (int)monsterid;
 		switchmodify[countswitches].active = 0;
 
-		if (rot_angle >= 0.0f && rot_angle < 90.0f)
-		{
+		if (rot_angle >= 0.0f && rot_angle < 90.0f) {
 			switchmodify[countswitches].direction = 1;
 			switchmodify[countswitches].savelocation = x;
 		}
-		if (rot_angle >= 90.0f && rot_angle < 180.0f)
-		{
+		if (rot_angle >= 90.0f && rot_angle < 180.0f) {
 			switchmodify[countswitches].direction = 2;
 			switchmodify[countswitches].savelocation = z;
 		}
-		if (rot_angle >= 180.0f && rot_angle < 270.0f)
-		{
+		if (rot_angle >= 180.0f && rot_angle < 270.0f) {
 			switchmodify[countswitches].direction = 3;
 			switchmodify[countswitches].savelocation = x;
 		}
-		if (rot_angle >= 270.0f && rot_angle <= 360.0f)
-		{
+		if (rot_angle >= 270.0f && rot_angle <= 360.0f) {
 			switchmodify[countswitches].direction = 4;
 			switchmodify[countswitches].savelocation = z;
 		}
@@ -1951,14 +1834,11 @@ void AddModel(float x, float y, float z, float rot_angle, float monsterid, float
 	num_players2++;
 }
 
-int FindGunTexture(const char* p)
-{
+int FindGunTexture(const char *p) {
 	int i = 0;
 
-	for (i = 0; i < num_your_guns; i++)
-	{
-		if (strcmp(your_gun[i].gunname, p) == 0)
-		{
+	for (i = 0; i < num_your_guns; i++) {
+		if (strcmp(your_gun[i].gunname, p) == 0) {
 
 			return your_gun[i].skin_tex_id;
 		}
@@ -1967,13 +1847,12 @@ int FindGunTexture(const char* p)
 	return 0;
 }
 
-int CycleBitMap(int i)
-{
+int CycleBitMap(int i) {
 	char texname[200];
 	char junk[200];
 	char junk2[200];
 
-	char* p;
+	char *p;
 	int talias;
 	int tnum;
 	int num = 0;
@@ -1986,8 +1865,7 @@ int CycleBitMap(int i)
 
 	p = strstr(texname, "@");
 
-	if (p != NULL)
-	{
+	if (p != NULL) {
 		if (maingameloop2 == 0)
 			return FindTextureAlias(texname);
 		strcpy_s(junk, p + 1);
@@ -2004,8 +1882,7 @@ int CycleBitMap(int i)
 		sprintf_s(junk, "%s@%d", junk2, tnum);
 
 		result = FindTextureAlias(junk);
-		if (result == -1)
-		{
+		if (result == -1) {
 			sprintf_s(junk, "%s@1", junk2);
 			result = FindTextureAlias(junk);
 		}
@@ -2015,4 +1892,3 @@ int CycleBitMap(int i)
 
 	return -1;
 }
-

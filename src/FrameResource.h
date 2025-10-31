@@ -12,7 +12,6 @@ struct ObjectConstants {
 	uint32_t ObjPad2;
 };
 
-
 struct PassConstants {
 	glm::mat4 View = glm::mat4(1.0f);
 	glm::mat4 InvView = glm::mat4(1.0f);
@@ -38,10 +37,10 @@ struct PassConstants {
 };
 
 struct MaterialData {
-	glm::vec4 DiffuseAlbedo = { 1.0f,1.0f,1.0f,1.0f };
-	glm::vec3 FresnelR0 = { 0.01f,0.01,0.0f };
+	glm::vec4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glm::vec3 FresnelR0 = { 0.01f, 0.01, 0.0f };
 	float Roughness = 64.0f;
-	//used in texture mapping
+	// used in texture mapping
 	glm::mat4 MatTransform = glm::mat4(1.0f);
 	uint32_t DiffuseMapIndex = 0;
 	uint32_t NormalMapIndex = 0;
@@ -57,12 +56,12 @@ struct Vertex {
 };
 
 struct FrameResource {
-	FrameResource(PassConstants* pc, ObjectConstants* id, MaterialData* md, Vertex* pWvs);
-	FrameResource(const FrameResource& rhs) = delete;
-	FrameResource& operator=(const FrameResource& rhs) = delete;
+	FrameResource(PassConstants *pc, ObjectConstants *id, MaterialData *md, Vertex *pWvs);
+	FrameResource(const FrameResource &rhs) = delete;
+	FrameResource &operator=(const FrameResource &rhs) = delete;
 	~FrameResource();
-	PassConstants* pPCs{ nullptr };
-	ObjectConstants* pOCs{ nullptr };
-	MaterialData* pMats{ nullptr };
-	Vertex* pDungeonVB{ nullptr };
+	PassConstants *pPCs{ nullptr };
+	ObjectConstants *pOCs{ nullptr };
+	MaterialData *pMats{ nullptr };
+	Vertex *pDungeonVB{ nullptr };
 };

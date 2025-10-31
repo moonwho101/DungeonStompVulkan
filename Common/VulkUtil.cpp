@@ -1,18 +1,18 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "VulkUtil.h"
 
-//check if object inside frustum in clip space
-bool AABB::InsideFrustum(glm::mat4& MVP) {//
+// check if object inside frustum in clip space
+bool AABB::InsideFrustum(glm::mat4 &MVP) { //
 	glm::vec4 corners[8] = {
-		{min,1.0f},
-		{max.x,min.y,min.z,1.0f},
-		{min.x,max.y,min.z,1.0f},
-		{max.x,max.y,min.z,1.0f},
+		{ min, 1.0f },
+		{ max.x, min.y, min.z, 1.0f },
+		{ min.x, max.y, min.z, 1.0f },
+		{ max.x, max.y, min.z, 1.0f },
 
-		{min.x,min.y,max.z,1.0f},
-		{max.x,min.y,max.z,1.0f},
-		{min.x,max.y,max.z,1.0f},
-		{max,1.0f}
+		{ min.x, min.y, max.z, 1.0f },
+		{ max.x, min.y, max.z, 1.0f },
+		{ min.x, max.y, max.z, 1.0f },
+		{ max, 1.0f }
 	};
 	bool inside = false;
 	for (size_t cornerIdx = 0; cornerIdx < (sizeof(corners) / sizeof(corners[0])); cornerIdx++) {
@@ -28,7 +28,7 @@ bool AABB::InsideFrustum(glm::mat4& MVP) {//
 	return inside;
 }
 
-bool AABB::Intersects(glm::vec3 Origin, glm::vec3 Direction, float& dist)const {
+bool AABB::Intersects(glm::vec3 Origin, glm::vec3 Direction, float &dist) const {
 
 	dist = -1.0f;
 	float div, tmin, tmax, tymin, tymax, tzmin, tzmax;
@@ -36,8 +36,7 @@ bool AABB::Intersects(glm::vec3 Origin, glm::vec3 Direction, float& dist)const {
 	if (div >= 0.0f) {
 		tmin = (min.x - Origin.x) * div;
 		tmax = (max.x - Origin.x) * div;
-	}
-	else {
+	} else {
 		tmin = (max.x - Origin.x) * div;
 		tmax = (min.x - Origin.x) * div;
 	}
@@ -49,34 +48,35 @@ bool AABB::Intersects(glm::vec3 Origin, glm::vec3 Direction, float& dist)const {
 		tymin = (min.y - Origin.y) * div;
 		tymax = (max.y - Origin.y) * div;
 
-	}
-	else {
+	} else {
 		tymin = (max.y - Origin.y) * div;
 		tymax = (min.y - Origin.y) * div;
 	}
-	if ((tymax < 0.0f) || (tmin > tymax) || (tymin > tmax))return false;
+	if ((tymax < 0.0f) || (tmin > tymax) || (tymin > tmax))
+		return false;
 
-	if (tymin > tmin)tmin = tymin;
-	if (tymax < tmax) tmax = tymax;
+	if (tymin > tmin)
+		tmin = tymin;
+	if (tymax < tmax)
+		tmax = tymax;
 
 	div = 1.0f / Direction.z;
 	if (div >= 0.0f) {
 		tzmin = (min.z - Origin.z) * div;
 		tzmax = (max.z - Origin.z) * div;
-	}
-	else {
+	} else {
 		tzmin = (max.z - Origin.z) * div;
 		tzmax = (min.z - Origin.z) * div;
 	}
-	if ((tzmax < 0.0f) || (tmin > tzmax) || (tzmin > tmax))return false;
+	if ((tzmax < 0.0f) || (tmin > tzmax) || (tzmin > tmax))
+		return false;
 	glm::vec3 vec = (((min + max) / 2.0f) - Origin);
 	dist = glm::length(vec);
 	return true;
 }
 
-
-
-template <typename T> float Ray::IntersectMesh(std::vector<T>& vertices, std::vector<uint32_t>& indices) {
+template <typename T>
+float Ray::IntersectMesh(std::vector<T> &vertices, std::vector<uint32_t> &indices) {
 	bool hit = false;
 	float dist = INFINITY;
 	uint32_t hitTri = UINT32_MAX;
@@ -100,10 +100,10 @@ template <typename T> float Ray::IntersectMesh(std::vector<T>& vertices, std::ve
 	return hit ? dist : -1.0f;
 }
 
-//void BoundingFrustum::Transform(BoundingFrustum& out, glm::mat4& m)const {
+// void BoundingFrustum::Transform(BoundingFrustum& out, glm::mat4& m)const {
 //	glm::vec3 vOrigin = Origin;
 //	glm::quat vOrientation = Orientation;
-//	
+//
 //	//Composite the frustum rotation and the transform rotation
 //	glm::mat4 nM;
 //	nM = m;
@@ -139,5 +139,5 @@ template <typename T> float Ray::IntersectMesh(std::vector<T>& vertices, std::ve
 //
 //
 //
-//}
+// }
 //

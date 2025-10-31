@@ -3,11 +3,11 @@
 #include <glm/glm.hpp>
 
 class Dungeon {
-	int		mNumRows{ 0 };
-	int		mNumCols{ 0 };
+	int mNumRows{ 0 };
+	int mNumCols{ 0 };
 
-	int		mVertexCount{ 0 };
-	int		mTriangleCount{ 0 };
+	int mVertexCount{ 0 };
+	int mTriangleCount{ 0 };
 
 	// Simulation constants we can precompute.
 	float mK1 = 0.0f;
@@ -17,35 +17,38 @@ class Dungeon {
 	float mTimeStep = 0.0f;
 	float mSpatialStep = 0.0f;
 
-	std::vector<glm::vec3>	mPrevSolution;
-	std::vector<glm::vec3>	mCurrSolution;
-	std::vector<glm::vec3>	mNormals;
-	std::vector<glm::vec3>	mTangentX;
+	std::vector<glm::vec3> mPrevSolution;
+	std::vector<glm::vec3> mCurrSolution;
+	std::vector<glm::vec3> mNormals;
+	std::vector<glm::vec3> mTangentX;
 
-public:
+  public:
 	Dungeon(int m, int n, float dx, float dt, float speed, float damping);
-	Dungeon(const Dungeon& rhs) = delete;
-	Dungeon& operator=(const Dungeon& rhs) = delete;
+	Dungeon(const Dungeon &rhs) = delete;
+	Dungeon &operator=(const Dungeon &rhs) = delete;
 	~Dungeon();
 
-	int RowCount()const;
-	int ColumnCount()const;
-	int VertexCount()const;
-	int TriangleCount()const;
-	float Width()const;
-	float Depth()const;
+	int RowCount() const;
+	int ColumnCount() const;
+	int VertexCount() const;
+	int TriangleCount() const;
+	float Width() const;
+	float Depth() const;
 
-	//returns the solution at the ith grid point
-	const glm::vec3& Position(int i)const {
+	// returns the solution at the ith grid point
+	const glm::vec3 &Position(int i) const {
 		return mCurrSolution[i];
 	}
 
-	//returns the solution normal at the ith grid point.
-	const glm::vec3& Normal(int i)const { return mNormals[i]; }
+	// returns the solution normal at the ith grid point.
+	const glm::vec3 &Normal(int i) const {
+		return mNormals[i];
+	}
 
-	const glm::vec3& TangentX(int i)const { return mTangentX[i]; }
+	const glm::vec3 &TangentX(int i) const {
+		return mTangentX[i];
+	}
 
 	void Update(float dt);
 	void Disturb(int i, int j, float magnitude);
-
 };

@@ -33,8 +33,7 @@ D3DVERTEX2 MakeVertex(float x, float y, float z) {
 	return d;
 }
 
-int MakeDice()
-{
+int MakeDice() {
 	float x1, x2, y1, y2;
 	float scale = 16.0f;
 	float adjust = 100.0f;
@@ -142,8 +141,7 @@ int MakeDice()
 	return 1;
 }
 
-void MakeDamageDice()
-{
+void MakeDamageDice() {
 	float x1, x2, y1, y2;
 	float scale = 16.0f;
 
@@ -154,52 +152,41 @@ void MakeDamageDice()
 
 	int gunmodel = 0;
 
-	for (int a = 0; a < num_your_guns; a++)
-	{
-		if (your_gun[a].model_id == player_list[trueplayernum].gunid)
-		{
+	for (int a = 0; a < num_your_guns; a++) {
+		if (your_gun[a].model_id == player_list[trueplayernum].gunid) {
 			gunmodel = a;
 		}
 	}
 
-	if (your_gun[gunmodel].damage2 == 4)
-	{
+	if (your_gun[gunmodel].damage2 == 4) {
 		strcpy_s(dice[1].name, "die4s4");
 		strcpy_s(dice[1].prefix, "die4");
 		dice[1].rollnum = 4;
 		dice[1].roll = 0;
 		dice[1].sides = 4;
 		dice[1].rollmax = 3;
-	}
-	else if (your_gun[gunmodel].damage2 == 6)
-	{
+	} else if (your_gun[gunmodel].damage2 == 6) {
 		strcpy_s(dice[1].name, "die6s6");
 		strcpy_s(dice[1].prefix, "die6");
 		dice[1].rollnum = 6;
 		dice[1].roll = 0;
 		dice[1].sides = 6;
 		dice[1].rollmax = 4;
-	}
-	else if (your_gun[gunmodel].damage2 == 8)
-	{
+	} else if (your_gun[gunmodel].damage2 == 8) {
 		strcpy_s(dice[1].name, "die8s8");
 		strcpy_s(dice[1].prefix, "die8");
 		dice[1].rollnum = 8;
 		dice[1].roll = 0;
 		dice[1].sides = 8;
 		dice[1].rollmax = 5;
-	}
-	else if (your_gun[gunmodel].damage2 == 10)
-	{
+	} else if (your_gun[gunmodel].damage2 == 10) {
 		strcpy_s(dice[1].name, "die10s10");
 		strcpy_s(dice[1].prefix, "die10");
 		dice[1].rollnum = 10;
 		dice[1].roll = 0;
 		dice[1].sides = 10;
 		dice[1].rollmax = 5;
-	}
-	else if (your_gun[gunmodel].damage2 == 12)
-	{
+	} else if (your_gun[gunmodel].damage2 == 12) {
 		strcpy_s(dice[1].name, "die12s12");
 		strcpy_s(dice[1].prefix, "die12");
 		dice[1].rollnum = 12;
@@ -224,17 +211,13 @@ void MakeDamageDice()
 	dice[1].dicebox[2].y = wHeight - y2;
 }
 
-void SetDiceTexture(bool showroll)
-{
-	for (int i = 0; i < numdice; i++)
-	{
-		if (dice[i].roll == 1)
-		{
-			//roll the die
+void SetDiceTexture(bool showroll) {
+	for (int i = 0; i < numdice; i++) {
+		if (dice[i].roll == 1) {
+			// roll the die
 			if (maingameloop)
 				dice[i].rollnum++;
-			if (dice[i].rollnum > dice[i].rollmax)
-			{
+			if (dice[i].rollnum > dice[i].rollmax) {
 
 				dice[i].rollnum = 1;
 			}
@@ -244,59 +227,41 @@ void SetDiceTexture(bool showroll)
 
 	char junk[255];
 
-	if (usespell == 1)
-	{
+	if (usespell == 1) {
 		spellhiton = player_list[trueplayernum].hd;
-	}
-	else
-	{
+	} else {
 		spellhiton = 0;
 	}
 
-	if (hitmonster == 1 || usespell == 1)
-	{
-		if (strstr(your_gun[current_gun].gunname, "SCROLL-HEALING") != NULL)
-		{
+	if (hitmonster == 1 || usespell == 1) {
+		if (strstr(your_gun[current_gun].gunname, "SCROLL-HEALING") != NULL) {
 			strcpy_s(junk, "Attack      Heal");
-		}
-		else
-		{
+		} else {
 			strcpy_s(junk, "Attack      Damage");
 		}
-	}
-	else
-	{
+	} else {
 		strcpy_s(junk, "Attack");
 	}
 
-	if (numdice == 3 && hitmonster == 1)
-	{
-		//do nothing for now
-	}
-	else if (numdice == 3 && hitmonster == 0)
-	{
+	if (numdice == 3 && hitmonster == 1) {
+		// do nothing for now
+	} else if (numdice == 3 && hitmonster == 0) {
 		strcpy_s(junk, "Attack");
 	}
 
 	display_message((wWidth / 2) - 32.0f, wHeight - 30.0f, junk, 255, 255, 0, 12.5, 16, 0);
 
-	if (criticalhiton == 1)
-	{
+	if (criticalhiton == 1) {
 		strcpy_s(junk, "Critical Hit  X 2");
 		display_message((wWidth / 2) - 30.0f, wHeight - 145.0f, junk, 255, 255, 0, 12.5, 16, 0);
 	}
-	if (spellhiton > 1)
-	{
+	if (spellhiton > 1) {
 		sprintf_s(junk, "           X %d", spellhiton);
 		display_message((wWidth / 2) - 30.0f, wHeight - 130.0f, junk, 0, 255, 0, 12.5, 16, 0);
-	}
-	else
-	{
+	} else {
 		int gunmodel = 0;
-		for (int a = 0; a < num_your_guns; a++)
-		{
-			if (your_gun[a].model_id == player_list[trueplayernum].gunid)
-			{
+		for (int a = 0; a < num_your_guns; a++) {
+			if (your_gun[a].model_id == player_list[trueplayernum].gunid) {
 
 				gunmodel = a;
 			}
@@ -305,8 +270,7 @@ void SetDiceTexture(bool showroll)
 		int attackbonus = your_gun[gunmodel].sattack;
 		int damagebonus = your_gun[gunmodel].sdamage;
 
-		if (attackbonus > 0 || damagebonus > 0)
-		{
+		if (attackbonus > 0 || damagebonus > 0) {
 			sprintf_s(junk, "   +%d      +%d", attackbonus, damagebonus);
 			display_message((wWidth / 2) - 30.0f, wHeight - 130.0f, junk, 0, 255, 0, 12.5, 16, 0);
 		}
@@ -321,11 +285,8 @@ void SetDiceTexture(bool showroll)
 	}
 }
 
-int thaco(int ac, int thaco)
-{
+int thaco(int ac, int thaco) {
 	int result;
 	result = thaco - ac;
 	return result;
 }
-
-
