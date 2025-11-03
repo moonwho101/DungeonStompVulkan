@@ -180,6 +180,7 @@
     <ClInclude Include="LoadWorld.hpp" />
     <ClInclude Include="Missle.hpp" />
     <ClInclude Include="ProcessModel.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="WAVFileReader.h" />
@@ -241,6 +242,12 @@
     <None Include="..\Shaders\sky.vert">
       <DeploymentContent>true</DeploymentContent>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DungeonStomp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
