@@ -1855,6 +1855,8 @@ void DungeonStompApp::Draw(const GameTimer &gt) {
 		auto &sh = *shadowDescriptors;
 		VkDescriptorSet descriptor5 = sh[0];
 
+		ProcessLights11();
+
 		VkCommandBuffer cmd = BeginRender(false); // don't want to start main render pass
 		{
 			dynamicOffsets[0] = { mCurrFrame * (uint32_t)passSize * (uint32_t)passCount + (uint32_t)passSize };
@@ -1976,8 +1978,6 @@ void DungeonStompApp::DrawRenderItems(VkCommandBuffer cmd, VkPipelineLayout layo
 	VkDeviceSize objectSize = ub[1].objectSize;
 	auto &ud = *uniformDescriptors;
 	VkDescriptorSet descriptor1 = ud[1];
-
-	ProcessLights11();
 
 	// for (size_t i = 0; i < ritems.size(); i++) {
 	{
