@@ -18,6 +18,8 @@
 
 class VulkApp {
   protected:
+    PFN_vkAcquireFullScreenExclusiveModeEXT pvkAcquireFullScreenExclusiveModeEXT;
+    PFN_vkReleaseFullScreenExclusiveModeEXT pvkReleaseFullScreenExclusiveModeEXT;
 	VulkApp(HINSTANCE hInstance);
 	VulkApp(const VulkApp &rhs) = delete;
 	VulkApp &operator=(const VulkApp &rhs) = delete;

@@ -259,7 +259,7 @@ bool VulkApp::InitVulkan() {
 	vkGetPhysicalDeviceSurfacePresentModesKHR(mPhysicalDevice, mSurface, &presentModeCount, mPresentModes.data());
 
 	mNumSamples = Vulkan::getMaxUsableSampleCount(mDeviceProperties);
-	std::vector<const char *> deviceExtensions{ "VK_KHR_swapchain" };
+	std::vector<const char *> deviceExtensions{ "VK_KHR_swapchain", VK_EXT_FULL_SCREEN_EXCLUSIVE_EXTENSION_NAME };
 	VkPhysicalDeviceFeatures enabledFeatures{};
 	if (mDeviceFeatures.samplerAnisotropy)
 		enabledFeatures.samplerAnisotropy = VK_TRUE;
@@ -333,6 +333,8 @@ bool VulkApp::InitVulkan() {
 	pvkCmdSetViewport = (PFN_vkCmdSetViewport)vkGetDeviceProcAddr(device, "vkCmdSetViewport");
 	assert(pvkCmdSetViewport);
 	pvkCmdSetScissor = (PFN_vkCmdSetScissor)vkGetDeviceProcAddr(device, "vkCmdSetScissor");
+    pvkAcquireFullScreenExclusiveModeEXT = (PFN_vkAcquireFullScreenExclusiveModeEXT)vkGetDeviceProcAddr(device, "vkAcquireFullScreenExclusiveModeEXT");
+    pvkReleaseFullScreenExclusiveModeEXT = (PFN_vkReleaseFullScreenExclusiveModeEXT)vkGetDeviceProcAddr(device, "vkReleaseFullScreenExclusiveModeEXT");
 	mSubmitInfo.pWaitDstStageMask = &mSubmitPipelineStages;
 	mSubmitInfo.waitSemaphoreCount = 1;
 	// mSubmitInfo.pWaitSemaphores = &mPresentComplete;
@@ -372,7 +374,14 @@ void VulkApp::cleanupVulkan() {
 void VulkApp::CreateSwapchain() {
 	VkSwapchainKHR oldSwapchain = mSwapchain;
 
-	mSwapchain = Vulkan::initSwapchain(mDevice, mSurface, mClientWidth, mClientHeight, mSurfaceCaps, mPresentMode, mSwapchainFormat, mSwapchainExtent, UINT32_MAX, oldSwapchain);
+    VkSurfaceFullScreenExclusiveInfoEXT surfaceFullScreenExclusiveInfo = {VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_INFO_EXT};
+    surfaceFullScreenExclusiveInfo.fullScreenExclusive = VK_FULL_SCREEN_EXCLUSIVE_ALLOWED_EXT;
+
+    VkSurfaceFullScreenExclusiveWin32InfoEXT surfaceFullScreenExclusiveWin32Info = {VK_STRUCTURE_TYPE_SURFACE_FULL_SCREEN_EXCLUSIVE_WIN32_INFO_EXT};
+    surfaceFullScreenExclusiveWin32Info.hmonitor = MonitorFromWindow(mhMainWnd, MONITOR_DEFAULTTOPRIMARY);
+    surfaceFullScreenExclusiveInfo.pNext = &surfaceFullScreenExclusiveWin32Info;
+
+	mSwapchain = Vulkan::initSwapchain(mDevice, mSurface, mClientWidth, mClientHeight, mSurfaceCaps, mPresentMode, mSwapchainFormat, mSwapchainExtent, &surfaceFullScreenExclusiveInfo, UINT32_MAX, oldSwapchain);
 	if (oldSwapchain != VK_NULL_HANDLE) {
 		Vulkan::cleanupSwapchain(mDevice, oldSwapchain);
 	}
