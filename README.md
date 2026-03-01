@@ -14,38 +14,6 @@
 
 ![Dungeon Stomp Vulkan](../main/Textures/screenshot21.jpg)
 
-## Debug Controls
-
-* C - Toggle VULKAN console debug window
-* G - Toggle gravity (Keypad +/- move up, move down)
-* I - Disable music
-* P - Random music
-* X - Give experience points
-* K - Give all weapons and spells
-* B - Toggle Camera head bob
-* N - Toggle Normal map
-* ] - Next Dungeon Level
-* [ - Previous Dungeon Level
-
-![Dungeon Stomp Vulkan](../main/Textures/screenshot22.jpg)
-
-## DirectX12
-
-Dungeon Stomp for DirectX12, is avaiable [Dungeon Stomp DirectX12](https://github.com/moonwho101/DungeonStompDirectX12).
-
-![Dungeon Stomp Vulkan](../main/Textures/screenshot23.jpg)
-
-## Compiling
-
-To build, you'll need Vulkan, glm, and stbi image lib.  Compile using Microsoft Visual Studio 2022 Community Edition. For best results compile in 'Release' mode.
-Happy Dungeon Stomping - Breeyark!
-
-![Dungeon Stomp Vulkan](../main/Textures/screenshot24.jpg)
-
-## Vulkan Examples
-
-Thanks to baeng72 for the C++ Vulkan examples [VulkanIntroD3DPort](https://github.com/baeng72/VulkanIntroD3DPort).
-
 ## Dungeon Stomp VULKAN with Physically based rendering (PBR).
 
 * Dungeon Stomp is a VULKAN 3D dungeon game.
@@ -59,3 +27,36 @@ Thanks to baeng72 for the C++ Vulkan examples [VulkanIntroD3DPort](https://githu
 * Head bob using two sine waves
 * XBOX game controller is supported (you can enable it in DirectInput.cpp)
 * Written in Microsoft C++
+
+![Dungeon Stomp Vulkan](../main/Textures/screenshot22.jpg)
+
+## Debug Controls
+
+* C - Toggle VULKAN console debug window
+* G - Toggle gravity (Keypad +/- move up, move down)
+* I - Disable music
+* P - Random music
+* X - Give experience points
+* K - Give all weapons and spells
+* B - Toggle Camera head bob
+* N - Toggle Normal map
+* ] - Next Dungeon Level
+* [ - Previous Dungeon Level
+
+![Dungeon Stomp Vulkan](../main/Textures/screenshot23.jpg)
+
+## DirectX12
+
+Dungeon Stomp for DirectX12, is avaiable [Dungeon Stomp DirectX12](https://github.com/moonwho101/DungeonStompDirectX12).
+
+![Dungeon Stomp Vulkan](../main/Textures/screenshot24.jpg)
+
+## Compiling
+
+To build, you'll need Vulkan, glm, and stbi image lib.  Compile using Microsoft Visual Studio 2022 Community Edition. For best results compile in 'Release' mode.
+Happy Dungeon Stomping - Breeyark!
+
+## Vulkan Examples
+
+Thanks to baeng72 for the C++ Vulkan examples [VulkanIntroD3DPort](https://github.com/baeng72/VulkanIntroD3DPort).
+
