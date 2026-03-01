@@ -12,7 +12,7 @@
 * Left mouse button to attack, right mouse button to move forward
 * Press F5 to Load game, F6 to Save game
 
-![Dungeon Stomp Vulkan](../main/Textures/screenshot21.jpg)
+![Dungeon Stomp Vulkan](../main/Textures/screenshot22.jpg)
 
 ## Dungeon Stomp VULKAN with Physically based rendering (PBR).
 
@@ -28,7 +28,7 @@
 * XBOX game controller is supported (you can enable it in DirectInput.cpp)
 * Written in Microsoft C++
 
-![Dungeon Stomp Vulkan](../main/Textures/screenshot22.jpg)
+![Dungeon Stomp Vulkan](../main/Textures/screenshot21.jpg)
 
 ## Debug Controls
 
