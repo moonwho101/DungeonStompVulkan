@@ -1,6 +1,6 @@
 # Dungeon Stomp Vulkan
 
-![Dungeon Stomp Vulkan](../main/Textures/screenshot20.jpg)
+![Dungeon Stomp Vulkan](../main/Textures/screenshot24.jpg)
 
 ## Controls
 
@@ -43,13 +43,11 @@
 * ] - Next Dungeon Level
 * [ - Previous Dungeon Level
 
-![Dungeon Stomp Vulkan](../main/Textures/screenshot23.jpg)
-
 ## DirectX12
 
 Dungeon Stomp for DirectX12, is avaiable [Dungeon Stomp DirectX12](https://github.com/moonwho101/DungeonStompDirectX12).
 
-![Dungeon Stomp Vulkan](../main/Textures/screenshot24.jpg)
+![Dungeon Stomp Vulkan](../main/Textures/screenshot20.jpg)
 
 ## Compiling
 
