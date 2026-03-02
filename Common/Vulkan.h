@@ -62,7 +62,7 @@ void cleanupCommandBuffer(VkDevice device, VkCommandPool commandPool, VkCommandB
 void cleanupCommandPools(VkDevice device, std::vector<VkCommandPool> &commandPools);
 void cleanupCommandPool(VkDevice device, VkCommandPool commandPool);
 
-VkSwapchainKHR initSwapchain(VkDevice device, VkSurfaceKHR surface, uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR &surfaceCaps, VkPresentModeKHR &presentMode, VkSurfaceFormatKHR &swapchainFormat, VkExtent2D &swapchainExtent, uint32_t imageCount = UINT32_MAX, VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE);
+VkSwapchainKHR initSwapchain(VkDevice device, VkSurfaceKHR surface, uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR &surfaceCaps, VkPresentModeKHR &presentMode, VkSurfaceFormatKHR &swapchainFormat, VkExtent2D &swapchainExtent, void* pNext = nullptr, uint32_t imageCount = UINT32_MAX, VkSwapchainKHR oldSwapchain = VK_NULL_HANDLE);
 void getSwapchainImages(VkDevice device, VkSwapchainKHR swapchain, std::vector<VkImage> &images);
 void initSwapchainImageViews(VkDevice device, std::vector<VkImage> &swapchainImages, VkFormat &swapchainFormat, std::vector<VkImageView> &swapchainImageViews);
 void cleanupSwapchainImageViews(VkDevice device, std::vector<VkImageView> &imageViews);

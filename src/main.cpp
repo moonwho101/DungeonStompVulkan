@@ -1617,6 +1617,7 @@ void DungeonStompApp::ToggleFullscreen(bool isFullscreen) {
 		HWND_extended_style = GetWindowLong(mhMainWnd, GWL_EXSTYLE);
 
 	if (isFullscreen) {
+        pvkAcquireFullScreenExclusiveModeEXT(mDevice, mSwapchain);
 		long HWND_newStyle = HWND_style & (~WS_BORDER) & (~WS_DLGFRAME) & (~WS_THICKFRAME);
 		long HWND_extended_newStyle = HWND_extended_style & (~WS_EX_WINDOWEDGE);
 
@@ -1627,7 +1628,7 @@ void DungeonStompApp::ToggleFullscreen(bool isFullscreen) {
 
 		ShowCursor(false);
 	} else {
-
+        pvkReleaseFullScreenExclusiveModeEXT(mDevice, mSwapchain);
 		SetWindowLong(mhMainWnd, GWL_STYLE, HWND_style);
 		SetWindowLong(mhMainWnd, GWL_EXSTYLE, HWND_extended_style);
 		ShowWindow(mhMainWnd, SW_SHOWNORMAL);
