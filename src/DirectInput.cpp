@@ -17,7 +17,7 @@ BOOL g_bUseJoystick = false;
 BOOL g_bUseKeyboard = false;
 
 // Adjust Mouse speed here.
-float mousediv = 25.0f;
+float mousediv = 12.0f;
 
 void PlaySong();
 extern int damageinprogress;
@@ -662,11 +662,6 @@ VOID WalkMode(CONTROLS *Controls) {
 
 	if (!Controls->bPreviousLevel && previouslevel) {
 		previouslevel = 0;
-	}
-
-	if (g_bUseMouse) {
-		angy += filterx;
-		look_up_ang += filtery;
 	}
 
 	bool mousefilter = true;
