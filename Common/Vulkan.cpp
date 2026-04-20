@@ -288,7 +288,7 @@ void cleanupCommandPool(VkDevice device, VkCommandPool commandPool) {
 	cleanupCommandPools(device, commandPools);
 }
 
-VkSwapchainKHR initSwapchain(VkDevice device, VkSurfaceKHR surface, uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR &surfaceCaps, VkPresentModeKHR &presentMode, VkSurfaceFormatKHR &swapchainFormat, VkExtent2D &swapchainExtent, uint32_t imageCount, VkSwapchainKHR oldSwapchain) {
+VkSwapchainKHR initSwapchain(VkDevice device, VkSurfaceKHR surface, uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR &surfaceCaps, VkPresentModeKHR &presentMode, VkSurfaceFormatKHR &swapchainFormat, VkExtent2D &swapchainExtent, void* pNext, uint32_t imageCount, VkSwapchainKHR oldSwapchain) {
 	VkSwapchainKHR swapchain{ VK_NULL_HANDLE };
 
 	VkSurfaceTransformFlagsKHR preTransform = chooseSwapchainTransform(surfaceCaps);
@@ -307,6 +307,7 @@ VkSwapchainKHR initSwapchain(VkDevice device, VkSurfaceKHR surface, uint32_t wid
 	}
 
 	VkSwapchainCreateInfoKHR swapchainCI = { VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };
+    swapchainCI.pNext = pNext;
 
 	swapchainCI.surface = surface;
 	swapchainCI.minImageCount = desiredNumberOfSwapchainImages;
